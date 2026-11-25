@@ -3,6 +3,8 @@
 @implements IAsyncDisposable
 @inject Mt5MarketDataProvider MarketProvider
 @inject TechnicalAnalysisService TechnicalAnalysis
+@inject SignalMarketDataService SignalMarket
+@inject TechnicalTradeSignalService TradeSignalService
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager Navigation
 @inject PricePredictionService PredictionService
@@ -35,8 +37,8 @@
         </div>
     </div>
     <div class="market-metadata">
-        <span>Източник <strong>@(LiveMarket?.Source ?? "MetaTrader 5")</strong></span>
-        <span>Входни данни <strong>M5 · до 200 свещи</strong></span>
+        <span>Източник <strong>@(LiveMarket?.Source ?? PreferredSourceLabel)</strong></span>
+        <span>Входни данни <strong>@SignalMarket.IntervalLabel · до @SignalMarketDataService.SignalCandleCount свещи</strong></span>
         <span>Котировка UTC <strong>@(market?.UpdatedAtUtc.ToString("HH:mm:ss") ?? "—")</strong></span>
     </div>
 </section>
@@ -44,8 +46,8 @@
 @if (market is null || prediction is null)
 {
     <section class="panel market-chart-unavailable prediction-unavailable">
-        <strong>@(IsRefreshing ? "Зареждане на M5 данни от MT5…" : "Няма данни за прогноза")</strong>
-        <span>@(LiveMarket?.Message ?? "Свържете MetaTrader 5 чрез mt5-bridge, за да се изчислят прогнозите и нивата.")</span>
+        <strong>@(IsRefreshing ? $"Зареждане на {SignalMarket.IntervalLabel} данни от {PreferredSourceLabel}…" : "Няма данни за прогноза")</strong>
+        <span>@(LiveMarket?.Message ?? $"Проверете връзката с {PreferredSourceLabel}, за да се изчислят прогнозите и нивата.")</span>
     </section>
 }
 else
@@ -54,7 +56,7 @@ else
         <section class="panel prediction-forecast-panel">
             <div class="panel-header">
                 <div><div class="panel-kicker">PRICE PREDICTION</div><h2>Очакван диапазон</h2></div>
-                <span class="timeframe-chip">XAUUSD · M5</span>
+                <span class="timeframe-chip">@market.Symbol · @SignalMarket.IntervalLabel</span>
             </div>
             <div class="prediction-cards">
                 @foreach (var forecast in prediction.Forecasts)
@@ -69,7 +71,7 @@ else
             </div>
             <div class="prediction-foot">
                 <span>Текуща цена <strong>@Format(prediction.CurrentPrice)</strong></span>
-                <span>Диапазоните използват уклона и абсолютната волатилност от последните M5 свещи.</span>
+                <span>Диапазоните използват уклона и абсолютната волатилност от последните @SignalMarket.IntervalLabel свещи.</span>
             </div>
         </section>
 
@@ -89,7 +91,7 @@ else
     <section class="panel prediction-levels-panel">
         <div class="panel-header">
             <div><div class="panel-kicker">TRADE LEVELS · ИЗЧИСЛЕНИ ОТДЕЛНО</div><h2>Търговски нива</h2></div>
-            <span class="timeframe-chip">LIVE XAUUSD · @Format(prediction.CurrentPrice)</span>
+            <span class="timeframe-chip">LIVE @market.Symbol · @Format(prediction.CurrentPrice)</span>
         </div>
         <div class="prediction-levels-grid">
             <div class="prediction-level-group buy-level">
@@ -132,6 +134,42 @@ else
         <div class="prediction-levels-foot">Тези нива се изчисляват независимо от многорамковия сигнал и не подават поръчки.</div>
     </section>
 }
+
+<section class="panel generated-signal-panel" aria-label="Технически сигнал">
+    <div class="panel-header generated-signal-header">
+        <div>
+            <div class="panel-kicker">SMA20 · MACD · RSI14</div>
+            <h2>Технически сигнал</h2>
+        </div>
+        <button class="refresh-button" @onclick="GenerateTechnicalSignalAsync" disabled="@(IsGeneratingTechnicalSignal || IsRefreshing)">
+            @(IsGeneratingTechnicalSignal ? "Обновяване и изчисляване…" : "Генерирай сигнал")
+        </button>
+    </div>
+    <p class="generated-signal-intro">Опреснява цените от избрания източник и изчислява сигнал само от техническите индикатори.</p>
+    @if (IsGeneratingTechnicalSignal)
+    {
+        <div class="signal-result-message" role="status">Зареждане на @SignalMarket.IntervalLabel данни от @PreferredSourceLabel, след което се пресмята сигналът…</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(GeneratedSignalError))
+    {
+        <div class="signal-result-message signal-error" role="alert">@GeneratedSignalError</div>
+    }
+    else if (GeneratedSignal is { } generatedSignal)
+    {
+        <div class="generated-signal-result">
+            <dl class="generated-signal-fields">
+                <div class="direction-@generatedSignal.Direction.ToLowerInvariant()"><dt>Посока</dt><dd>@GeneratedDirectionLabel(generatedSignal.Direction)</dd></div>
+                <div><dt>Entry</dt><dd>@Format(generatedSignal.Entry)</dd></div>
+                <div><dt>Stop loss</dt><dd>@Format(generatedSignal.StopLoss)</dd></div>
+                <div><dt>Take profit</dt><dd>@Format(generatedSignal.TakeProfit)</dd></div>
+            </dl>
+            <p class="generated-signal-explanation">@generatedSignal.Explanation</p>
+            <div class="generated-signal-meta">
+                @(GeneratedSignalSource ?? LiveMarket?.Source ?? "—") · @generatedSignal.CandleCount свещи · цена @Format(generatedSignal.Entry) · генериран @generatedSignal.GeneratedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")
+            </div>
+        </div>
+    }
+</section>
 
 <section class="panel signal-analysis-panel">
     <div class="panel-header signal-analysis-header">
@@ -269,6 +307,10 @@ else
     private readonly CancellationTokenSource _lifetime = new();
     private MarketDataResult? LiveMarket { get; set; }
     private bool IsRefreshing { get; set; }
+    private bool IsGeneratingTechnicalSignal { get; set; }
+    private GeneratedTechnicalSignal? GeneratedSignal { get; set; }
+    private string? GeneratedSignalSource { get; set; }
+    private string? GeneratedSignalError { get; set; }
     private string SelectedSignalTimeframe { get; set; } = "H1";
     private TechnicalSignalSnapshot? SignalResult { get; set; }
     private string? SignalError { get; set; }
@@ -293,16 +335,24 @@ else
         _ => "amber"
     };
 
+    private string PreferredSourceLabel => SignalMarket.PrefersTwelveData ? "Twelve Data" : "MetaTrader 5 · mt5-bridge";
+
+    private string DisplaySourceLabel => LiveMarket?.Source ?? PreferredSourceLabel;
+
     private string StatusLabel => LiveMarket switch
     {
-        { ConnectionStatus: MarketConnectionStatus.Connected } when LiveMarket.Freshness == MarketFreshness.Fresh => "MT5 · свързано · live данни",
-        { ConnectionStatus: MarketConnectionStatus.Connected } => "MT5 · данните са остарели",
+        { ConnectionStatus: MarketConnectionStatus.Connected } when LiveMarket.Freshness == MarketFreshness.Fresh => $"{ShortSourceLabel} · свързано · live данни",
+        { ConnectionStatus: MarketConnectionStatus.Connected } => $"{ShortSourceLabel} · данните са остарели",
         { ConnectionStatus: MarketConnectionStatus.Error } => "Грешка при пазарните данни",
-        _ => "MT5 · разкачено"
+        _ => $"{ShortSourceLabel} · разкачено"
     };
 
     private string StatusDescription => LiveMarket?.Message ??
-        (IsRefreshing ? "Заявка към MT5 bridge…" : "Прогнозите и нивата се изчисляват от MT5 M5 свещи.");
+        (IsRefreshing ? $"Заявка към {ShortSourceLabel}…" : $"Прогнозите и нивата използват данни от {ShortSourceLabel}.");
+
+    private string ShortSourceLabel => LiveMarket?.Source.Contains("Twelve Data", StringComparison.OrdinalIgnoreCase) == true
+        ? "Twelve Data"
+        : IsMt5Source(LiveMarket?.Source) ? "MT5" : DisplaySourceLabel;
 
     private static string DirectionLabel(string direction) => direction switch
     {
@@ -333,7 +383,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         await RefreshMarketAsync();
-        _ = PollLatestTickAsync(_lifetime.Token);
+        if (IsMt5Source(LiveMarket?.Source))
+            _ = PollLatestTickAsync(_lifetime.Token);
     }
 
     private async Task RefreshMarketAsync()
@@ -341,11 +392,45 @@ else
         IsRefreshing = true;
         try
         {
-            LiveMarket = await MarketProvider.GetSnapshotAsync("M5", _lifetime.Token);
+            LiveMarket = await SignalMarket.GetSnapshotAsync(_lifetime.Token);
         }
         finally
         {
             IsRefreshing = false;
+        }
+    }
+
+    private async Task GenerateTechnicalSignalAsync()
+    {
+        if (IsGeneratingTechnicalSignal || IsRefreshing)
+            return;
+
+        IsGeneratingTechnicalSignal = true;
+        GeneratedSignal = null;
+        GeneratedSignalSource = null;
+        GeneratedSignalError = null;
+        try
+        {
+            await RefreshMarketAsync();
+            if (LiveMarket?.Snapshot is not { } snapshot)
+            {
+                GeneratedSignalError = LiveMarket?.Message ?? "Пазарните данни не са налични за генериране на сигнал.";
+                return;
+            }
+
+            GeneratedSignal = TradeSignalService.Generate(snapshot, DateTimeOffset.UtcNow);
+            GeneratedSignalSource = LiveMarket.Source;
+        }
+        catch (OperationCanceledException) when (_lifetime.IsCancellationRequested)
+        {
+        }
+        catch (Exception)
+        {
+            GeneratedSignalError = "Неуспешно опресняване на пазарните данни или изчисляване на сигнала.";
+        }
+        finally
+        {
+            IsGeneratingTechnicalSignal = false;
         }
     }
 
@@ -420,6 +505,9 @@ else
         {
             while (await timer.WaitForNextTickAsync(cancellationToken))
             {
+                if (!IsMt5Source(LiveMarket?.Source))
+                    continue;
+
                 var result = await MarketProvider.GetLatestTickAsync(cancellationToken);
                 if (result.Tick is not { } tick || LiveMarket?.Snapshot is not { } snapshot || tick.UpdatedAtUtc < snapshot.UpdatedAtUtc)
                     continue;
@@ -443,6 +531,16 @@ else
         {
         }
     }
+
+    private static bool IsMt5Source(string? source) =>
+        source?.StartsWith("MetaTrader 5", StringComparison.OrdinalIgnoreCase) == true;
+
+    private static string GeneratedDirectionLabel(string direction) => direction switch
+    {
+        "BUY" => "BUY",
+        "SELL" => "SELL",
+        _ => "ИЗЧАКВАНЕ"
+    };
 
     private static string Format(decimal? value, int decimals = 2) =>
         value?.ToString(decimals == 3 ? "0.000" : decimals == 1 ? "0.0" : "0.00", CultureInfo.InvariantCulture) ?? "—";

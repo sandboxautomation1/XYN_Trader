@@ -9,8 +9,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+from storage_paths import learning_database_path
+
 ROOT = Path(__file__).resolve().parent
-DATABASE_PATH = Path(os.environ.get("XYN_LEARNING_DB", str(ROOT / "data" / "learning.sqlite3")))
+DATABASE_PATH = learning_database_path(ROOT)
 MAXIMUM_ARCHIVED_CANDIDATES = max(100, int(os.environ.get("XYN_MAX_ARCHIVED_CANDIDATES", "2000")))
 
 

@@ -11,6 +11,7 @@ mt5-bridge/mt5_bridge/__pycache__/
 mt5-bridge/.runtime/
 ai-service/models/*.joblib
 ai-service/models/candidates/
+start/*.*
 *.user
 *.suo
 appsettings.json

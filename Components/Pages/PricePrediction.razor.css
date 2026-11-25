@@ -7,7 +7,7 @@
 
 .prediction-updated {
     color: #8d9387;
-    font: 9px var(--mono);
+    font: 10px var(--mono);
 }
 
 .prediction-overview-grid {
@@ -48,7 +48,7 @@
 .prediction-level-group h3 {
     margin: 0;
     color: var(--amber);
-    font: 9px var(--mono);
+    font: 10px var(--mono);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -57,13 +57,13 @@
 .prediction-range {
     max-width: 100%;
     color: #f0f1ec;
-    font: 600 13px var(--mono);
+    font: 600 15px var(--mono);
     white-space: nowrap;
 }
 
 .prediction-average,
 .prediction-change {
-    font-size: 9px;
+    font-size: 10px;
 }
 
 .prediction-average {
@@ -90,12 +90,12 @@
     gap: 6px 14px;
     padding-top: 10px;
     color: #858a7d;
-    font-size: 9px;
+    font-size: 10px;
 }
 
 .prediction-foot strong {
     color: #dfe2d8;
-    font: 11px var(--mono);
+    font: 13px var(--mono);
 }
 
 .prediction-indicators-panel .panel-header {
@@ -123,13 +123,13 @@
 
 .prediction-indicators dt {
     color: #a0a599;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .prediction-indicators dd {
     margin: 0;
     color: #edf0e8;
-    font: 11px var(--mono);
+    font: 13px var(--mono);
     white-space: nowrap;
 }
 
@@ -159,7 +159,7 @@
 .prediction-level-group > strong,
 .prediction-level-group > span {
     color: #e4e7df;
-    font: 11px var(--mono);
+    font: 13px var(--mono);
     line-height: 1.25;
     white-space: nowrap;
 }
@@ -173,11 +173,93 @@
     padding-top: 9px;
     border-top: 1px solid #292c26;
     color: #858a7d;
-    font-size: 9px;
+    font-size: 10px;
 }
 
 .prediction-unavailable {
     min-height: 220px;
+}
+
+.generated-signal-panel {
+    margin-top: 14px;
+    padding: 15px;
+}
+
+.generated-signal-header {
+    margin-bottom: 7px;
+}
+
+.generated-signal-intro {
+    margin: 0 0 12px;
+    color: #92978b;
+    font-size: 12px;
+}
+
+.generated-signal-result {
+    margin-top: 12px;
+}
+
+.generated-signal-fields {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+}
+
+.generated-signal-fields > div {
+    min-width: 0;
+    min-height: 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 5px;
+    background: #20221d;
+}
+
+.generated-signal-fields dt {
+    color: var(--amber);
+    font: 9px var(--mono);
+    letter-spacing: 0.07em;
+}
+
+.generated-signal-fields dd {
+    overflow: hidden;
+    margin: 0;
+    color: #e5e8de;
+    font: 600 15px var(--mono);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.generated-signal-fields .direction-buy dd {
+    color: #72d29a;
+}
+
+.generated-signal-fields .direction-sell dd {
+    color: #e28676;
+}
+
+.generated-signal-fields .direction-wait dd {
+    color: #d6bd75;
+}
+
+.generated-signal-explanation {
+    margin: 10px 0;
+    color: #b4b9ac;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.generated-signal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    padding-top: 9px;
+    border-top: 1px solid #292d26;
+    color: #858b7f;
+    font: 10px var(--mono);
 }
 
 .signal-analysis-panel {
@@ -192,7 +274,7 @@
 .signal-analysis-intro {
     margin: 0 0 12px;
     color: #92978b;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .signal-analysis-controls {
@@ -204,7 +286,7 @@
 
 .signal-analysis-controls label {
     color: #9da294;
-    font: 9px var(--mono);
+    font: 10px var(--mono);
 }
 
 .signal-timeframe-select {
@@ -215,7 +297,7 @@
     border-radius: 5px;
     background: #171914;
     color: #d9ddcf;
-    font: 10px var(--mono);
+    font: 12px var(--mono);
 }
 
 .signal-analysis-controls .refresh-button {
@@ -225,7 +307,7 @@
 .signal-request-status {
     margin-left: auto;
     color: #8d9387;
-    font: 9px var(--mono);
+    font: 10px var(--mono);
 }
 
 .signal-request-status.fresh {
@@ -242,7 +324,7 @@
     border: 1px solid #2d3129;
     border-radius: 5px;
     color: #9da294;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .signal-error {
@@ -253,7 +335,7 @@
 .signal-data-warning {
     margin-bottom: 10px;
     color: #d0b26f;
-    font-size: 9px;
+    font-size: 10px;
 }
 
 .signal-result {
@@ -280,21 +362,21 @@
 
 .signal-metric > span {
     color: var(--amber);
-    font: 8px var(--mono);
+    font: 9px var(--mono);
     letter-spacing: 0.07em;
 }
 
 .signal-metric > strong {
     overflow: hidden;
     color: #e5e8de;
-    font: 600 13px var(--mono);
+    font: 600 15px var(--mono);
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .signal-metric > small {
     color: #888e82;
-    font-size: 8px;
+    font-size: 9px;
 }
 
 .signal-metric.direction-buy > strong,
@@ -314,7 +396,7 @@
 .signal-summary {
     margin: 10px 0 13px;
     color: #b4b9ac;
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.5;
 }
 
@@ -335,7 +417,7 @@
 .signal-factor-group h3 {
     margin: 0 0 8px;
     color: #a8b1a0;
-    font: 600 9px var(--mono);
+    font: 600 10px var(--mono);
     letter-spacing: 0.05em;
     text-transform: uppercase;
 }
@@ -368,25 +450,25 @@
     border-radius: 4px;
     background: #20221d;
     color: #b7bcaf;
-    font-size: 9px;
+    font-size: 10px;
     line-height: 1.45;
 }
 
 .signal-factor-group li strong {
     color: #d5d9cf;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 500;
 }
 
 .signal-factor-group li small {
     color: #858b7e;
-    font: 8px var(--mono);
+    font: 9px var(--mono);
 }
 
 .signal-factor-empty {
     margin: 0;
     color: #7f8579;
-    font-size: 9px;
+    font-size: 10px;
     line-height: 1.5;
 }
 
@@ -395,7 +477,7 @@
     padding-top: 9px;
     border-top: 1px solid #292d26;
     color: #858b7f;
-    font-size: 9px;
+    font-size: 10px;
     line-height: 1.5;
 }
 
@@ -403,13 +485,13 @@
     margin-top: 11px;
     border-top: 1px solid #292d26;
     color: #a6ac9f;
-    font-size: 9px;
+    font-size: 10px;
 }
 
 .signal-json-response summary {
     padding-top: 9px;
     cursor: pointer;
-    font: 9px var(--mono);
+    font: 10px var(--mono);
 }
 
 .signal-json-response pre {
@@ -420,7 +502,7 @@
     border-radius: 5px;
     background: #151713;
     color: #c3c9bb;
-    font: 9px/1.5 var(--mono);
+    font: 10px/1.5 var(--mono);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
@@ -437,6 +519,10 @@
 
     .signal-metrics {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .generated-signal-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .signal-factor-columns {
@@ -463,6 +549,11 @@
 
     .signal-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .generated-signal-header {
+        align-items: flex-start;
+        gap: 10px;
     }
 
     .signal-request-status {

@@ -8,6 +8,7 @@
 @inject NewsFeedService NewsFeed
 @inject EconomicCalendarService EconomicCalendar
 @inject PositionReviewService PositionReview
+@inject PositionProfitTargetStore PositionProfitTargets
 @inject IJSRuntime JS
 
 <PageTitle>Табло — XYN Trader</PageTitle>
@@ -75,7 +76,7 @@
         </button>
     </div>
     <div class="position-disclaimer">
-        Автоматична оценка по H1, RSI, MACD, ADX, EMA и ATR; няма обучен ML модел специално за позиции. Новините и календарът са допълнителен контекст. Нищо не се изпълнява без потвърждение.
+        Въведи суми във валутата на MT5 сметката. Stop Loss се задава като положителна сума и задейства при същата отрицателна стойност на P/L. При достигане на праг се изпраща пазарна заявка за затваряне; проверката работи през 2 секунди, докато приложението и MT5 bridge са включени. Крайният резултат може да се различава според изпълнението. Празно поле изключва съответния праг.
         @if (PositionData?.RetrievedAtUtc is { } positionsUpdated)
         {
             <span> · Проверено @positionsUpdated.ToString("HH:mm:ss 'UTC'")</span>
@@ -119,6 +120,39 @@
                         <div><span>ПЕЧАЛБА / ЗАГУБА</span><strong class="@(position.Profit >= 0 ? "positive" : "negative")">@FormatMoney(position.Profit, openPositions.AccountCurrency)</strong></div>
                         <div><span>STOP LOSS</span><strong>@(position.StopLoss > 0m ? FormatPrice(position.StopLoss, position.Digits) : "няма")</strong></div>
                         <div><span>TAKE PROFIT</span><strong>@(position.TakeProfit > 0m ? FormatPrice(position.TakeProfit, position.Digits) : "няма")</strong></div>
+                    </div>
+                    @{
+                        var limitForm = GetPositionLimitForm(position.Ticket);
+                        var activeLimits = PositionProfitTargets.Get(position.Ticket);
+                    }
+                    <div class="position-limit-editor" aria-label="Автоматично затваряне по сума">
+                        <label>
+                            <span>TAKE PROFIT · @LimitCurrency(openPositions.AccountCurrency)</span>
+                            <input type="number" min="0" step="any" inputmode="decimal" placeholder="напр. 1000"
+                                   @bind="limitForm.TakeProfitText" @bind:event="oninput"
+                                   aria-label="Take Profit сума за позиция @position.Ticket" />
+                        </label>
+                        <label>
+                            <span>STOP LOSS · @LimitCurrency(openPositions.AccountCurrency)</span>
+                            <input type="number" min="0" step="any" inputmode="decimal" placeholder="напр. 100"
+                                   @bind="limitForm.StopLossText" @bind:event="oninput"
+                                   aria-label="Stop Loss сума за позиция @position.Ticket" />
+                        </label>
+                        <button class="position-action-button save-limits"
+                                @onclick="() => SetPositionProfitLimitsAsync(position.Ticket)"
+                                disabled="@(ActionInProgressTicket is not null)">
+                            @(ActionInProgressTicket == position.Ticket ? "Запазване…" : "Задай")
+                        </button>
+                        <span class="position-limit-status">
+                            @if (activeLimits is null)
+                            {
+                                <text>Автоматичните прагове не са зададени.</text>
+                            }
+                            else
+                            {
+                                <text>Активно затваряне: TP @(activeLimits.TakeProfitAmount is { } tp ? FormatMoney(tp, openPositions.AccountCurrency) : "изкл.") · SL @(activeLimits.StopLossAmount is { } sl ? FormatMoney(sl, openPositions.AccountCurrency) : "изкл.")</text>
+                            }
+                        </span>
                     </div>
                     <div class="position-review-body">
                         <div class="position-review-summary">
@@ -320,6 +354,13 @@
     private long? ActionInProgressTicket { get; set; }
     private string? PositionActionNotice { get; set; }
     private bool PositionActionSucceeded { get; set; }
+    private readonly Dictionary<long, PositionLimitForm> PositionLimitForms = [];
+
+    private sealed class PositionLimitForm
+    {
+        public string TakeProfitText { get; set; } = string.Empty;
+        public string StopLossText { get; set; } = string.Empty;
+    }
 
     private string NewsRiskTone => NewsData?.RiskLevel switch
     {
@@ -536,6 +577,84 @@
             IsRefreshingPositions = false;
         }
     }
+
+    private PositionLimitForm GetPositionLimitForm(long ticket)
+    {
+        if (PositionLimitForms.TryGetValue(ticket, out var form))
+            return form;
+
+        var savedLimits = PositionProfitTargets.Get(ticket);
+        form = new PositionLimitForm
+        {
+            TakeProfitText = FormatLimitInput(savedLimits?.TakeProfitAmount),
+            StopLossText = FormatLimitInput(savedLimits?.StopLossAmount)
+        };
+        PositionLimitForms[ticket] = form;
+        return form;
+    }
+
+    private Task SetPositionProfitLimitsAsync(long ticket)
+    {
+        PositionActionNotice = null;
+        if (PositionData is not { Available: true } currentPositions ||
+            currentPositions.Reviews.All(review => review.Position.Ticket != ticket))
+        {
+            PositionActionSucceeded = false;
+            PositionActionNotice = "Позицията вече не е налична в MT5. Обнови списъка и опитай отново.";
+            return Task.CompletedTask;
+        }
+
+        var form = GetPositionLimitForm(ticket);
+        if (!TryParseLimit(form.TakeProfitText, out var takeProfit) ||
+            !TryParseLimit(form.StopLossText, out var stopLoss))
+        {
+            PositionActionSucceeded = false;
+            PositionActionNotice = "Въведи неотрицателни суми. Поле с 0 или празно поле изключва този праг.";
+            return Task.CompletedTask;
+        }
+
+        ActionInProgressTicket = ticket;
+        try
+        {
+            PositionProfitTargets.Set(ticket, takeProfit, stopLoss);
+            PositionActionSucceeded = true;
+            PositionActionNotice = takeProfit is null && stopLoss is null
+                ? $"Автоматичните прагове за позиция #{ticket} са изключени."
+                : $"Праговете за позиция #{ticket} са зададени: TP {(takeProfit is { } tp ? FormatMoney(tp, currentPositions.AccountCurrency) : "изкл.")}, SL {(stopLoss is { } sl ? FormatMoney(sl, currentPositions.AccountCurrency) : "изкл.")}.";
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            PositionActionSucceeded = false;
+            PositionActionNotice = "Не успях да запазя праговете. Провери достъпа до папката data.";
+        }
+        finally
+        {
+            ActionInProgressTicket = null;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static bool TryParseLimit(string value, out decimal? amount)
+    {
+        amount = null;
+        if (string.IsNullOrWhiteSpace(value))
+            return true;
+
+        if (!decimal.TryParse(value, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var parsed) &&
+            !decimal.TryParse(value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out parsed))
+            return false;
+        if (parsed < 0m)
+            return false;
+
+        amount = parsed == 0m ? null : parsed;
+        return true;
+    }
+
+    private static string FormatLimitInput(decimal? amount) =>
+        amount?.ToString("0.##", CultureInfo.InvariantCulture) ?? string.Empty;
+
+    private static string LimitCurrency(string? currency) => currency ?? "валута";
 
     private async Task ApplyStopLossAsync(OpenPositionReview review)
     {

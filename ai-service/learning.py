@@ -16,9 +16,10 @@ import pandas as pd
 
 from generate_candidates import generate_candidates
 from prepare_dataset import prepare_dataset
+from storage_paths import learning_database_path
 
 ROOT = Path(__file__).resolve().parent
-DATABASE_PATH = Path(os.environ.get("XYN_LEARNING_DB", str(ROOT / "data" / "learning.sqlite3")))
+DATABASE_PATH = learning_database_path(ROOT)
 CANDIDATE_DIRECTORY = Path(
     os.environ.get("XYN_LEARNING_MODEL_DIR", str(ROOT / "models" / "candidates"))
 )

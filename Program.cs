@@ -16,6 +16,7 @@ builder.Services.AddSingleton<DemoMarketDataService>();
 builder.Services.AddSingleton<TechnicalAnalysisService>();
 builder.Services.AddSingleton<TechnicalSignalService>();
 builder.Services.AddScoped<PositionReviewService>();
+builder.Services.AddSingleton<PositionProfitTargetStore>();
 builder.Services.AddSingleton<PricePredictionService>();
 builder.Services.AddHttpClient("BlsCalendar", (serviceProvider, client) =>
 {
@@ -69,6 +70,19 @@ builder.Services.AddHttpClient<Mt5MarketDataProvider>((serviceProvider, client) 
     client.BaseAddress = new Uri(baseAddress, UriKind.Absolute);
     client.Timeout = TimeSpan.FromSeconds(10);
 });
+builder.Services.AddHttpClient("TwelveData", client =>
+{
+    client.BaseAddress = new Uri(TwelveDataMarketDataProvider.ApiBaseAddress, UriKind.Absolute);
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+builder.Services.AddScoped(serviceProvider =>
+{
+    var client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("TwelveData");
+    var apiKey = serviceProvider.GetRequiredService<IConfiguration>()["TwelveData:ApiKey"];
+    return new TwelveDataMarketDataProvider(client, apiKey);
+});
+builder.Services.AddScoped<SignalMarketDataService>();
+builder.Services.AddSingleton<TechnicalTradeSignalService>();
 builder.Services.AddHttpClient("MT5LearningHistory", (serviceProvider, client) =>
 {
     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
@@ -77,6 +91,7 @@ builder.Services.AddHttpClient("MT5LearningHistory", (serviceProvider, client) =
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 builder.Services.AddHostedService<SignalLearningCollectorService>();
+builder.Services.AddHostedService<PositionProfitTargetMonitorService>();
 
 var app = builder.Build();
 

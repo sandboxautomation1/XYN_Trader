@@ -1,0 +1,39 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261125072827
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe E:\Projects_MT5\XYN_Trader\start\start-ai-service.ps1
+Process ID: 8188
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-service-20261125-072827.log
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pip\__main__.py", line 24, in <module>
+    sys.exit(_main())
+             ~~~~~^^
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pip\_internal\cli\main.py", line 47, in main
+    from pip._internal.cli.autocompletion import autocomplete
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pip\_internal\cli\autocompletion.py", line 12, in <module>
+    from pip._internal.cli.main_parser import create_main_parser
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pip\_internal\cli\main_parser.py", line 11, in <module>
+    from pip._internal.build_env import get_runnable_pip
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pip\_internal\build_env\__init__.py", line 8, in <module>
+    from pip._internal.build_env.installer import (
+    ...<2 lines>...
+    )
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pip\_internal\build_env\installer.py", line 22, in <module>
+    from pip._internal.utils.misc import get_runnable_pip
+ImportError: cannot import name 'get_runnable_pip' from 'pip._internal.utils.misc' (E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pip\_internal\utils\misc.py)

@@ -121,6 +121,89 @@ public sealed class TwelveDataMarketDataProvider : IDisposable
         }
     }
 
+    public async Task<MarketDataResult> GetSignalSnapshotAsync(
+        string symbol,
+        string interval,
+        int candleCount = 288,
+        CancellationToken cancellationToken = default)
+    {
+        if (_apiKey is null)
+        {
+            return Failure(
+                MarketConnectionStatus.Disconnected,
+                "Twelve Data API key is not configured. Set TwelveData:ApiKey in the server's appsettings.json.");
+        }
+
+        if (string.IsNullOrWhiteSpace(symbol))
+            return Failure(MarketConnectionStatus.Error, "Символът за сигнала е празен.");
+        if (!SupportedIntervals.Contains(interval, StringComparer.Ordinal))
+            return Failure(MarketConnectionStatus.Error, "Twelve Data не поддържа избрания интервал.");
+
+        candleCount = Math.Clamp(candleCount, 26, 5000);
+        var cacheKey = $"signal-series:{symbol}:{interval}:{candleCount}";
+        var response = await GetCachedJsonAsync(
+            cacheKey,
+            $"time_series?symbol={Uri.EscapeDataString(symbol.Trim())}&interval={Uri.EscapeDataString(interval)}&outputsize={candleCount}&timezone=UTC&apikey={Uri.EscapeDataString(_apiKey)}",
+            CandleCacheDuration,
+            cancellationToken);
+        if (response.Error is not null)
+            return response.Error;
+
+        try
+        {
+            using var document = JsonDocument.Parse(response.Body!);
+            var series = document.RootElement;
+            if (IsProviderError(series))
+                return Failure(MarketConnectionStatus.Error, "Twelve Data отказа заявката за свещи.");
+
+            var candles = ReadCandles(series)
+                .Where(IsValidSignalCandle)
+                .ToArray();
+            if (candles.Length == 0)
+                return Failure(MarketConnectionStatus.Error, "Twelve Data не върна валидни OHLC свещи за избрания символ и интервал.");
+
+            var lastCandle = candles[^1];
+            var now = DateTimeOffset.UtcNow;
+            var freshness = GetFreshness(lastCandle.TimeUtc, now);
+            var previousClose = candles.Length > 1 ? candles[^2].Close : lastCandle.Open;
+            var changePercent = previousClose <= 0m
+                ? 0m
+                : (lastCandle.Close - previousClose) / previousClose * 100m;
+            var snapshot = new MarketSnapshot(
+                Symbol: symbol.Trim(),
+                Currency: "USD",
+                Price: lastCandle.Close,
+                ChangePercent: changePercent,
+                UpdatedAtUtc: lastCandle.TimeUtc,
+                Regime: "Not calculated",
+                NewsRisk: "Not available",
+                ModelVersion: "No AI model configured",
+                Candles: candles);
+
+            return new MarketDataResult(
+                MarketConnectionStatus.Connected,
+                freshness,
+                SourceName,
+                now,
+                snapshot,
+                freshness == MarketFreshness.Stale
+                    ? "Последната свещ от Twelve Data е по-стара от 15 минути."
+                    : null);
+        }
+        catch (JsonException)
+        {
+            return Failure(MarketConnectionStatus.Error, "Twelve Data върна невалиден списък със свещи.");
+        }
+        catch (FormatException)
+        {
+            return Failure(MarketConnectionStatus.Error, "Twelve Data върна невалидна цена или времеви печат.");
+        }
+        catch (InvalidOperationException)
+        {
+            return Failure(MarketConnectionStatus.Error, "Twelve Data върна неочакван формат на свещите.");
+        }
+    }
+
     private async Task<(string? Body, MarketDataResult? Error)> GetCachedJsonAsync(
         string cacheKey,
         string relativeUri,
@@ -276,6 +359,12 @@ public sealed class TwelveDataMarketDataProvider : IDisposable
         candles.Reverse();
         return candles;
     }
+
+    private static bool IsValidSignalCandle(Candle candle) =>
+        candle.Open > 0m && candle.High > 0m && candle.Low > 0m && candle.Close > 0m &&
+        candle.High >= Math.Max(candle.Open, candle.Close) &&
+        candle.Low <= Math.Min(candle.Open, candle.Close) &&
+        candle.High >= candle.Low;
 
     private static MarketDataResult Failure(MarketConnectionStatus status, string message) =>
         new(status, MarketFreshness.Unavailable, SourceName, null, null, message);

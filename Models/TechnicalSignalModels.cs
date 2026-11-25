@@ -23,3 +23,14 @@ public sealed record TechnicalSignalSnapshot(
     IReadOnlyList<SignalFactor> RiskFactors,
     bool IsStale = false,
     string? DataWarning = null);
+
+public sealed record GeneratedTechnicalSignal(
+    string Direction,
+    decimal Entry,
+    decimal? StopLoss,
+    decimal? TakeProfit,
+    DateTimeOffset GeneratedAtUtc,
+    int CandleCount,
+    int BullishVotes,
+    int BearishVotes,
+    string Explanation);

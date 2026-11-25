@@ -37,12 +37,32 @@ public sealed class Mt5MarketDataProvider
     public async Task<MarketDataResult> GetSymbolSnapshotAsync(
         string symbol,
         string timeframe,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default) =>
+        await GetSymbolSnapshotAsync(
+            symbol,
+            timeframe,
+            timeframe.Equals("H1", StringComparison.OrdinalIgnoreCase) ? SignalCandleCount : DefaultCandleCount,
+            cancellationToken);
+
+    public Task<MarketDataResult> GetSignalSnapshotAsync(
+        string symbol,
+        string timeframe,
+        int candleCount = 288,
+        CancellationToken cancellationToken = default) =>
+        GetSymbolSnapshotAsync(symbol, timeframe, candleCount, cancellationToken);
+
+    private async Task<MarketDataResult> GetSymbolSnapshotAsync(
+        string symbol,
+        string timeframe,
+        int candleCount,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(symbol))
             return Failure(MarketConnectionStatus.Error, "Символът за пазарния анализ е празен.");
         if (!SupportedTimeframes.Contains(timeframe))
             return Failure(MarketConnectionStatus.Error, "Невалидна времева рамка за MT5.");
+        if (candleCount < 1)
+            return Failure(MarketConnectionStatus.Error, "Броят на свещите за MT5 трябва да е положителен.");
 
         symbol = symbol.Trim();
 
@@ -67,9 +87,6 @@ public sealed class Mt5MarketDataProvider
         }
 
         var tickTask = GetLatestTickAsync(symbol, cancellationToken);
-        var candleCount = timeframe.Equals("H1", StringComparison.OrdinalIgnoreCase)
-            ? SignalCandleCount
-            : DefaultCandleCount;
         var ratesTask = GetJsonAsync(
             $"rates/{Uri.EscapeDataString(symbol)}?timeframe={Uri.EscapeDataString(timeframe.ToUpperInvariant())}&count={candleCount}",
             cancellationToken);
@@ -287,6 +304,104 @@ public sealed class Mt5MarketDataProvider
         catch (ArgumentOutOfRangeException)
         {
             return OpenPositionsResult.Unavailable("MT5 bridge върна невалидно време за отворена позиция.");
+        }
+    }
+
+    public async Task<SignalRiskCalculationResult> CalculateSignalRiskAsync(
+        IReadOnlyList<GeneratedSignalCandidate> signals,
+        decimal riskPercent,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new SignalRiskCalculatorRequest(
+            riskPercent,
+            signals.Select(signal => new SignalRiskCalculatorSignal(
+                signal.SignalId,
+                signal.Symbol,
+                signal.Direction,
+                signal.EntryPrice ?? (signal.EntryLow + signal.EntryHigh) / 2m,
+                signal.StopLoss,
+                signal.Tp1,
+                signal.Tp2,
+                signal.Tp3)).ToArray());
+
+        try
+        {
+            using var response = await _httpClient.PostAsJsonAsync("signal-calculator", request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                return SignalRiskCalculationResult.Unavailable(
+                    $"MT5 не успя да изчисли риска ({(int)response.StatusCode}).");
+            }
+
+            var calculation = await response.Content.ReadFromJsonAsync<SignalRiskCalculatorResponse>(
+                cancellationToken: cancellationToken);
+            return calculation is null
+                ? SignalRiskCalculationResult.Unavailable("MT5 bridge върна празен отговор за калкулатора.")
+                : SignalRiskCalculationResult.From(calculation);
+        }
+        catch (HttpRequestException)
+        {
+            return SignalRiskCalculationResult.Unavailable("MT5 bridge не е достъпен за изчисляване на риска.");
+        }
+        catch (JsonException)
+        {
+            return SignalRiskCalculationResult.Unavailable("MT5 bridge върна невалиден отговор за калкулатора.");
+        }
+        catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return SignalRiskCalculationResult.Unavailable("Изтече времето за отговор от MT5 bridge.");
+        }
+    }
+
+    public async Task<MarketOrderResult> OpenMarketPositionAsync(
+        string symbol,
+        string type,
+        decimal volume,
+        decimal stopLoss,
+        decimal takeProfit,
+        string comment,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(symbol) || type is not ("BUY" or "SELL") || volume <= 0m)
+            return new MarketOrderResult(false, null, "Невалидни параметри за пазарна поръчка.");
+
+        var request = new MarketOrderRequest(
+            symbol.Trim(),
+            type,
+            volume,
+            stopLoss,
+            takeProfit,
+            string.IsNullOrWhiteSpace(comment) ? "XYN signal" : comment[..Math.Min(comment.Length, 31)]);
+
+        try
+        {
+            using var response = await _httpClient.PostAsJsonAsync("order", request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var detail = await ReadErrorDetailAsync(response, cancellationToken);
+                return new MarketOrderResult(
+                    false,
+                    null,
+                    detail ?? $"MT5 bridge върна HTTP {(int)response.StatusCode} при изпълнение на поръчката.");
+            }
+
+            var receipt = await response.Content.ReadFromJsonAsync<MarketOrderReceipt>(
+                cancellationToken: cancellationToken);
+            return receipt is null || receipt.Ticket <= 0
+                ? new MarketOrderResult(false, null, "MT5 bridge не върна номер на изпълнената поръчка.")
+                : new MarketOrderResult(true, receipt.Ticket, $"Позицията е отворена. Билет № {receipt.Ticket}.");
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return new MarketOrderResult(false, null, "Изтече времето за изпълнение на поръчката към MT5 bridge.");
+        }
+        catch (HttpRequestException)
+        {
+            return new MarketOrderResult(false, null, "MT5 bridge не е достъпен; позицията не беше отворена.");
+        }
+        catch (JsonException)
+        {
+            return new MarketOrderResult(false, null, "MT5 bridge върна невалиден отговор за поръчката.");
         }
     }
 
