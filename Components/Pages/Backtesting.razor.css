@@ -1,0 +1,74 @@
+.backtest-controls {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.backtest-controls label {
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.backtest-controls select,
+.backtest-controls input {
+    min-width: 120px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #11130f;
+    color: #e7e9e2;
+    color-scheme: dark;
+}
+
+.backtest-controls input {
+    min-width: 138px;
+}
+
+.backtest-stat-grid {
+    margin-bottom: 16px;
+}
+
+.backtest-status {
+    margin-bottom: 16px;
+}
+
+.backtest-trades-panel {
+    margin-bottom: 16px;
+}
+
+.backtest-assumptions {
+    margin-bottom: 14px;
+    padding: 20px 22px;
+}
+
+.backtest-assumptions ul {
+    display: grid;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding-left: 18px;
+    color: #aeb2a8;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+    .backtest-controls {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .backtest-controls label,
+    .backtest-controls select,
+    .backtest-controls input,
+    .backtest-controls button {
+        flex: 1;
+        width: 100%;
+    }
+}

@@ -1,0 +1,57 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261116051028
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 18324
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-training-service-20261116-051028.log
+
+
+    ...<3 lines>...
+        chunk_end,
+    )
+  File "E:\Projects_MT5\XYN_Trader\ai-service\download_candles.py", line 61, in _request_chunk
+    raise RuntimeError(
+        f"Could not reach MT5 bridge at {bridge_url} for {start} through {end}."
+    ) from None
+RuntimeError: Could not reach MT5 bridge at http://127.0.0.1:8000 for 2024-01-01 through 2024-01-14.
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        f,
+        ^^
+    ...<6 lines>...
+        storage_options=self.options.get("storage_options", None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+        handle,
+    ...<3 lines>...
+        newline="",
+    )
+FileNotFoundError: [Errno 2] No such file or directory: 'data\\xauusd_h1.csv'
+
+
+
+PS>TerminatingError(): "The pipeline has been stopped."
+**********************
+Windows PowerShell transcript end
+End time: 20261116051236
+**********************

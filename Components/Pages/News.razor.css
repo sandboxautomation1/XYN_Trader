@@ -1,0 +1,108 @@
+.sentiment-panel {
+    margin: 0 0 18px;
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+    background: rgba(23, 26, 22, .96);
+}
+
+.sentiment-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.sentiment-heading h2 {
+    margin: 5px 0 0;
+    font-size: 18px;
+}
+
+.sentiment-heading > span,
+.sentiment-panel p,
+.sentiment-meter-labels,
+.sentiment-counts,
+.news-sentiment-row > span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.sentiment-meter {
+    position: relative;
+    height: 8px;
+    margin-top: 22px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--red), #62665d 50%, var(--green));
+}
+
+.sentiment-marker {
+    position: absolute;
+    top: 50%;
+    width: 17px;
+    height: 17px;
+    border: 3px solid #f3f5ec;
+    border-radius: 50%;
+    background: #171a16;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px rgba(16, 18, 15, .7);
+}
+
+.sentiment-meter-labels,
+.sentiment-counts {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.sentiment-counts {
+    justify-content: flex-start;
+    gap: 24px;
+    margin-top: 15px;
+}
+
+.sentiment-counts b {
+    color: #e7e9e2;
+}
+
+.sentiment-counts .bullish-text,
+.sentiment-tag.bullish {
+    color: var(--green);
+}
+
+.sentiment-counts .bearish-text,
+.sentiment-tag.bearish {
+    color: var(--red);
+}
+
+.sentiment-tag.neutral {
+    color: var(--amber);
+}
+
+.sentiment-panel p {
+    margin: 15px 0 0;
+    line-height: 1.5;
+}
+
+.news-sentiment-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.news-sentiment-row .sentiment-tag {
+    font-size: 10px;
+}
+
+@media (max-width: 650px) {
+    .sentiment-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .sentiment-counts {
+        flex-wrap: wrap;
+        gap: 10px 18px;
+    }
+}

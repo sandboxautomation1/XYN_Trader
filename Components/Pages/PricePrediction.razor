@@ -1,0 +1,489 @@
+@page "/price-prediction"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject Mt5MarketDataProvider MarketProvider
+@inject TechnicalAnalysisService TechnicalAnalysis
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager Navigation
+@inject PricePredictionService PredictionService
+
+<PageTitle>Прогноза на цената — XYN Trader</PageTitle>
+
+@{
+    var market = LiveMarket?.Snapshot;
+    var prediction = market is null ? null : PredictionService.Analyze(market);
+}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow"><span></span> XAUUSD / PRICE PREDICTION</div>
+        <h1>Прогноза на цената<span>.</span></h1>
+        <p>Краткосрочни диапазони, търговски нива и обясним технически сигнал по избрана времева рамка.</p>
+    </div>
+    <div class="prediction-heading-actions">
+        <span class="prediction-updated">@(market?.UpdatedAtUtc.ToString("yyyy-MM-dd HH:mm:ss 'UTC'") ?? "няма котировка")</span>
+        <button class="refresh-button" @onclick="RefreshMarketAsync" disabled="@IsRefreshing">@(IsRefreshing ? "Зареждане…" : "Обнови")</button>
+    </div>
+</div>
+
+<section class="market-status-panel @StatusClass" role="status" aria-live="polite">
+    <div class="market-status-main">
+        <i class="dot @StatusDotClass"></i>
+        <div>
+            <strong>@StatusLabel</strong>
+            <span>@StatusDescription</span>
+        </div>
+    </div>
+    <div class="market-metadata">
+        <span>Източник <strong>@(LiveMarket?.Source ?? "MetaTrader 5")</strong></span>
+        <span>Входни данни <strong>M5 · до 200 свещи</strong></span>
+        <span>Котировка UTC <strong>@(market?.UpdatedAtUtc.ToString("HH:mm:ss") ?? "—")</strong></span>
+    </div>
+</section>
+
+@if (market is null || prediction is null)
+{
+    <section class="panel market-chart-unavailable prediction-unavailable">
+        <strong>@(IsRefreshing ? "Зареждане на M5 данни от MT5…" : "Няма данни за прогноза")</strong>
+        <span>@(LiveMarket?.Message ?? "Свържете MetaTrader 5 чрез mt5-bridge, за да се изчислят прогнозите и нивата.")</span>
+    </section>
+}
+else
+{
+    <div class="prediction-overview-grid">
+        <section class="panel prediction-forecast-panel">
+            <div class="panel-header">
+                <div><div class="panel-kicker">PRICE PREDICTION</div><h2>Очакван диапазон</h2></div>
+                <span class="timeframe-chip">XAUUSD · M5</span>
+            </div>
+            <div class="prediction-cards">
+                @foreach (var forecast in prediction.Forecasts)
+                {
+                    <article class="prediction-card">
+                        <div class="prediction-card-label">@forecast.Label</div>
+                        <strong class="prediction-range">@Format(forecast.Low) – @Format(forecast.High)</strong>
+                        <span class="prediction-average">Средно: @Format(forecast.Average)</span>
+                        <span class="prediction-change @(forecast.ChangePercent >= 0m ? "positive" : "negative")">Промяна: @FormatSignedPercent(forecast.ChangePercent)</span>
+                    </article>
+                }
+            </div>
+            <div class="prediction-foot">
+                <span>Текуща цена <strong>@Format(prediction.CurrentPrice)</strong></span>
+                <span>Диапазоните използват уклона и абсолютната волатилност от последните M5 свещи.</span>
+            </div>
+        </section>
+
+        <section class="panel prediction-indicators-panel">
+            <div class="panel-header">
+                <div><div class="panel-kicker">TECHNICAL INDICATORS</div><h2>Индикатори</h2></div>
+            </div>
+            <dl class="prediction-indicators">
+                <div><dt>SMA (20)</dt><dd>@Format(prediction.Indicators.Sma20)</dd></div>
+                <div><dt>RSI (14)</dt><dd>@Format(prediction.Indicators.Rsi14, 1)</dd></div>
+                <div><dt>MACD</dt><dd>@Format(prediction.Indicators.Macd, 3) / @Format(prediction.Indicators.MacdSignal, 3)</dd></div>
+                <div><dt>Bollinger</dt><dd>@Format(prediction.Indicators.BollingerLower) – @Format(prediction.Indicators.BollingerUpper)</dd></div>
+            </dl>
+        </section>
+    </div>
+
+    <section class="panel prediction-levels-panel">
+        <div class="panel-header">
+            <div><div class="panel-kicker">TRADE LEVELS · ИЗЧИСЛЕНИ ОТДЕЛНО</div><h2>Търговски нива</h2></div>
+            <span class="timeframe-chip">LIVE XAUUSD · @Format(prediction.CurrentPrice)</span>
+        </div>
+        <div class="prediction-levels-grid">
+            <div class="prediction-level-group buy-level">
+                <h3>Купувай над</h3>
+                <strong>@Format(prediction.Levels.BuyAbove)</strong>
+            </div>
+            <div class="prediction-level-group sell-level">
+                <h3>Продавай под</h3>
+                <strong>@Format(prediction.Levels.SellBelow)</strong>
+            </div>
+            <div class="prediction-level-group">
+                <h3>Съпротива</h3>
+                @foreach (var level in prediction.Levels.Resistance)
+                {
+                    <span>@Format(level)</span>
+                }
+            </div>
+            <div class="prediction-level-group">
+                <h3>Подкрепа</h3>
+                @foreach (var level in prediction.Levels.Support)
+                {
+                    <span>@Format(level)</span>
+                }
+            </div>
+            <div class="prediction-level-group buy-level">
+                <h3>Цели (Buy)</h3>
+                @foreach (var level in prediction.Levels.BuyTargets)
+                {
+                    <span>@Format(level)</span>
+                }
+            </div>
+            <div class="prediction-level-group sell-level">
+                <h3>Цели (Sell)</h3>
+                @foreach (var level in prediction.Levels.SellTargets)
+                {
+                    <span>@Format(level)</span>
+                }
+            </div>
+        </div>
+        <div class="prediction-levels-foot">Тези нива се изчисляват независимо от многорамковия сигнал и не подават поръчки.</div>
+    </section>
+}
+
+<section class="panel signal-analysis-panel">
+    <div class="panel-header signal-analysis-header">
+        <div>
+            <div class="panel-kicker">XAUUSD · ТЕХНИЧЕСКИ СИГНАЛ</div>
+            <h2>Сигнал по времева рамка</h2>
+        </div>
+        @if (SignalResult is { } currentSignal)
+        {
+            <span class="timeframe-chip">@currentSignal.Timeframe · @currentSignal.GeneratedAtUtc.ToLocalTime().ToString("HH:mm:ss")</span>
+        }
+    </div>
+    <p class="signal-analysis-intro">Изберете период и изпратете GET заявка. Отговорът на API се визуализира по-долу.</p>
+    <div class="signal-analysis-controls">
+        <label for="signal-timeframe">Времева рамка</label>
+        <select id="signal-timeframe" class="signal-timeframe-select" @bind="SelectedSignalTimeframe" @bind:after="ClearSignalResult" disabled="@IsAnalyzingSignal">
+            <option value="M5">5m</option>
+            <option value="M15">15m</option>
+            <option value="H1">1h</option>
+            <option value="D1">1d</option>
+        </select>
+        <button class="refresh-button" @onclick="AnalyzeSignalAsync" disabled="@IsAnalyzingSignal">@(IsAnalyzingSignal ? "Анализиране…" : "Анализирай")</button>
+        @if (SignalHttpStatusCode is { } statusCode)
+        {
+            <span class="signal-request-status @(statusCode is >= 200 and < 300 ? (SignalDataIsStale ? "stale" : "fresh") : "stale")">HTTP @statusCode · timeframe=@SelectedSignalTimeframe@(SignalDataIsStale ? " · остарели данни" : "")</span>
+        }
+    </div>
+
+    @if (IsAnalyzingSignal)
+    {
+        <div class="signal-result-message">Зареждане на @SelectedSignalTimeframe данни от MT5…</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(SignalError))
+    {
+        <div class="signal-result-message signal-error" role="alert">@SignalError</div>
+    }
+    else if (SignalResult is { } signal)
+    {
+        <div class="signal-result">
+            @if (!string.IsNullOrWhiteSpace(SignalWarning))
+            {
+                <div class="signal-data-warning">@SignalWarning</div>
+            }
+            <div class="signal-metrics">
+                <article class="signal-metric direction-@signal.Direction.ToLowerInvariant()">
+                    <span>СИГНАЛ</span>
+                    <strong>@DirectionLabel(signal.Direction)</strong>
+                    <small>@signal.Timeframe · @signal.CandleCount свещи</small>
+                </article>
+                <article class="signal-metric">
+                    <span>ТЕХНИЧЕСКА ОЦЕНКА</span>
+                    <strong>@signal.TechnicalScore / 100</strong>
+                    <small>Уклон @signal.TechnicalStrengthPercent%</small>
+                </article>
+                <article class="signal-metric">
+                    <span>ВХОД</span>
+                    <strong>@Format(signal.Entry)</strong>
+                    <small>Цена при анализа</small>
+                </article>
+                <article class="signal-metric signal-stop">
+                    <span>СТОП-ЗАГУБА</span>
+                    <strong>@Format(signal.StopLoss)</strong>
+                    <small>@(signal.StopLoss is null ? "Няма при неутрален сигнал" : "max. 1.5 × ATR(14), мин. 0.10%")</small>
+                </article>
+                <article class="signal-metric signal-target">
+                    <span>ЦЕНА НА ЦЕЛТА</span>
+                    <strong>@Format(signal.TakeProfit)</strong>
+                    <small>@(signal.RewardRisk is { } ratio ? $"Риск/печалба {ratio:0.0}:1" : "Няма при неутрален сигнал")</small>
+                </article>
+            </div>
+            <p class="signal-summary">@signal.Summary</p>
+            <div class="signal-factor-columns">
+                <section class="signal-factor-group bullish">
+                    <h3>Бичи фактори · @signal.BullishFactors.Count</h3>
+                    @if (signal.BullishFactors.Count == 0)
+                    {
+                        <p class="signal-factor-empty">Няма положителни потвърждения от наличните индикатори.</p>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var factor in signal.BullishFactors)
+                            {
+                                <li><strong>@TranslateFactorLabel(factor.Label)</strong><span>@factor.Explanation</span><small>Сила @factor.Strength/3</small></li>
+                            }
+                        </ul>
+                    }
+                </section>
+                <section class="signal-factor-group bearish">
+                    <h3>Мечи фактори · @signal.BearishFactors.Count</h3>
+                    @if (signal.BearishFactors.Count == 0)
+                    {
+                        <p class="signal-factor-empty">Няма отрицателни потвърждения от наличните индикатори.</p>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var factor in signal.BearishFactors)
+                            {
+                                <li><strong>@TranslateFactorLabel(factor.Label)</strong><span>@factor.Explanation</span><small>Сила @factor.Strength/3</small></li>
+                            }
+                        </ul>
+                    }
+                </section>
+                <section class="signal-factor-group risks">
+                    <h3>Рискови фактори · @signal.RiskFactors.Count</h3>
+                    @if (signal.RiskFactors.Count == 0)
+                    {
+                        <p class="signal-factor-empty">Няма отчетени неутрални или противоречиви фактори.</p>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var factor in signal.RiskFactors)
+                            {
+                                <li><strong>@TranslateFactorLabel(factor.Label)</strong><span>@factor.Explanation</span><small>Сила @factor.Strength/3</small></li>
+                            }
+                        </ul>
+                    }
+                </section>
+            </div>
+            <div class="signal-result-foot">Оценката обобщава посоката на RSI, MACD, ADX, лентите на Болинджър и EMA; тя не е вероятност. Стопът и целта са ориентировъчни нива по ATR(14), с минимална дистанция 0.10% от цената. Анализът не подава поръчки.</div>
+        </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(SignalResponseJson))
+    {
+        <details class="signal-json-response">
+            <summary>Пълен JSON отговор</summary>
+            <pre>@SignalResponseJson</pre>
+        </details>
+    }
+</section>
+
+@code {
+    private readonly CancellationTokenSource _lifetime = new();
+    private MarketDataResult? LiveMarket { get; set; }
+    private bool IsRefreshing { get; set; }
+    private string SelectedSignalTimeframe { get; set; } = "H1";
+    private TechnicalSignalSnapshot? SignalResult { get; set; }
+    private string? SignalError { get; set; }
+    private string? SignalWarning { get; set; }
+    private string? SignalResponseJson { get; set; }
+    private int? SignalHttpStatusCode { get; set; }
+    private bool IsAnalyzingSignal { get; set; }
+    private bool SignalDataIsStale { get; set; }
+
+    private string StatusClass => LiveMarket switch
+    {
+        { ConnectionStatus: MarketConnectionStatus.Connected } when LiveMarket.Freshness == MarketFreshness.Fresh => "market-connected",
+        { ConnectionStatus: MarketConnectionStatus.Connected } => "market-stale",
+        { ConnectionStatus: MarketConnectionStatus.Error } => "market-error",
+        _ => "market-disconnected"
+    };
+
+    private string StatusDotClass => LiveMarket switch
+    {
+        { ConnectionStatus: MarketConnectionStatus.Connected } when LiveMarket.Freshness == MarketFreshness.Fresh => "green",
+        { ConnectionStatus: MarketConnectionStatus.Connected or MarketConnectionStatus.Error } => "red",
+        _ => "amber"
+    };
+
+    private string StatusLabel => LiveMarket switch
+    {
+        { ConnectionStatus: MarketConnectionStatus.Connected } when LiveMarket.Freshness == MarketFreshness.Fresh => "MT5 · свързано · live данни",
+        { ConnectionStatus: MarketConnectionStatus.Connected } => "MT5 · данните са остарели",
+        { ConnectionStatus: MarketConnectionStatus.Error } => "Грешка при пазарните данни",
+        _ => "MT5 · разкачено"
+    };
+
+    private string StatusDescription => LiveMarket?.Message ??
+        (IsRefreshing ? "Заявка към MT5 bridge…" : "Прогнозите и нивата се изчисляват от MT5 M5 свещи.");
+
+    private static string DirectionLabel(string direction) => direction switch
+    {
+        "BUY" => "КУПИ",
+        "SELL" => "ПРОДАВАЙ",
+        _ => "НЕУТРАЛНО"
+    };
+
+    private static string TranslateFactorLabel(string label)
+    {
+        foreach (var prefix in new[] { "Противоречие · ", "Неутрален фактор · " })
+        {
+            if (label.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                return prefix + TranslateFactorLabel(label[prefix.Length..]);
+        }
+
+        return label switch
+        {
+            "RSI (14)" => "Индекс на относителната сила (RSI 14)",
+            "MACD (12/26/9)" => "Импулс MACD (12/26/9)",
+            "ADX (14)" => "Индекс на посоката на тренда (ADX 14)",
+            "Bollinger (20, 2)" => "Ленти на Болинджър (20, 2)",
+            "EMA (20 / 50)" => "Експоненциални средни (EMA 20/50)",
+            _ => label
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshMarketAsync();
+        _ = PollLatestTickAsync(_lifetime.Token);
+    }
+
+    private async Task RefreshMarketAsync()
+    {
+        IsRefreshing = true;
+        try
+        {
+            LiveMarket = await MarketProvider.GetSnapshotAsync("M5", _lifetime.Token);
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
+    private void ClearSignalResult()
+    {
+        SignalResult = null;
+        SignalError = null;
+        SignalWarning = null;
+        SignalResponseJson = null;
+        SignalHttpStatusCode = null;
+        SignalDataIsStale = false;
+    }
+
+    private async Task AnalyzeSignalAsync()
+    {
+        IsAnalyzingSignal = true;
+        SignalResult = null;
+        SignalError = null;
+        SignalWarning = null;
+        SignalResponseJson = null;
+        SignalHttpStatusCode = null;
+        try
+        {
+            var client = HttpClientFactory.CreateClient();
+            var requestUri = Navigation.ToAbsoluteUri(
+                $"api/technical-signal?timeframe={Uri.EscapeDataString(SelectedSignalTimeframe)}");
+            using var response = await client.GetAsync(requestUri, _lifetime.Token);
+            SignalHttpStatusCode = (int)response.StatusCode;
+            var responseBody = await response.Content.ReadAsStringAsync(_lifetime.Token);
+            SignalResponseJson = FormatJson(responseBody);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                SignalError = TryGetApiError(responseBody) ?? $"API върна HTTP {SignalHttpStatusCode}.";
+                return;
+            }
+
+            var envelope = System.Text.Json.JsonSerializer.Deserialize<ApiEnvelope<TechnicalSignalSnapshot>>(
+                responseBody,
+                System.Text.Json.JsonSerializerOptions.Web);
+            if (envelope is null)
+            {
+                SignalError = "API върна празен отговор за сигнала.";
+                return;
+            }
+
+            SignalResult = envelope.Data;
+            SignalDataIsStale = envelope.Data.IsStale;
+            SignalWarning = envelope.Data.DataWarning;
+        }
+        catch (HttpRequestException)
+        {
+            SignalError = "GET заявката към API не беше успешна.";
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            SignalError = "API върна невалиден JSON отговор.";
+        }
+        catch (OperationCanceledException) when (_lifetime.IsCancellationRequested)
+        {
+        }
+        finally
+        {
+            IsAnalyzingSignal = false;
+        }
+    }
+
+    private async Task PollLatestTickAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var result = await MarketProvider.GetLatestTickAsync(cancellationToken);
+                if (result.Tick is not { } tick || LiveMarket?.Snapshot is not { } snapshot || tick.UpdatedAtUtc < snapshot.UpdatedAtUtc)
+                    continue;
+
+                await InvokeAsync(() =>
+                {
+                    var updated = TechnicalAnalysis.ApplyTick(snapshot, tick, "M5");
+                    LiveMarket = LiveMarket! with
+                    {
+                        Freshness = result.Freshness,
+                        Source = Mt5MarketDataProvider.SourceName,
+                        ReceivedAtUtc = DateTimeOffset.UtcNow,
+                        Snapshot = updated,
+                        Message = result.Message
+                    };
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private static string Format(decimal? value, int decimals = 2) =>
+        value?.ToString(decimals == 3 ? "0.000" : decimals == 1 ? "0.0" : "0.00", CultureInfo.InvariantCulture) ?? "—";
+
+    private static string FormatSignedPercent(decimal value) =>
+        value.ToString("+0.00;-0.00;0.00", CultureInfo.InvariantCulture) + "%";
+
+    private static string FormatJson(string value)
+    {
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(value);
+            return System.Text.Json.JsonSerializer.Serialize(
+                document.RootElement,
+                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return value;
+        }
+    }
+
+    private static string? TryGetApiError(string value)
+    {
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(value);
+            return document.RootElement.TryGetProperty("error", out var error)
+                ? error.GetString()
+                : null;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}

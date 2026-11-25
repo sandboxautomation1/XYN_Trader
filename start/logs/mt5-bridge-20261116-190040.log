@@ -1,0 +1,62 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261116190040
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe E:\Projects_MT5\XYN_Trader\start\start-mt5-bridge.ps1
+Process ID: 2516
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\mt5-bridge-20261116-190040.log
+INFO:     127.0.0.1:56289 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54384 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51794 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51794 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51794 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51794 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61105 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61105 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61105 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52593 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52593 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56251 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56251 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56251 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56251 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56251 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55823 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55823 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55823 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55823 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49931 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56470 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56470 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56470 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56470 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56470 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56470 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56470 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64393 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64393 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64393 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64393 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64393 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64393 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59418 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59418 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59418 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+**********************
+Windows PowerShell transcript end
+End time: 20261116220231
+**********************

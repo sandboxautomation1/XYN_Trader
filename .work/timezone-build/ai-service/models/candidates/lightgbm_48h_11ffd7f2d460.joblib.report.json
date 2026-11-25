@@ -1,0 +1,20 @@
+{
+  "model_version": "lgbm-48h-20261114T182343Z-11ffd7f2d460",
+  "schema_version": "xauusd-lgbm-v3",
+  "horizon": "48h",
+  "policy_version": "swing-zones-atr-v2",
+  "policy_sha256": "f8ff65c676959666438138a949288aea6f83bd0091cb533544e9c161cd8e321b",
+  "dataset_sha256": "11ffd7f2d4605fc094c639e8490bd11280b4ddf3361f7f2b484a5937f75fc11f",
+  "dataset_rows": 105,
+  "training_rows_after_purge": 84,
+  "holdout_rows": 21,
+  "training_positive_rate": 0.17857142857142858,
+  "holdout_positive_rate": 0.42857142857142855,
+  "holdout_auc": 0.39814814814814814,
+  "holdout_brier_score": 0.3621619446842029,
+  "baseline_brier_score": 0.30739795918367346,
+  "beats_prevalence_baseline_brier": false,
+  "positive_outcome": "TP1 reached before stop loss after entry; ambiguous same-bar outcomes are negative",
+  "approval_status": "candidate_requires_review",
+  "artifact": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\models\\candidates\\lightgbm_48h_11ffd7f2d460.joblib"
+}

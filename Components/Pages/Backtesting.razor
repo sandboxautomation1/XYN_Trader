@@ -1,0 +1,129 @@
+@page "/backtesting"
+@rendermode InteractiveServer
+@inject CandidateGeneratorClient BacktestingClient
+
+<PageTitle>Backtesting — XYN Trader</PageTitle>
+
+<div class="page-heading">
+    <div><div class="eyebrow"><span></span> XAUUSD / ИСТОРИЧЕСКА ОЦЕНКА</div><h1>Backtesting<span>.</span></h1><p>Проверка на активната H1 policy върху съхранените затворени MT5 свещи.</p></div>
+    <div class="backtest-controls">
+        <label>Хоризонт
+            <select @bind="Horizon" aria-label="Хоризонт на backtest">
+                <option value="1h">1 час</option>
+                <option value="24h">24 часа</option>
+                <option value="48h">48 часа</option>
+            </select>
+        </label>
+        <label>От<input type="date" @bind="StartDate" /></label>
+        <label>До<input type="date" @bind="EndDate" /></label>
+        <button class="refresh-button" @onclick="RunAsync" disabled="@IsRunning">@(IsRunning ? "Изчисляване…" : "Стартирай backtest")</button>
+    </div>
+</div>
+
+@if (Report is { Available: true, Result: not null } result)
+{
+    var summary = result.Result;
+    <section class="stat-grid backtest-stat-grid">
+        <article class="stat-card"><span>СИГНАЛИ</span><strong>@summary.CandidateCount</strong><small>Проверени върху @summary.Candles съхранени H1 свещи · @summary.Horizon</small></article>
+        <article class="stat-card"><span>ЗАТВОРЕНИ СДЕЛКИ</span><strong>@summary.ClosedTrades</strong><small>@summary.UntriggeredCount без вход · @summary.SkippedOverlapCount пропуснати заради отворена позиция</small></article>
+        <article class="stat-card"><span>WIN RATE</span><strong>@FormatPercent(summary.WinRatePercent)</strong><small>Печеливши / всички затворени сделки</small></article>
+        <article class="stat-card"><span>ОЧАКВАНА СТОЙНОСТ</span><strong>@FormatR(summary.ExpectancyR)</strong><small>Среден резултат на сделка</small></article>
+        <article class="stat-card"><span>НЕТЕН РЕЗУЛТАТ</span><strong>@FormatR(summary.NetR)</strong><small>Сбор на реализираните R</small></article>
+        <article class="stat-card"><span>PROFIT FACTOR</span><strong>@FormatFactor(summary.ProfitFactor)</strong><small>Брутна печалба / брутна загуба</small></article>
+        <article class="stat-card"><span>MAX DRAWDOWN</span><strong>@summary.MaxDrawdownPercent.ToString("0.00")%</strong><small>При риск 1% на сделка</small></article>
+        <article class="stat-card"><span>КАПИТАЛЕН ИНДЕКС</span><strong>@summary.EquityEnd.ToString("0.000")</strong><small>Начало @summary.EquityStart.ToString("0.000") · край</small></article>
+    </section>
+
+    <section class="market-status-panel market-connected backtest-status">
+        <div class="market-status-main"><i class="dot green"></i><div><strong>Policy @summary.PolicyVersion · @summary.FromUtc.ToString("yyyy-MM-dd HH:mm") – @summary.ToUtc.ToString("yyyy-MM-dd HH:mm") UTC</strong><span>Свещите са от rolling хранилището; в момента се пазят най-много 5 000 H1 бара.</span></div></div>
+        <div class="market-metadata"><span>Зрелост<strong>@summary.UnmaturedCount незавършени</strong></span><span>Policy SHA-256<strong>@summary.PolicySha256[..Math.Min(12, summary.PolicySha256.Length)]…</strong></span></div>
+    </section>
+
+    <section class="panel signals-panel backtest-trades-panel">
+        <div class="panel-header"><div><div class="panel-kicker">ПОСЛЕДНИ ДО 100 РЕЗУЛТАТА</div><h2>Сделки от backtest</h2></div><span class="panel-kicker">Вход = среда на зоната · изход = TP1 / SL / край на хоризонта</span></div>
+        @if (summary.Trades.Count == 0)
+        {
+            <div class="empty-state"><strong>Няма зрели сделки</strong><span>За избраните данни още няма сценарии с докоснат entry и напълно изтекъл хоризонт.</span></div>
+        }
+        else
+        {
+            <div class="table-scroll">
+                <table class="signals-table">
+                    <thead><tr><th>СИГНАЛ / ВХОД UTC</th><th>ПОСОКА</th><th>РЕЗУЛТАТ</th><th>ВХОД</th><th>ИЗХОД</th><th>R</th></tr></thead>
+                    <tbody>
+                        @foreach (var trade in summary.Trades.OrderByDescending(item => item.ExitTimeUtc))
+                        {
+                            <tr>
+                                <td><strong>@trade.SignalId</strong><small>@trade.TimestampUtc.ToString("yyyy-MM-dd HH:mm 'UTC'") → @trade.ExitTimeUtc.ToString("HH:mm")</small></td>
+                                <td>@trade.Direction</td>
+                                <td><span class="status @(trade.ResultR > 0 ? "closed_tp" : "closed_sl")">@TradeStatus(trade.Status)</span></td>
+                                <td>@trade.EntryPrice.ToString("N2")</td>
+                                <td>@trade.ExitPrice.ToString("N2")</td>
+                                <td class="@(trade.ResultR > 0 ? "positive" : "negative")"><strong>@trade.ResultR.ToString("+0.00;-0.00;0.00")</strong></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <section class="panel backtest-assumptions">
+        <div class="panel-kicker">ДОПУСКАНИЯ НА СИМУЛАЦИЯТА</div>
+        <ul>
+            <li>@summary.ExecutionAssumptions.Entry</li>
+            <li>@summary.ExecutionAssumptions.Exit</li>
+            <li>@summary.ExecutionAssumptions.AmbiguousBar</li>
+            <li>@summary.ExecutionAssumptions.Portfolio</li>
+            <li>@summary.ExecutionAssumptions.DateFilter</li>
+            <li>@summary.ExecutionAssumptions.Costs</li>
+        </ul>
+    </section>
+    <div class="notice-strip"><strong>Исторически симулатор:</strong> резултатите са брутни, не включват spread, slippage или комисиони и не предсказват бъдещо представяне.</div>
+}
+else if (Report is not null)
+{
+    <div class="notice-strip"><strong>Backtest не е наличен.</strong> @Report.Message</div>
+}
+else
+{
+    <div class="empty-state"><strong>@(IsRunning ? "Изчисляване на историческия период…" : "Backtest-ът е готов за стартиране")</strong><span>@(IsRunning ? "Генерират се сценарии от локалните MT5 свещи и симулират се последователно." : "Страницата се зарежда без backtest. Натисни „Стартирай backtest“, когато си готов; остави датите празни за целия rolling прозорец.")</span></div>
+}
+
+@code {
+    private string Horizon { get; set; } = "48h";
+    private DateTime? StartDate { get; set; }
+    private DateTime? EndDate { get; set; }
+    private bool IsRunning { get; set; }
+    private BacktestResultResponse? Report { get; set; }
+
+    private async Task RunAsync()
+    {
+        IsRunning = true;
+        try
+        {
+            var start = StartDate?.ToString("yyyy-MM-dd'T'00:00:00'Z'");
+            var end = EndDate?.ToString("yyyy-MM-dd'T'23:59:59'Z'");
+            Report = await BacktestingClient.GetBacktestAsync(Horizon, start, end);
+        }
+        finally
+        {
+            IsRunning = false;
+        }
+    }
+
+    private static string FormatPercent(double? value) => value is null ? "—" : $"{value:0.0}%";
+    private static string FormatR(double? value) => value is null ? "—" : $"{value:+0.00;-0.00;0.00} R";
+    private static string FormatFactor(double? value) => value switch
+    {
+        null => "—",
+        >= 999 => "∞",
+        _ => value.Value.ToString("0.00")
+    };
+    private static string TradeStatus(string status) => status switch
+    {
+        "closed_tp" => "TP1",
+        "closed_sl" => "STOP",
+        _ => "ХОРИЗОНТ"
+    };
+}

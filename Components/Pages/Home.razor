@@ -1,0 +1,708 @@
+﻿@page "/"
+@page "/dashboard"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject Mt5MarketDataProvider MarketProvider
+@inject TechnicalAnalysisService TechnicalAnalysis
+@inject LiveSignalService SignalService
+@inject NewsFeedService NewsFeed
+@inject EconomicCalendarService EconomicCalendar
+@inject PositionReviewService PositionReview
+@inject IJSRuntime JS
+
+<PageTitle>Табло — XYN Trader</PageTitle>
+
+@{
+    var liveMarket = LiveMarket?.Snapshot;
+    var analysis = liveMarket is null ? null : TechnicalAnalysis.Analyze(liveMarket, SelectedTimeframe);
+    var signals = (CandidateGeneration?.Candidates ?? []).Take(3).ToArray();
+    IReadOnlyList<Candle> chartCandles = liveMarket?.Candles.TakeLast(60).ToArray() ?? [];
+}
+
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">
+      <span></span> XAUUSD / ПАЗАРЕН ОБЗОР
+    </div>
+    <h1>Пазарен обзор <span></span>
+    </h1>
+    <p>Котировка и сценарии от MetaTrader 5</p>
+  </div>
+  <button class="refresh-button" @onclick="RefreshMarketAsync" disabled="@IsRefreshing">@(IsRefreshing ? "Обновяване…" : "Обнови котировката")</button>
+</div>
+<section class="market-status-panel @StatusClass" role="status" aria-live="polite">
+    <div class="market-status-main">
+        <i class="dot @StatusDotClass"></i>
+        <div>
+            <strong>Пазарни данни: @StatusLabel</strong>
+            <span>@StatusDescription</span>
+        </div>
+    </div>
+    <div class="market-metadata">
+        <span>Източник <strong>@(LiveMarket?.Source ?? "MetaTrader 5")</strong></span>
+        <span>Котировка UTC <strong>@(liveMarket?.UpdatedAtUtc.ToString("yyyy-MM-dd HH:mm:ss 'UTC'") ?? "недостъпна")</strong></span>
+        <span>Свежест <strong>@FreshnessLabel</strong></span>
+    </div>
+</section>
+
+<section class="metric-grid" aria-label="Пазарни показатели">
+    <article class="metric-card price-card">
+        <div class="metric-label">XAUUSD / USD <span>METATRADER 5</span></div>
+        @if (liveMarket is not null)
+        {
+            <div class="price-line"><strong>@liveMarket.Price.ToString("N2")</strong><b class="@(liveMarket.ChangePercent >= 0 ? "positive" : "negative")">@(liveMarket.ChangePercent >= 0 ? "↗ +" : "↘ ")@liveMarket.ChangePercent.ToString("0.00")%</b></div>
+            <div class="metric-foot"><span>Цена към UTC @liveMarket.UpdatedAtUtc.ToString("HH:mm")</span><span>@FreshnessLabel</span></div>
+        }
+        else
+        {
+            <div class="price-line"><strong class="unavailable-value">—</strong></div>
+            <div class="metric-foot"><span>Няма валидна live котировка</span><span>недостъпна</span></div>
+        }
+    </article>
+    <article class="metric-card"><div class="metric-label">ПАЗАРЕН РЕЖИМ · MT5</div><div class="metric-value">@(analysis?.Regime ?? "Няма данни")</div><div class="metric-foot"><span>Технически баланс</span><span>@(analysis is null ? "—" : $"{analysis.TechnicalScore}/100")</span></div></article>
+    <article class="metric-card"><div class="metric-label">СЦЕНАРИИ · RULES</div><div class="metric-value">@(CandidateGeneration?.Available == true ? CandidateGeneration.Candidates.Count.ToString("00") : "—")</div><div class="metric-foot"><span>@(CandidateGeneration?.Available == true ? "H1 swing-zones" : "няма генератор")</span><span>@(CandidateGeneration?.PolicyVersion ?? "неактивен")</span></div></article>
+    <article class="metric-card"><div class="metric-label">НОВИНАРСКА АКТИВНОСТ</div><div class="metric-value risk-value"><i class="dot @NewsRiskTone"></i>@(NewsData is { Available: true } ? NewsData.RiskLevel : "Недостъпна")</div><div class="metric-foot"><span>@(NewsData?.Articles.Count ?? 0) заглавия · 24ч</span><span>@(NewsData?.RiskScore ?? 0)/100</span></div></article>
+</section>
+
+<section class="panel positions-panel" aria-label="Отворени позиции от MetaTrader 5">
+    <div class="panel-header">
+        <div>
+            <div class="panel-kicker">ОТВОРЕНИ СДЕЛКИ · LIVE MT5</div>
+            <h2>Анализ на позиции <span class="position-count">@(PositionData?.Reviews.Count ?? 0)</span></h2>
+        </div>
+        <button class="position-refresh-button" @onclick="RefreshPositionsAsync" disabled="@IsRefreshingPositions">
+            @(IsRefreshingPositions ? "Обновяване…" : "Обнови позиции")
+        </button>
+    </div>
+    <div class="position-disclaimer">
+        Автоматична оценка по H1, RSI, MACD, ADX, EMA и ATR; няма обучен ML модел специално за позиции. Новините и календарът са допълнителен контекст. Нищо не се изпълнява без потвърждение.
+        @if (PositionData?.RetrievedAtUtc is { } positionsUpdated)
+        {
+            <span> · Проверено @positionsUpdated.ToString("HH:mm:ss 'UTC'")</span>
+        }
+    </div>
+    @if (PositionActionNotice is not null)
+    {
+        <div class="position-action-notice @(PositionActionSucceeded ? "success" : "error")" role="status">@PositionActionNotice</div>
+    }
+    @if (PositionData is null && IsRefreshingPositions)
+    {
+        <div class="empty-state position-empty"><strong>Зареждане на отворените позиции…</strong><span>Четат се позициите и H1 данните от MT5.</span></div>
+    }
+    else if (PositionData is { Available: false } unavailable)
+    {
+        <div class="empty-state position-empty"><strong>Позициите не са достъпни</strong><span>@unavailable.Message</span></div>
+    }
+    else if (PositionData is { Reviews.Count: 0 })
+    {
+        <div class="empty-state position-empty"><strong>Няма отворени позиции</strong><span>Когато MT5 има активни сделки, анализът им ще се появи тук.</span></div>
+    }
+    else if (PositionData is { Available: true } openPositions)
+    {
+        <div class="position-list">
+            @foreach (var review in openPositions.Reviews)
+            {
+                var position = review.Position;
+                <article class="position-card @AdviceClass(review.Advice.Kind)">
+                    <div class="position-card-header">
+                        <div class="position-identity">
+                            <strong>@position.Symbol</strong>
+                            <span class="position-side @(position.Type == "BUY" ? "buy" : "sell")">@position.Type</span>
+                            <small>Билет #@position.Ticket</small>
+                        </div>
+                        <span class="position-advice @AdviceClass(review.Advice.Kind)">@review.Advice.Title</span>
+                    </div>
+                    <div class="position-metrics">
+                        <div><span>ОБЕМ</span><strong>@position.Volume.ToString("N2")</strong></div>
+                        <div><span>ВХОД</span><strong>@FormatPrice(position.PriceOpen, position.Digits)</strong></div>
+                        <div><span>ТЕКУЩА</span><strong>@FormatPrice(position.PriceCurrent, position.Digits)</strong></div>
+                        <div><span>ПЕЧАЛБА / ЗАГУБА</span><strong class="@(position.Profit >= 0 ? "positive" : "negative")">@FormatMoney(position.Profit, openPositions.AccountCurrency)</strong></div>
+                        <div><span>STOP LOSS</span><strong>@(position.StopLoss > 0m ? FormatPrice(position.StopLoss, position.Digits) : "няма")</strong></div>
+                        <div><span>TAKE PROFIT</span><strong>@(position.TakeProfit > 0m ? FormatPrice(position.TakeProfit, position.Digits) : "няма")</strong></div>
+                    </div>
+                    <div class="position-review-body">
+                        <div class="position-review-summary">
+                            <strong>@review.Advice.Title</strong>
+                            <span>@review.Advice.Reason</span>
+                            @if (review.Advice.Kind == PositionAdviceKind.TightenStop && review.Advice.SuggestedStopLoss is { } suggestedStop)
+                            {
+                                <span class="suggested-stop">Предложен SL: <b>@FormatPrice(suggestedStop, position.Digits)</b></span>
+                            }
+                            @foreach (var contextNote in GetPositionContextNotes(review))
+                            {
+                                <span class="position-context-note">Контекст · @contextNote</span>
+                            }
+                        </div>
+                        <div class="position-review-context">
+                            @if (review.Analysis is { } positionAnalysis)
+                            {
+                                <span>H1 баланс <b>@positionAnalysis.TechnicalScore/100</b></span>
+                                <span>Режим <b>@positionAnalysis.Regime</b></span>
+                                <span>Свежест <b class="@(review.Freshness == MarketFreshness.Fresh ? "positive" : "negative")">@(review.Freshness == MarketFreshness.Fresh ? "свежи" : "остарели")</b></span>
+                            }
+                            else
+                            {
+                                <span>@(review.DataMessage ?? "Няма технически данни за анализа.")</span>
+                            }
+                            <span>Отворена @position.OpenedAtUtc.ToString("yyyy-MM-dd HH:mm 'UTC'")</span>
+                        </div>
+                    </div>
+                    @if (review.Advice.Kind == PositionAdviceKind.TightenStop && review.Advice.SuggestedStopLoss is { } stopToApply)
+                    {
+                        <div class="position-actions">
+                            <button class="position-action-button apply-stop" @onclick="() => ApplyStopLossAsync(review)" disabled="@(ActionInProgressTicket is not null)">
+                                @(ActionInProgressTicket == position.Ticket ? "Проверка и изпълнение…" : $"Потвърди SL {FormatPrice(stopToApply, position.Digits)}")
+                            </button>
+                        </div>
+                    }
+                    else if (review.Advice.Kind == PositionAdviceKind.ConsiderClose)
+                    {
+                        <div class="position-actions">
+                            <button class="position-action-button close-position" @onclick="() => ClosePositionAsync(review)" disabled="@(ActionInProgressTicket is not null)">
+                                @(ActionInProgressTicket == position.Ticket ? "Проверка и изпълнение…" : "Потвърди затваряне")
+                            </button>
+                        </div>
+                    }
+                </article>
+            }
+        </div>
+    }
+</section>
+
+<section class="dashboard-grid">
+    <article class="panel chart-panel">
+        <div class="panel-header">
+            <div><div class="panel-kicker">@(liveMarket is null ? "MT5 ГРАФИКА · НЕДОСТЪПНА" : $"METATRADER 5 · {FreshnessLabel.ToUpperInvariant()}")</div><div class="chart-title"><strong>XAUUSD</strong>@if (liveMarket is not null) { <span>@liveMarket.Price.ToString("N2")</span> }</div></div>
+            <div class="timeframe-switch">
+                @foreach (var timeframe in Timeframes)
+                {
+                    <button class="@(SelectedTimeframe == timeframe ? "selected" : "")" @onclick="() => SelectTimeframeAsync(timeframe)" disabled="@IsRefreshing" aria-pressed="@(SelectedTimeframe == timeframe)">@timeframe</button>
+                }
+            </div>
+        </div>
+        @if (liveMarket is null)
+        {
+            <div class="market-chart-unavailable"><strong>Няма live графика</strong><span>Котировката и свещите не са налични. Демонстрационни стойности няма да бъдат показани като live.</span></div>
+        }
+        else
+        {
+            <div class="chart-legend"><span><i class="legend-candle"></i> Свещи · MetaTrader 5</span><span><i class="legend-line"></i> EMA 8</span></div>
+            <div class="chart-wrap">
+                <svg viewBox="0 0 720 250" role="img" aria-label="Котировка и свещи от MetaTrader 5, времева рамка @SelectedTimeframe, към @liveMarket.UpdatedAtUtc.ToString("yyyy-MM-dd HH:mm 'UTC'").">
+                    @foreach (var price in GetAxisPrices(chartCandles))
+                    {
+                        <line x1="5" x2="663" y1="@Y(price)" y2="@Y(price)" class="grid-line" />
+                        <ChartText X="670" Y="@(Y(price) + 3)" CssClass="axis-label" Text="@(price.ToString("N2"))" />
+                    }
+                    @for (var index = 0; index < chartCandles.Count; index++)
+                    {
+                        var candle = chartCandles[index];
+                        var candleStep = 658d / chartCandles.Count;
+                        var x = 5 + index * candleStep + candleStep / 2;
+                        var top = Y(Math.Max(candle.Open, candle.Close));
+                        var bottom = Y(Math.Min(candle.Open, candle.Close));
+                        <g class="@(candle.Close >= candle.Open ? "candle-up" : "candle-down")">
+                            <line x1="@x" x2="@x" y1="@Y(candle.High)" y2="@Y(candle.Low)" />
+                            <rect x="@(x - candleStep * 0.3)" y="@top" width="@(candleStep * 0.6)" height="@Math.Max(2, bottom - top)" />
+                        </g>
+                    }
+                    <path d="@EmaPath(chartCandles)" class="ema-line" />
+                    <line x1="5" x2="663" y1="@Y(liveMarket.Price)" y2="@Y(liveMarket.Price)" class="price-dash" />
+                    <rect x="666" y="@(Y(liveMarket.Price) - 9)" width="50" height="18" rx="3" class="price-tag-bg" />
+                    <ChartText X="669" Y="@(Y(liveMarket.Price) + 3)" CssClass="price-tag-text" Text="@(liveMarket.Price.ToString("N2"))" />
+                    @foreach (var (label, index) in ChartLabels.Select((label, index) => (label, index)))
+                    {
+                        <ChartText X="@(5 + index * 108)" Y="246" CssClass="axis-label" Text="@label" />
+                    }
+                </svg>
+            </div>
+            <div class="chart-foot"><span>@liveMarket.Candles.Count свещи · @SelectedTimeframe</span><span>UTC · @liveMarket.UpdatedAtUtc.ToString("HH:mm")</span></div>
+        }
+    </article>
+
+    <article class="panel latest-signals">
+        <div class="panel-header"><div><div class="panel-kicker">H1 SWING-ZONES · POLICY</div><h2>Сценарии</h2></div><a href="/signals">Всички →</a></div>
+        @foreach (var signal in signals)
+        {
+            <a class="signal-row" href="/signals">
+                <span class="direction-mark @(signal.Direction == "BUY BELOW" ? "buy" : "sell")">@(signal.Direction == "BUY BELOW" ? "↘" : "↗")</span>
+                <span class="signal-copy"><strong>@(signal.EntryOrderType ?? (signal.Direction == "BUY BELOW" ? "BUY LIMIT" : "SELL LIMIT")) <small class="status @signal.Status.ToLowerInvariant()">@signal.Status</small></strong><span>@signal.SignalId · @signal.Timeframe · @signal.HorizonHours h</span></span>
+                <span class="signal-prob">
+                    <strong>@((signal.EntryPrice ?? (signal.EntryLow + signal.EntryHigh) / 2m).ToString("N2"))</strong>
+                    <small>цена входа · зона @signal.EntryLow.ToString("N2")–@signal.EntryHigh.ToString("N2")</small>
+                    @if (signal.ModelProbabilityPositiveOutcome is { } modelProbability)
+                    {
+                        <small>AI TP1 @modelProbability.ToString("P0") · @signal.ModelOutcomeHorizonHours h</small>
+                    }
+                </span>
+            </a>
+        }
+        @if (signals.Length == 0)
+        {
+            <div class="model-note"><span>✦</span><div><strong>@(CandidateGeneration?.Available == false ? "Генераторът не е наличен" : CandidateGeneration is null ? "Зареждане на сценарии…" : "NEUTRAL · няма валиден setup")</strong><small>@(CandidateGeneration?.Message ?? "Сценариите се изчисляват от H1 свещите.")</small></div></div>
+        }
+        else
+        {
+            <div class="model-note"><span>✦</span><div><strong>Setup по правила · AI оценка TP1 преди SL</strong><small>@(CandidateGeneration?.PolicyVersion) · модел @CandidateGeneration?.ModelOutcomeHorizonHours h · @CandidateGeneration?.AsOfUtc?.ToString("HH:mm 'UTC'")</small></div></div>
+        }
+    </article>
+
+    <article class="panel news-feed-panel">
+        <div class="panel-header"><div><div class="panel-kicker">НОВИНИ · @NewsFeedService.SourceName</div><h2>Злато и макроикономика</h2></div><a href="/news">Всички →</a></div>
+        @if (NewsData is not { Available: true } news)
+        {
+            <div class="empty-state news-empty"><strong>Новинарският feed не е достъпен</strong><span>@(NewsData?.Message ?? "Зареждане на заглавия…")</span></div>
+        }
+        else if (news.Articles.Count == 0)
+        {
+            <div class="empty-state news-empty"><strong>Няма релевантни заглавия</strong><span>Рискът остава неизвестен, докато feed-ът няма статии.</span></div>
+        }
+        else
+        {
+            @foreach (var article in news.Articles.Take(4))
+            {
+                <a class="news-item" href="@article.Url" target="_blank" rel="noopener noreferrer">
+                    <strong>@article.Title</strong>
+                    <span>@article.Source · @article.PublishedAtUtc.ToString("HH:mm 'UTC'") <b class="@article.ImpactTone">@article.Impact</b></span>
+                </a>
+            }
+            <div class="analysis-foot"><span>@news.RiskSummary</span><span>@(news.IsStale ? "Запазени данни · остарели" : $"Обновено {news.UpdatedAtUtc?.ToString("HH:mm 'UTC'")}")</span></div>
+        }
+    </article>
+
+    <article class="panel indicator-panel">
+        <div class="panel-header"><div><div class="panel-kicker">ТЕХНИЧЕСКА КАРТИНА · LIVE MT5</div><h2>Индикатори</h2></div><span class="timeframe-chip">@SelectedTimeframe</span></div>
+        <div class="indicator-grid">
+            @if (analysis is { } liveAnalysis)
+            {
+                @foreach (var indicator in liveAnalysis.Indicators.Take(4))
+                {
+                    <div class="indicator"><div><span>@indicator.Name</span><strong class="@indicator.Tone">@indicator.Value</strong></div><div class="indicator-track"><i class="@indicator.Tone" style="width: @(indicator.StrengthPercent)%"></i></div><small>@indicator.State</small></div>
+                }
+            }
+            else
+            {
+                <div class="market-chart-unavailable"><strong>Няма индикатори</strong><span>Свържете MT5, за да се изчислят стойностите от live свещите.</span></div>
+            }
+        </div>
+        <div class="analysis-foot"><span>Изчислени от MT5 OHLC и обновявани с текущия тик.</span><a href="/analysis">Подробен анализ →</a></div>
+    </article>
+</section>
+
+@code {
+    private static readonly string[] Timeframes = ["M1", "M5", "M15", "M30", "H1", "H4", "D1"];
+    private static readonly decimal[] AxisPrices = [2700, 2682, 2664, 2646, 2628];
+    private IReadOnlyList<Candle> ChartCandles => LiveMarket?.Snapshot?.Candles.TakeLast(60).ToArray() ?? [];
+    private string[] ChartLabels
+    {
+        get
+        {
+            var chartCandles = ChartCandles;
+            if (chartCandles.Count == 0)
+                return [];
+            var count = Math.Min(7, chartCandles.Count);
+            return Enumerable.Range(0, count)
+                .Select(index => chartCandles[index * (chartCandles.Count - 1) / Math.Max(1, count - 1)])
+                .Select(candle => SelectedTimeframe == "D1"
+                    ? candle.TimeUtc.ToString("dd.MM")
+                    : candle.TimeUtc.ToString("HH:mm"))
+                .ToArray();
+        }
+    }
+    private string SelectedTimeframe { get; set; } = "H1";
+    private MarketDataResult? LiveMarket { get; set; }
+    private CandidateGenerationResult? CandidateGeneration { get; set; }
+    private NewsFeedSnapshot? NewsData { get; set; }
+    private EconomicCalendarSnapshot? CalendarData { get; set; }
+    private PositionReviewsResult? PositionData { get; set; }
+    private bool IsRefreshing { get; set; }
+    private bool IsRefreshingPositions { get; set; }
+    private long? ActionInProgressTicket { get; set; }
+    private string? PositionActionNotice { get; set; }
+    private bool PositionActionSucceeded { get; set; }
+
+    private string NewsRiskTone => NewsData?.RiskLevel switch
+    {
+        "Висок" => "red",
+        "Умерен" => "amber",
+        "Нисък" => "green",
+        _ => "muted"
+    };
+
+    private string StatusClass => LiveMarket switch
+    {
+        { ConnectionStatus: MarketConnectionStatus.Connected } when CurrentFreshness == MarketFreshness.Fresh => "market-connected",
+        { ConnectionStatus: MarketConnectionStatus.Connected } => "market-stale",
+        { ConnectionStatus: MarketConnectionStatus.Error } => "market-error",
+        _ => "market-disconnected"
+    };
+
+    private string StatusDotClass => LiveMarket switch
+    {
+        { ConnectionStatus: MarketConnectionStatus.Connected } when CurrentFreshness == MarketFreshness.Fresh => "green",
+        { ConnectionStatus: MarketConnectionStatus.Connected or MarketConnectionStatus.Error } => "red",
+        _ => "amber"
+    };
+
+    private string StatusLabel => LiveMarket switch
+    {
+        { ConnectionStatus: MarketConnectionStatus.Connected } when CurrentFreshness == MarketFreshness.Fresh => "Свързано · данните са свежи",
+        { ConnectionStatus: MarketConnectionStatus.Connected } => "Свързано · данните са остарели",
+        { ConnectionStatus: MarketConnectionStatus.Error } => "Грешка при доставчика",
+        _ => "Разкачено"
+    };
+
+    private MarketFreshness CurrentFreshness => LiveMarket?.Snapshot is { } snapshot
+        ? Mt5MarketDataProvider.GetFreshness(snapshot.UpdatedAtUtc, DateTimeOffset.UtcNow)
+        : MarketFreshness.Unavailable;
+
+    private string FreshnessLabel => CurrentFreshness switch
+    {
+        MarketFreshness.Fresh => "Свежи",
+        MarketFreshness.Stale => "Остарели",
+        _ => "Няма данни"
+    };
+
+    private string FreshnessDescription =>
+        LiveMarket?.ConnectionStatus == MarketConnectionStatus.Disconnected
+            ? "Проверете дали MetaTrader 5 е отворен и дали mt5-bridge работи на MT5Bridge:BaseAddress."
+            : IsRefreshing ? "Заявка към MT5 bridge…" : "Пазарните данни не са налични.";
+
+    private string StatusDescription => LiveMarket switch
+    {
+        { Message: not null } result => result.Message,
+        { ConnectionStatus: MarketConnectionStatus.Connected } when CurrentFreshness == MarketFreshness.Stale => "Последният MT5 тик е по-стар от 15 минути; проверете терминала.",
+        { ConnectionStatus: MarketConnectionStatus.Connected } => "Котировката и свещите идват от MetaTrader 5 през mt5-bridge.",
+        _ => FreshnessDescription
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll(RefreshMarketAsync(), RefreshNewsAsync(), RefreshCalendarAsync(), RefreshPositionsAsync());
+        _ = PollLatestTickAsync(_lifetime.Token);
+        _ = PollNewsAsync(_lifetime.Token);
+        _ = PollCalendarAsync(_lifetime.Token);
+        _ = PollPositionsAsync(_lifetime.Token);
+    }
+
+    private async Task RefreshNewsAsync(CancellationToken cancellationToken = default)
+    {
+        NewsData = await NewsFeed.GetLatestAsync(cancellationToken: cancellationToken);
+    }
+
+    private async Task PollNewsAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(NewsFeed.RefreshInterval);
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var result = await NewsFeed.GetLatestAsync(cancellationToken: cancellationToken);
+                await InvokeAsync(() =>
+                {
+                    NewsData = result;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private async Task PollPositionsAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var result = await PositionReview.GetReviewsAsync(cancellationToken);
+                await InvokeAsync(() =>
+                {
+                    PositionData = result;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private async Task RefreshCalendarAsync(CancellationToken cancellationToken = default)
+    {
+        CalendarData = await EconomicCalendar.GetLatestAsync(days: 2, cancellationToken: cancellationToken);
+    }
+
+    private async Task PollCalendarAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(EconomicCalendar.RefreshInterval);
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var result = await EconomicCalendar.GetLatestAsync(days: 2, cancellationToken: cancellationToken);
+                await InvokeAsync(() =>
+                {
+                    CalendarData = result;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private void ApplyLiveTick(MarketTick tick)
+    {
+        if (LiveMarket?.Snapshot is not { } snapshot)
+            return;
+        if (tick.UpdatedAtUtc < snapshot.UpdatedAtUtc)
+            return;
+
+        var freshness = Mt5MarketDataProvider.GetFreshness(tick.UpdatedAtUtc, DateTimeOffset.UtcNow);
+        var updatedSnapshot = TechnicalAnalysis.ApplyTick(snapshot, tick, SelectedTimeframe);
+        LiveMarket = LiveMarket with
+        {
+            Freshness = freshness,
+            Source = Mt5MarketDataProvider.SourceName,
+            ReceivedAtUtc = DateTimeOffset.UtcNow,
+            Snapshot = updatedSnapshot,
+            Message = freshness == MarketFreshness.Stale ? "Последната MT5 котировка е по-стара от 15 минути." : null
+        };
+    }
+
+    private readonly CancellationTokenSource _lifetime = new();
+
+    private async Task PollLatestTickAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var result = await MarketProvider.GetLatestTickAsync(cancellationToken);
+                if (result.Tick is not { } tick)
+                    continue;
+
+                await InvokeAsync(() =>
+                {
+                    ApplyLiveTick(tick);
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+        return ValueTask.CompletedTask;
+    }
+
+    private async Task RefreshMarketAsync()
+    {
+        IsRefreshing = true;
+        try
+        {
+            LiveMarket = await MarketProvider.GetSnapshotAsync(GetProviderInterval(SelectedTimeframe));
+            if (SelectedTimeframe == "H1")
+                CandidateGeneration = await SignalService.GenerateFromSnapshotAsync(LiveMarket);
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
+    private async Task RefreshPositionsAsync()
+    {
+        if (IsRefreshingPositions)
+            return;
+
+        IsRefreshingPositions = true;
+        try
+        {
+            PositionData = await PositionReview.GetReviewsAsync(_lifetime.Token);
+        }
+        finally
+        {
+            IsRefreshingPositions = false;
+        }
+    }
+
+    private async Task ApplyStopLossAsync(OpenPositionReview review)
+    {
+        if (review.Advice.SuggestedStopLoss is not { } stopLoss)
+            return;
+
+        var accepted = await JS.InvokeAsync<bool>(
+            "confirm",
+            $"Да задам ли SL {FormatPrice(stopLoss, review.Position.Digits)} на {review.Position.Symbol}, позиция #{review.Position.Ticket}? Пазарните данни ще бъдат проверени отново преди изпълнение.");
+        if (!accepted)
+            return;
+
+        await ExecutePositionActionAsync(
+            review.Position.Ticket,
+            () => PositionReview.ApplySuggestedStopLossAsync(review.Position.Ticket, stopLoss, _lifetime.Token));
+    }
+
+    private async Task ClosePositionAsync(OpenPositionReview review)
+    {
+        var accepted = await JS.InvokeAsync<bool>(
+            "confirm",
+            $"Потвърждаваш ли затваряне на {review.Position.Type} {review.Position.Symbol}, позиция #{review.Position.Ticket}? P/L от последното MT5 обновяване: {FormatMoney(review.Position.Profit, PositionData?.AccountCurrency)}.");
+        if (!accepted)
+            return;
+
+        await ExecutePositionActionAsync(
+            review.Position.Ticket,
+            () => PositionReview.ClosePositionAfterReviewAsync(review.Position.Ticket, _lifetime.Token));
+    }
+
+    private async Task ExecutePositionActionAsync(long ticket, Func<Task<PositionActionResult>> action)
+    {
+        ActionInProgressTicket = ticket;
+        PositionActionNotice = null;
+        try
+        {
+            var result = await action();
+            PositionActionSucceeded = result.Succeeded;
+            PositionActionNotice = result.Message;
+            if (result.Succeeded)
+                await RefreshPositionsAsync();
+        }
+        finally
+        {
+            ActionInProgressTicket = null;
+        }
+    }
+
+    private static string AdviceClass(PositionAdviceKind kind) => kind switch
+    {
+        PositionAdviceKind.TightenStop => "advice-stop",
+        PositionAdviceKind.ConsiderClose => "advice-close",
+        PositionAdviceKind.Unavailable => "advice-unavailable",
+        _ => "advice-hold"
+    };
+
+    private static string FormatPrice(decimal price, int digits) =>
+        price.ToString($"N{Math.Clamp(digits, 0, 8)}", CultureInfo.CurrentCulture);
+
+    private static string FormatMoney(decimal amount, string? currency) =>
+        string.IsNullOrWhiteSpace(currency) ? amount.ToString("N2", CultureInfo.CurrentCulture) :
+            $"{amount.ToString("N2", CultureInfo.CurrentCulture)} {currency}";
+
+    private IReadOnlyList<string> GetPositionContextNotes(OpenPositionReview review)
+    {
+        var notes = new List<string>();
+        var symbol = review.Position.Symbol;
+        var isGold = symbol.Contains("XAU", StringComparison.OrdinalIgnoreCase) ||
+            symbol.Contains("GOLD", StringComparison.OrdinalIgnoreCase);
+        var isUsdRelated = isGold || symbol.Contains("USD", StringComparison.OrdinalIgnoreCase);
+
+        if (isGold)
+        {
+            if (NewsData is { Available: true } news)
+            {
+                var freshness = news.IsStale ? "остарели" : "актуални";
+                notes.Add($"Новини за злато: {news.SentimentLabel}; риск {news.RiskLevel} ({news.RiskScore}/100), {freshness}.");
+            }
+            else
+            {
+                notes.Add("Новинарският контекст за злато не е наличен.");
+            }
+        }
+
+        if (isUsdRelated)
+        {
+            if (CalendarData is { Available: true } calendar)
+            {
+                var now = DateTimeOffset.UtcNow;
+                var nextEvents = calendar.Events
+                    .Where(item => item.Impact == "Високо" &&
+                        (item.ScheduledAtUtc is { } scheduled
+                            ? scheduled >= now && scheduled <= now.AddHours(24)
+                            : item.EventDate >= DateOnly.FromDateTime(now.UtcDateTime) && item.EventDate <= DateOnly.FromDateTime(now.AddDays(1).UtcDateTime)))
+                    .OrderBy(item => item.ScheduledAtUtc ?? new DateTimeOffset(item.EventDate.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero))
+                    .Take(2)
+                    .ToArray();
+                if (nextEvents.Length > 0)
+                {
+                    var eventSummary = string.Join("; ", nextEvents.Select(item =>
+                        item.ScheduledAtUtc is { } scheduled
+                            ? $"{item.Title} · {scheduled:HH:mm} UTC"
+                            : $"{item.Title} · {item.EventDate:dd.MM}"));
+                    notes.Add($"Предстоящо събитие с високо въздействие: {eventSummary}{(calendar.IsStale ? " (календарът е частично остарял)" : string.Empty)}.");
+                }
+                else
+                {
+                    notes.Add(calendar.IsStale
+                        ? "Няма потвърдени високорискови събития в наличния, частично остарял календар."
+                        : "Няма насрочено събитие с високо въздействие през следващите 24 часа.");
+                }
+            }
+            else
+            {
+                notes.Add("Икономическият календар не е наличен.");
+            }
+        }
+
+        return notes;
+    }
+
+    private async Task SelectTimeframeAsync(string timeframe)
+    {
+        SelectedTimeframe = timeframe;
+        await RefreshMarketAsync();
+    }
+
+    private static string GetProviderInterval(string timeframe) => timeframe switch
+    {
+        "M1" => "M1",
+        "M5" => "M5",
+        "M15" => "M15",
+        "M30" => "M30",
+        "H4" => "H4",
+        "D1" => "D1",
+        _ => "H1"
+    };
+
+    private IReadOnlyList<decimal> GetAxisPrices(IReadOnlyList<Candle> candles)
+    {
+        var high = candles.Max(candle => candle.High);
+        var low = candles.Min(candle => candle.Low);
+        var step = Math.Max(0.01m, Math.Ceiling((high - low) / 4m));
+        var top = Math.Ceiling(high / step) * step;
+        _chartMin = Math.Floor(low / step) * step - step * 0.1m;
+        _chartMax = top + step * 0.1m;
+        return Enumerable.Range(0, 5).Select(index => top - step * index).ToArray();
+    }
+
+    private double Y(decimal price) =>
+        15 + (double)((ChartMax - price) / (ChartMax - ChartMin)) * 208;
+
+    private decimal ChartMin => _chartMin;
+    private decimal ChartMax => _chartMax;
+    private decimal _chartMin;
+    private decimal _chartMax;
+    private string EmaPath(IReadOnlyList<Candle> candles)
+    {
+        var values = new List<string>(candles.Count);
+        var ema = TechnicalAnalysisService.CalculateEma(candles, 8);
+        for (var index = 0; index < candles.Count; index++)
+        {
+            if (ema[index] is not { } value)
+                continue;
+            var x = 5 + index * (658d / candles.Count) + (658d / candles.Count) / 2;
+            values.Add($"{(values.Count == 0 ? "M" : "L")}{x.ToString("0.0", CultureInfo.InvariantCulture)},{Y((decimal)value).ToString("0.0", CultureInfo.InvariantCulture)}");
+        }
+        return string.Join(' ', values);
+    }
+}

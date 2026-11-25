@@ -1,0 +1,33 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261116105138
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe E:\Projects_MT5\XYN_Trader\start\start-mt5-bridge.ps1
+Process ID: 9764
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\mt5-bridge-20261116-105138.log
+UTC conversion enabled (Server Time -> UTC)
+INFO:     Started server process [14516]
+INFO:     Waiting for application startup.
+INFO:mt5_bridge.mt5_handler:MT5 initialized successfully
+INFO:     Application startup complete.
+ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10048] only one usage o
+f each socket address (protocol/network address/port) is normally permitted
+INFO:     Waiting for application shutdown.
+INFO:mt5_bridge.mt5_handler:MT5 connection shutdown
+INFO:     Application shutdown complete.
+**********************
+Windows PowerShell transcript end
+End time: 20261116105139
+**********************

@@ -1,0 +1,6 @@
+__pycache__/
+.venv/
+data/
+models/*.joblib
+models/candidates/
+*.joblib.tmp

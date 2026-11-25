@@ -1,0 +1,621 @@
+@page "/signals"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject LiveSignalService SignalService
+@inject CandidateGeneratorClient LearningClient
+
+<PageTitle>Сигнали — XYN Trader</PageTitle>
+
+<div class="page-heading">
+    <div><div class="eyebrow"><span></span> XAUUSD / АНАЛИТИЧЕН ДНЕВНИК</div><h1>Сценарии<span>.</span></h1><p>Сценарии от потвърдени swing зони и затворени H1 свещи от MetaTrader 5.</p></div>
+    <div class="signal-actions">
+        <span class="demo-total"><i class="dot @(Generation?.Available == true && Generation.IsStale == false ? "green" : "amber")"></i> @(IsRefreshing ? "генериране…" : Generation?.Available == true ? $"{FilteredSignals.Count()} сценария{(Generation.IsStale ? " · кеш" : "")}" : "генераторът е недостъпен")</span>
+        <button class="refresh-button" @onclick="RefreshAsync" disabled="@IsRefreshing">@(IsRefreshing ? "Обновяване…" : "Обнови")</button>
+    </div>
+</div>
+
+<section class="stat-grid">
+    @foreach (var item in StatusSummary)
+    {
+        <article class="stat-card"><span><i class="dot @item.Tone"></i> @item.Label</span><strong>@CountStatus(item.Status)</strong><small>@item.Description</small></article>
+    }
+</section>
+
+<section class="live-quote-strip" aria-live="polite">
+    @if (LiveQuote is { Tick: { } tick } quote)
+    {
+        <strong><i class="dot @(quote.Freshness == MarketFreshness.Fresh ? "green" : "amber")"></i> LIVE XAUUSD · @tick.Price.ToString("N2")</strong>
+        <span>BID @tick.Bid.ToString("N2") · ASK @tick.Ask.ToString("N2")</span>
+        <small>@QuoteStatusText · @FormatLocalTime(tick.UpdatedAtUtc, "HH:mm:ss")</small>
+    }
+    else
+    {
+        <strong><i class="dot amber"></i> LIVE котировката не е налична</strong>
+        <small>@(LiveQuote?.Message ?? "Изчакване на котировка от MT5…")</small>
+    }
+</section>
+
+@if (LiveEntryAlerts.Count > 0)
+{
+    <section class="live-entry-alert" role="status" aria-live="polite">
+        <strong>Цената достигна входна зона</strong>
+        @foreach (var alert in LiveEntryAlerts.Values.OrderByDescending(item => item.DetectedAtUtc).Take(3))
+        {
+            <div class="live-entry-alert-row">
+                <span><b>@GetEntryOrderType(alert.Signal)</b> · @alert.Signal.SignalId · цена @alert.TriggerPrice.ToString("N2") в зоната @alert.Signal.EntryLow.ToString("N2")–@alert.Signal.EntryHigh.ToString("N2")</span>
+                <small>@FormatLocalTime(alert.DetectedAtUtc, "HH:mm:ss")</small>
+                <button type="button" class="live-entry-dismiss" @onclick="() => DismissEntryAlert(alert.Signal.SignalId)" aria-label="Скрий известието">×</button>
+            </div>
+        }
+    </section>
+}
+
+<section class="panel user-profile-panel">
+    <div class="panel-header user-profile-header">
+        <div><div class="panel-kicker">ЛИЧНИ ДАННИ · ОТДЕЛНА SQLITE БАЗА</div><h2>@(UserProfile?.Profile?.DisplayName ?? "Моят дневник")</h2></div>
+        @if (UserProfile?.Available == true && UserProfile.Profile is not null)
+        {
+            <span class="timeframe-chip">@SavedJournalEntries.Count(entry => entry.IsFavorite) любими · @SavedJournalEntries.Count(entry => !string.IsNullOrWhiteSpace(entry.Note)) бележки</span>
+        }
+    </div>
+    <div class="user-profile-copy">
+        @(UserProfile?.Available == true
+            ? "Любимите сценарии и бележките се пазят локално и не се изтриват при ротация на H1 историята."
+            : UserProfile?.Message ?? "Зареждане на личните данни…")
+        @if (!string.IsNullOrWhiteSpace(JournalNotice))
+        {
+            <span class="journal-notice @(JournalNoticeIsError ? "error" : "")">@JournalNotice</span>
+        }
+    </div>
+</section>
+
+@if (SavedJournalEntries.Count > 0)
+{
+    <section class="panel saved-journal-panel">
+        <div class="panel-header saved-journal-header">
+            <div><div class="panel-kicker">ПОСТОЯННО ЗАПАЗЕНИ ЛИЧНИ ЗАПИСИ</div><h2>Моят дневник <small>(@SavedJournalEntries.Count)</small></h2></div>
+        </div>
+        <div class="saved-journal-list">
+            @foreach (var entry in SavedJournalEntries)
+            {
+                <article class="saved-journal-entry">
+                    <div class="saved-journal-heading">
+                        <strong>@entry.SignalId</strong>
+                        <span>@(entry.IsFavorite ? "★ Любим" : "Бележка") · @FormatLearningTime(entry.UpdatedAtUtc)</span>
+                        <button class="journal-remove" @onclick="() => DeleteJournalEntryAsync(entry.SignalId)" disabled="@(JournalSavingSignalId == entry.SignalId)">Изтрий</button>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(entry.Note))
+                    {
+                        <p>@entry.Note</p>
+                    }
+                </article>
+            }
+        </div>
+    </section>
+}
+
+@if (Generation?.IsStale == true)
+{
+    <div class="notice-strip stale-signal-notice"><strong>Няма свежи пазарни данни.</strong> Показани са запазените сценарии от @FormatLocalTime(Generation.GeneratedAtUtc, "yyyy-MM-dd HH:mm"); статусите им отразяват последните налични MT5 свещи.</div>
+}
+
+<section class="panel learning-panel">
+    <div class="panel-header learning-header">
+        <div><div class="panel-kicker">САМО-ОБУЧЕНИЕ · РЕАЛНИ MT5 H1 ДАННИ</div><h2>Обучителен цикъл</h2></div>
+        <span class="timeframe-chip">@(Learning?.Available == true ? LearningStateLabel : "AI УСЛУГАТА Е НЕДОСТЪПНА")</span>
+    </div>
+    @if (Learning?.Available != true || Learning.Status is null)
+    {
+        <div class="learning-message">@(Learning?.Message ?? "Зареждане на обучителния статус…")</div>
+    }
+    else
+    {
+        <div class="learning-summary">
+            <span><i class="dot @(Learning.Status.StoredCandles >= 100 ? "green" : "amber")"></i> @Learning.Status.StoredCandles / @Learning.Status.MaximumStoredCandles свещи</span>
+            <span>Последен прием: @FormatLearningTime(Learning.Status.LastIngestUtc)</span>
+            <span>Последен цикъл: @FormatLearningTime(Learning.Status.LastCycleUtc)</span>
+            <span>Активен модел: @(Learning.Status.ActiveModels.Count == 0 ? "няма" : string.Join(", ", Learning.Status.ActiveModels))</span>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Learning.Status.LastError))
+        {
+            <div class="learning-message">@Learning.Status.LastError</div>
+        }
+        <div class="learning-horizons">
+            @foreach (var horizon in LearningHorizons)
+            {
+                <article class="learning-horizon">
+                    <div><strong>@horizon.Key</strong><span class="@(horizon.Value.TrainingState == "candidate_ready" ? "positive" : "")">@LearningHorizonLabel(horizon.Value)</span></div>
+                    <p>@horizon.Value.MaturedLabels / @horizon.Value.MinimumLabels узрели резултата · @horizon.Value.PositiveLabels положителни</p>
+                    @if (horizon.Value.HoldoutAuc is not null)
+                    {
+                        <p>Holdout AUC @horizon.Value.HoldoutAuc.Value.ToString("0.000") · Brier @horizon.Value.HoldoutBrierScore?.ToString("0.000")</p>
+                    }
+                    @if (horizon.Value.RawHoldoutBrierScore is not null)
+                    {
+                        <p>Калибрация: @(horizon.Value.IsCalibrated ? CalibrationMethodLabel(horizon.Value.CalibrationMethod) : "недостигнат минимум данни") · @horizon.Value.CalibrationRows OOF реда · Brier @horizon.Value.RawHoldoutBrierScore.Value.ToString("0.000") → @horizon.Value.HoldoutBrierScore?.ToString("0.000") · ECE @horizon.Value.HoldoutExpectedCalibrationError?.ToString("0.000")</p>
+                    }
+                    <small>@horizon.Value.Message</small>
+                    @if (!string.IsNullOrWhiteSpace(horizon.Value.ModelVersion))
+                    {
+                        <small class="learning-model-version">@horizon.Value.ModelVersion</small>
+                    }
+                    @if (horizon.Value.TrainingState == "candidate_ready")
+                    {
+                        <small class="@(horizon.Value.ActivationEligible ? "candidate-eligible" : "")">@horizon.Value.ActivationReason</small>
+                    }
+                </article>
+            }
+        </div>
+        @if (Learning.Status.RecommendedCandidate is { } recommended)
+        {
+            <div class="candidate-activation-card">
+                <div class="candidate-activation-copy">
+                    <span class="candidate-activation-kicker">НАЙ-ДОБЪР ДОПУСТИМ КАНДИДАТ</span>
+                    <strong>@recommended.Horizon · @recommended.ModelVersion</strong>
+                    <small>AUC @recommended.HoldoutAuc.ToString("0.000") · Brier @recommended.HoldoutBrierScore.ToString("0.000") / база @recommended.BaselineBrierScore.ToString("0.000") · Brier Skill @recommended.BrierSkillScore.ToString("P1")</small>
+                    <small>@recommended.MaturedLabels узрели етикета · @(recommended.IsCalibrated ? CalibrationMethodLabel(recommended.CalibrationMethod) : "без калибрация")</small>
+                    <span>Избран е сред всички запазени кандидати по Brier Skill и AUC. Активирането сменя модела за този хоризонт и архивира предишния, ако има такъв.</span>
+                </div>
+                <div class="candidate-activation-controls">
+                    <label>
+                        <span>Одобрил · име или номер на преглед</span>
+                        <input @bind="ActivationApprover" maxlength="120" placeholder="напр. Име или REVIEW-123" disabled="@IsActivatingCandidate" />
+                    </label>
+                    <button class="candidate-activate-button" @onclick="ActivateBestCandidateAsync" disabled="@(IsActivatingCandidate || string.IsNullOrWhiteSpace(ActivationApprover))">
+                        @(IsActivatingCandidate ? "Активиране…" : "Активирай кандидата")
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="candidate-activation-empty">Няма нов кандидат, който в момента да покрива праговете за активиране.</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(CandidateActivationNotice))
+        {
+            <div class="learning-message @(CandidateActivationNoticeIsError ? "activation-error" : "activation-success")">@CandidateActivationNotice</div>
+        }
+        @if (Learning.Status.ApprovalRequired)
+        {
+            <div class="learning-foot">Новите модели се обучават автоматично като кандидати. Активирането им изисква преглед и одобрение.</div>
+        }
+    }
+</section>
+
+<section class="panel signals-panel">
+    <div class="panel-header signals-header">
+        <div><div class="panel-kicker">ПРАВИЛОВ ГЕНЕРАТОР · H1</div><h2>Сценарии<small>(@FilteredSignals.Count())</small></h2></div>
+        <div class="filters">
+            <label class="search-input"><span aria-hidden="true">⌕</span><input @bind="Search" placeholder="Търси ID" aria-label="Търси сигнал" /></label>
+            <select @bind="Status" aria-label="Филтър по статус"><option value="">Всички статуси</option><option>CREATED</option><option>TRIGGERED</option><option>CLOSED_TP</option><option>CLOSED_SL</option><option>EXPIRED</option></select>
+            <select @bind="Direction" aria-label="Филтър по посока"><option value="">Всички посоки</option><option value="BUY BELOW">BUY LIMIT</option><option value="SELL BELOW">SELL LIMIT</option></select>
+            <select @bind="MinimumModelProbability" aria-label="Минимална AI вероятност"><option value="">Всички AI оценки</option><option value="40">AI ≥ 40%</option><option value="50">AI ≥ 50%</option><option value="60">AI ≥ 60%</option></select>
+            <select @bind="Date" aria-label="Филтър по дата"><option value="">Всички дати</option><option value="today">Днес</option><option value="yesterday">Вчера</option><option value="older">По-стари</option></select>
+        </div>
+    </div>
+
+    @if (IsRefreshing && Generation is null)
+    {
+        <div class="empty-state"><strong>Изчисляване на сценарии…</strong><span>Използват се реални затворени свещи от MetaTrader 5.</span></div>
+    }
+    else if (FilteredSignals.Any())
+    {
+        <div class="table-scroll">
+            <table class="signals-table">
+                <thead><tr><th>ИД / МЕСТНО ВРЕМЕ</th><th>ПОСОКА</th><th>СТАТУС</th><th>РАМКА</th><th>ENTRY ЗОНА</th><th>SL / TP1–TP3</th><th>R:R TP1–TP3</th><th>ADX / ТЕСТОВЕ</th><th>AI P(TP1 ПРЕДИ SL)</th><th>МОЯ БЕЛЕЖКА</th></tr></thead>
+                <tbody>
+                    @foreach (var signal in FilteredSignals)
+                    {
+                        var journalDraft = GetJournalDraft(signal.SignalId);
+                        <tr>
+                            <td><strong>@signal.SignalId</strong><small>@FormatLocalTime(signal.TimestampUtc, "dd.MM.yyyy · HH:mm")</small></td>
+                            <td><span class="table-direction @(signal.Direction == "BUY BELOW" ? "positive" : "negative")">@(signal.Direction == "BUY BELOW" ? "↘" : "↗") @GetEntryOrderType(signal)</span></td>
+                            <td><span class="status @(IsLiveEntryReached(signal) ? "live_entry" : signal.Status.ToLowerInvariant())">@(IsLiveEntryReached(signal) ? "ВХОД ДОСТИГНАТ" : signal.Status)</span></td>
+                            <td><strong>@signal.Timeframe</strong><small>Хоризонт @signal.HorizonHours h</small></td>
+                            <td><strong>@GetEntryOrderType(signal) @GetEntryPrice(signal).ToString("N2")</strong><small>Зона @signal.EntryLow.ToString("N2") – @signal.EntryHigh.ToString("N2")</small><small>Валиден до @FormatLocalTime(GetExpiry(signal), "dd.MM HH:mm")</small></td>
+                            <td><small class="stop">SL @signal.StopLoss.ToString("N2")</small><small class="target">TP1 @signal.Tp1.ToString("N2") · TP2 @signal.Tp2.ToString("N2")</small><small class="target">TP3 @signal.Tp3.ToString("N2")</small></td>
+                            <td><strong>1 : @signal.Tp1RiskReward.ToString("0.0")</strong><small>TP2 1 : @signal.Tp2RiskReward.ToString("0.0") · TP3 1 : @signal.Tp3RiskReward.ToString("0.0")</small></td>
+                            <td><strong>@signal.Adx14.ToString("0.0")</strong><small>@signal.ZoneTouchCount докосвания</small></td>
+                            <td>
+                                @if (signal.ModelProbabilityPositiveOutcome is { } modelProbability)
+                                {
+                                    <strong>@modelProbability.ToString("P0")</strong>
+                                    <small>@(signal.ModelIsCalibrated == true ? "калибрирана" : "без калибрация") · @signal.ModelOutcomeHorizonHours h</small>
+                                }
+                                else
+                                {
+                                    <span>—</span>
+                                    <small>@(Generation?.ModelStatus == "policy_mismatch" ? "несъвместима policy" : "няма оценка")</small>
+                                }
+                            </td>
+                            <td class="user-journal-cell">
+                                <div class="user-journal-actions">
+                                    <button class="journal-favorite @(journalDraft.IsFavorite ? "active" : "")" title="@(journalDraft.IsFavorite ? "Премахни от любими" : "Добави в любими")" aria-label="@(journalDraft.IsFavorite ? "Премахни от любими" : "Добави в любими")" @onclick="() => ToggleFavoriteAsync(signal.SignalId)" disabled="@(UserProfile?.Available != true || JournalSavingSignalId == signal.SignalId)">@(journalDraft.IsFavorite ? "★" : "☆")</button>
+                                    <button class="journal-save" @onclick="() => SaveJournalAsync(signal.SignalId)" disabled="@(JournalSavingSignalId == signal.SignalId)">@(JournalSavingSignalId == signal.SignalId ? "Запис…" : "Запази")</button>
+                                </div>
+                                <textarea @bind="journalDraft.Note" maxlength="4000" rows="2" placeholder="Лична бележка" aria-label="Лична бележка за @signal.SignalId" disabled="@(UserProfile?.Available != true || JournalSavingSignalId == signal.SignalId)"></textarea>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <strong>@EmptyTitle</strong>
+            <span>@EmptyMessage</span>
+        </div>
+    }
+    <div class="table-foot">
+        <span>@(Generation?.IsStale == true ? $"Последно успешно генериране: {FormatLocalTime(Generation.GeneratedAtUtc, "yyyy-MM-dd HH:mm")}" : Generation?.Available == true ? $"Затворени свещи към {FormatLocalTime(Generation.AsOfUtc, "yyyy-MM-dd HH:mm")} · policy {Generation.PolicyVersion}" : "Сценариите изискват наличен Python генератор.")</span>
+        <span>@(Generation?.IsStale == true ? "Кеширани сценарии · пазарният статус може да е остарял" : Generation?.ModelStatus == "loaded" ? $"AI оценка за TP1 преди SL · {Generation.ModelOutcomeHorizonHours}h" : Generation?.ModelStatus == "policy_mismatch" ? "Активният модел не съвпада с версията на правилата" : "Правилов сценарий · няма съвместим активен AI модел")</span>
+    </div>
+</section>
+
+<div class="notice-strip"><strong>Информация:</strong> BUY LIMIT изчаква спад до зоната за покупка, а SELL LIMIT — покачване до зоната за продажба. Целевата цена е средата на зоната; известието се появява при live котировка в диапазона. Сигналите не изпращат поръчки автоматично.</div>
+
+@code {
+    private static readonly (string Label, string Status, string Description, string Tone)[] StatusSummary =
+    [
+        ("АКТИВНИ", "OPEN", "Очакват вход или развиват се", "green"),
+        ("TP1", "CLOSED_TP", "Първа цел е достигната", "green"),
+        ("СТОП", "CLOSED_SL", "Сценарийът е приключил", "red"),
+        ("ИЗТЕКЛИ", "EXPIRED", "Хоризонтът е изтекъл", "muted")
+    ];
+
+    private string Status { get; set; } = "";
+    private string Direction { get; set; } = "";
+    private string MinimumModelProbability { get; set; } = "";
+    private string Date { get; set; } = "";
+    private string Search { get; set; } = "";
+    private bool IsRefreshing { get; set; }
+    private CandidateGenerationResult? Generation { get; set; }
+    private LearningStatusResult? Learning { get; set; }
+    private UserProfileResult? UserProfile { get; set; }
+    private Dictionary<string, SignalJournalDraft> JournalDrafts { get; } = new(StringComparer.Ordinal);
+    private string? JournalSavingSignalId { get; set; }
+    private string? JournalNotice { get; set; }
+    private bool JournalNoticeIsError { get; set; }
+    private string ActivationApprover { get; set; } = "";
+    private bool IsActivatingCandidate { get; set; }
+    private string? CandidateActivationNotice { get; set; }
+    private bool CandidateActivationNoticeIsError { get; set; }
+    private MarketTickResult? LiveQuote { get; set; }
+    private string QuoteStatusText => LiveQuote?.Freshness != MarketFreshness.Fresh
+        ? "Котировката е остаряла; известията за вход са спрени"
+        : Generation?.IsStale == true
+            ? "Сценариите са кеширани; известията за вход са спрени"
+            : "Проверка на входните зони през 5 секунди";
+    private readonly CancellationTokenSource _lifetime = new();
+    private readonly HashSet<string> _alertedSignalIds = new(StringComparer.Ordinal);
+    private Dictionary<string, LiveEntryAlert> LiveEntryAlerts { get; } = new(StringComparer.Ordinal);
+
+    private IEnumerable<KeyValuePair<string, LearningHorizonStatus>> LearningHorizons =>
+        Learning?.Status?.Horizons.OrderBy(item => item.Key, StringComparer.OrdinalIgnoreCase)
+        ?? Enumerable.Empty<KeyValuePair<string, LearningHorizonStatus>>();
+
+    private IReadOnlyList<UserSignalJournalEntry> SavedJournalEntries =>
+        UserProfile?.Profile?.SignalJournal ?? [];
+
+    private decimal? MinimumModelProbabilityThreshold => MinimumModelProbability switch
+    {
+        "40" => 0.40m,
+        "50" => 0.50m,
+        "60" => 0.60m,
+        _ => null
+    };
+
+    private string LearningStateLabel => Learning?.Status?.Status switch
+    {
+        "candidate_ready" => "КАНДИДАТ ЗА ПРЕГЛЕД",
+        "collecting" => "СЪБИРА ДАННИ",
+        "waiting_for_data" => "ИЗЧАКВА ДАННИ",
+        "cycle_error" => "ГРЕШКА В ОБУЧЕНИЕТО",
+        _ => "РАБОТИ"
+    };
+
+    private IReadOnlyList<GeneratedSignalCandidate> FilteredSignals =>
+        (Generation?.Candidates ?? [])
+            .Where(signal => string.IsNullOrWhiteSpace(Status) || signal.Status == Status)
+            .Where(signal => string.IsNullOrWhiteSpace(Direction) || signal.Direction == Direction)
+            .Where(signal => MinimumModelProbabilityThreshold is null ||
+                (signal.ModelProbabilityPositiveOutcome is { } probability &&
+                    (decimal)probability >= MinimumModelProbabilityThreshold.Value))
+            .Where(signal => string.IsNullOrWhiteSpace(Search) || signal.SignalId.Contains(Search, StringComparison.OrdinalIgnoreCase))
+            .Where(signal => Date switch
+            {
+                "today" => signal.TimestampUtc.ToLocalTime().Date == DateTimeOffset.Now.Date,
+                "yesterday" => signal.TimestampUtc.ToLocalTime().Date == DateTimeOffset.Now.Date.AddDays(-1),
+                "older" => signal.TimestampUtc.ToLocalTime().Date < DateTimeOffset.Now.Date.AddDays(-1),
+                _ => true
+            })
+            .ToArray();
+
+    private string EmptyTitle => Generation?.Available == false
+        ? "Сценариите не са налични"
+        : Generation?.Candidates.Count == 0
+            ? "NEUTRAL · няма валиден setup"
+            : "Няма съвпадащи сценарии";
+
+    private string EmptyMessage => Generation?.Available == false
+        ? Generation.Message
+        : Generation?.Candidates.Count == 0
+            ? Generation.Message
+            : "Променете филтрите или обновете пазарните данни.";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAsync();
+        await RefreshLiveQuoteAsync(_lifetime.Token);
+        _ = PollLatestTickAsync(_lifetime.Token);
+    }
+
+    private int CountStatus(string status) => status == "OPEN"
+        ? Generation?.Candidates.Count(signal => signal.Status is "CREATED" or "TRIGGERED") ?? 0
+        : Generation?.Candidates.Count(signal => signal.Status == status) ?? 0;
+
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        try
+        {
+            var generationTask = SignalService.GetCandidatesAsync(_lifetime.Token);
+            var learningTask = LearningClient.GetLearningStatusAsync(_lifetime.Token);
+            var userProfileTask = LearningClient.GetUserProfileAsync(_lifetime.Token);
+            await Task.WhenAll(generationTask, learningTask, userProfileTask);
+            Generation = await generationTask;
+            ObserveLiveEntryZones();
+            Learning = await learningTask;
+            UserProfile = await userProfileTask;
+            if (UserProfile.Profile is not null)
+            {
+                foreach (var entry in UserProfile.Profile.SignalJournal)
+                {
+                    if (!JournalDrafts.ContainsKey(entry.SignalId))
+                    {
+                        JournalDrafts[entry.SignalId] = new SignalJournalDraft
+                        {
+                            IsFavorite = entry.IsFavorite,
+                            Note = entry.Note
+                        };
+                    }
+                }
+            }
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
+    private async Task RefreshLiveQuoteAsync(CancellationToken cancellationToken)
+    {
+        var result = await SignalService.GetCurrentQuoteAsync(cancellationToken);
+        LiveQuote = result;
+        ObserveLiveEntryZones();
+    }
+
+    private async Task PollLatestTickAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var result = await SignalService.GetCurrentQuoteAsync(cancellationToken);
+                await InvokeAsync(() =>
+                {
+                    LiveQuote = result;
+                    ObserveLiveEntryZones();
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private void ObserveLiveEntryZones()
+    {
+        var generation = Generation;
+        var quote = LiveQuote;
+        if (generation is null || generation.IsStale ||
+            quote is null || quote.Freshness != MarketFreshness.Fresh || quote.Tick is not { } tick)
+            return;
+
+        var now = DateTimeOffset.UtcNow;
+        foreach (var signal in generation.Candidates)
+        {
+            if (signal.Status != "CREATED" || GetExpiry(signal) <= now ||
+                tick.UpdatedAtUtc < signal.TimestampUtc || !IsSignalPriceInZone(signal, tick))
+                continue;
+            if (_alertedSignalIds.Add(signal.SignalId))
+            {
+                var triggerPrice = GetTriggerPrice(signal, tick);
+                LiveEntryAlerts[signal.SignalId] = new LiveEntryAlert(signal, triggerPrice, tick.UpdatedAtUtc);
+            }
+        }
+    }
+
+    private bool IsLiveEntryReached(GeneratedSignalCandidate signal) =>
+        Generation?.IsStale != true && signal.Status == "CREATED" &&
+        GetExpiry(signal) > DateTimeOffset.UtcNow &&
+        LiveQuote is { Freshness: MarketFreshness.Fresh, Tick: { } tick } &&
+        tick.UpdatedAtUtc >= signal.TimestampUtc &&
+        IsSignalPriceInZone(signal, tick);
+
+    private static bool IsSignalPriceInZone(GeneratedSignalCandidate signal, MarketTick tick)
+    {
+        var triggerPrice = GetTriggerPrice(signal, tick);
+        return triggerPrice >= signal.EntryLow && triggerPrice <= signal.EntryHigh;
+    }
+
+    private static decimal GetTriggerPrice(GeneratedSignalCandidate signal, MarketTick tick) =>
+        GetEntryOrderType(signal) == "BUY LIMIT" && tick.Ask > 0m ? tick.Ask :
+        GetEntryOrderType(signal) == "SELL LIMIT" && tick.Bid > 0m ? tick.Bid : tick.Price;
+
+    private static string GetEntryOrderType(GeneratedSignalCandidate signal) =>
+        signal.EntryOrderType ?? (signal.Direction == "BUY BELOW" ? "BUY LIMIT" : "SELL LIMIT");
+
+    private static decimal GetEntryPrice(GeneratedSignalCandidate signal) =>
+        signal.EntryPrice ?? (signal.EntryLow + signal.EntryHigh) / 2m;
+
+    private static DateTimeOffset GetExpiry(GeneratedSignalCandidate signal) =>
+        signal.TimestampUtc.AddHours(signal.HorizonHours);
+
+    private void DismissEntryAlert(string signalId) => LiveEntryAlerts.Remove(signalId);
+
+    public ValueTask DisposeAsync()
+    {
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+        return ValueTask.CompletedTask;
+    }
+
+    private async Task ActivateBestCandidateAsync()
+    {
+        if (Learning?.Status?.RecommendedCandidate is null || string.IsNullOrWhiteSpace(ActivationApprover))
+            return;
+
+        IsActivatingCandidate = true;
+        CandidateActivationNotice = null;
+        try
+        {
+            var result = await LearningClient.ActivateBestCandidateAsync(ActivationApprover);
+            if (!result.Available || result.Activation is null)
+            {
+                CandidateActivationNotice = result.Message;
+                CandidateActivationNoticeIsError = true;
+                return;
+            }
+
+            var activation = result.Activation;
+            CandidateActivationNotice = $"Активиран е {activation.Horizon} модел {activation.ModelVersion} · одобрил {activation.ApprovedBy}.";
+            if (!string.IsNullOrWhiteSpace(activation.ArchivedPreviousArtifact))
+                CandidateActivationNotice += " Предишният модел е архивиран.";
+            CandidateActivationNoticeIsError = false;
+            ActivationApprover = "";
+
+            var refreshed = await LearningClient.GetLearningStatusAsync();
+            if (refreshed.Available)
+                Learning = refreshed;
+        }
+        finally
+        {
+            IsActivatingCandidate = false;
+        }
+    }
+
+    private SignalJournalDraft GetJournalDraft(string signalId)
+    {
+        if (!JournalDrafts.TryGetValue(signalId, out var draft))
+        {
+            draft = new SignalJournalDraft();
+            JournalDrafts[signalId] = draft;
+        }
+        return draft;
+    }
+
+    private async Task ToggleFavoriteAsync(string signalId)
+    {
+        var draft = GetJournalDraft(signalId);
+        draft.IsFavorite = !draft.IsFavorite;
+        await SaveJournalAsync(signalId);
+    }
+
+    private async Task SaveJournalAsync(string signalId)
+    {
+        if (UserProfile?.Available != true)
+        {
+            JournalNotice = UserProfile?.Message ?? "Личната база данни не е достъпна.";
+            JournalNoticeIsError = true;
+            return;
+        }
+
+        var draft = GetJournalDraft(signalId);
+        JournalSavingSignalId = signalId;
+        JournalNotice = null;
+        try
+        {
+            var result = await LearningClient.SaveUserSignalEntryAsync(signalId, draft.IsFavorite, draft.Note);
+            if (!result.Available)
+            {
+                JournalNotice = result.Message;
+                JournalNoticeIsError = true;
+                return;
+            }
+
+            if (result.Entry is null)
+                JournalDrafts.Remove(signalId);
+            if (UserProfile?.Profile is { } profile)
+            {
+                var entries = result.Entry is null
+                    ? profile.SignalJournal.Where(entry => entry.SignalId != signalId).ToArray()
+                    : profile.SignalJournal.Where(entry => entry.SignalId != signalId)
+                        .Append(result.Entry)
+                        .OrderByDescending(entry => entry.UpdatedAtUtc)
+                        .ToArray();
+                UserProfile = UserProfile with { Profile = profile with { SignalJournal = entries } };
+            }
+            JournalNotice = "Записано в личната база данни.";
+            JournalNoticeIsError = false;
+        }
+        finally
+        {
+            JournalSavingSignalId = null;
+        }
+    }
+
+    private static string FormatLearningTime(DateTimeOffset? value) =>
+        FormatLocalTime(value, "yyyy-MM-dd HH:mm");
+
+    private static string FormatLocalTime(DateTimeOffset? value, string format) =>
+        value is null ? "—" : FormatLocalTime(value.Value, format);
+
+    private static string FormatLocalTime(DateTimeOffset value, string format)
+    {
+        var localTime = value.ToLocalTime();
+        return $"{localTime.ToString(format)} UTC{localTime:zzz}";
+    }
+
+    private async Task DeleteJournalEntryAsync(string signalId)
+    {
+        var draft = GetJournalDraft(signalId);
+        draft.IsFavorite = false;
+        draft.Note = "";
+        await SaveJournalAsync(signalId);
+    }
+
+    private static string LearningHorizonLabel(LearningHorizonStatus horizon) =>
+        horizon.ModelVersion is not null && horizon.ModelVersion == horizon.ActiveModelVersion
+            ? "АКТИВЕН"
+            : horizon.TrainingState switch
+            {
+                "candidate_ready" => "КАНДИДАТ",
+                "collecting_labels" => "СЪБИРА РЕЗУЛТАТИ",
+                "not_trainable_yet" => "ЧАКА КЛАСОВЕ",
+                "waiting_for_data" => "ИЗЧАКВА ДАННИ",
+                _ => horizon.TrainingState.ToUpperInvariant()
+            };
+
+    private static string CalibrationMethodLabel(string method) => method switch
+    {
+        "isotonic" => "Isotonic",
+        "platt_sigmoid" => "Platt sigmoid",
+        _ => "uncalibrated"
+    };
+
+    private sealed class SignalJournalDraft
+    {
+        public bool IsFavorite { get; set; }
+        public string Note { get; set; } = "";
+    }
+
+    private sealed record LiveEntryAlert(
+        GeneratedSignalCandidate Signal,
+        decimal TriggerPrice,
+        DateTimeOffset DetectedAtUtc);
+}

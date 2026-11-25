@@ -1,0 +1,46 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261116133013
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 21828
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-training-service-20261116-133013.log
+Unable to copy 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib
+\\venv\\scripts\\nt\\venvlauncher.exe' to 'E:\\Projects_MT5\\XYN_Trader\\ai-service\\.venv\\Scripts\\python.exe'
+ments.txt (line 2)) (1.3.0)
+Requirement already satisfied: websockets>=10.4 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r require
+ments.txt (line 2)) (17.4)
+Requirement already satisfied: annotated-types>=0.6.0 in .\.venv\Lib\site-packages (from pydantic!=1.8,!=1.8.1,!=2.0.0,!
+=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi==0.115.12->-r requirements.txt (line 1)) (0.8.0)
+Requirement already satisfied: pydantic-core==2.50.4 in .\.venv\Lib\site-packages (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=
+2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi==0.115.12->-r requirements.txt (line 1)) (2.50.4)
+Requirement already satisfied: typing-inspection>=0.4.4 in .\.venv\Lib\site-packages (from pydantic!=1.8,!=1.8.1,!=2.0.0
+,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi==0.115.12->-r requirements.txt (line 1)) (0.4.5)
+Requirement already satisfied: anyio<5,>=3.6.2 in .\.venv\Lib\site-packages (from starlette<0.47.0,>=0.40.0->fastapi==0.
+115.12->-r requirements.txt (line 1)) (4.16.0)
+Requirement already satisfied: idna>=2.8 in .\.venv\Lib\site-packages (from anyio<5,>=3.6.2->starlette<0.47.0,>=0.40.0->
+fastapi==0.115.12->-r requirements.txt (line 1)) (3.20)
+
+[notice] A new release of pip is available: 26.1.2 -> 26.3
+[notice] To update, run: E:\Projects_MT5\XYN_Trader\ai-service\.venv\Scripts\python.exe -m pip install --upgrade pip
+
+
+
+
+
+**********************
+Windows PowerShell transcript end
+End time: 20261116133044
+**********************

@@ -1,0 +1,30 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261116051337
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 18324
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-training-service-20261116-051337.log
+
+
+
+
+
+
+
+**********************
+Windows PowerShell transcript end
+End time: 20261116051412
+**********************

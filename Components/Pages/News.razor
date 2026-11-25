@@ -1,0 +1,176 @@
+@page "/news"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject NewsFeedService NewsFeed
+
+<PageTitle>Новини — XYN Trader</PageTitle>
+
+<div class="page-heading">
+    <div><div class="eyebrow"><span></span> XAUUSD / НОВИНАРСКИ FEED</div><h1>Новини<span>.</span></h1><p>Заглавия за злато, щатския долар и макроикономиката.</p></div>
+    <button class="refresh-button" @onclick="RefreshAsync" disabled="@IsRefreshing">@(IsRefreshing ? "Обновяване…" : "Обнови feed-а")</button>
+</div>
+
+<section class="metric-grid" aria-label="Новинарски риск">
+    <article class="metric-card"><div class="metric-label">ЕВРИСТИЧЕН РИСК</div><div class="metric-value"><i class="dot @RiskTone"></i> @(Feed is { Available: true } ? Feed.RiskLevel : "Недостъпен")</div><div class="metric-foot"><span>Не е икономически календар</span><span>@(Feed?.RiskScore ?? 0)/100</span></div></article>
+    <article class="metric-card"><div class="metric-label">РЕЛЕВАНТНИ ЗАГЛАВИЯ</div><div class="metric-value">@(Feed?.Articles.Count.ToString("00") ?? "—")</div><div class="metric-foot"><span>Прозорец: последните 24 часа</span><span>@NewsFeedService.SourceName</span></div></article>
+    <article class="metric-card"><div class="metric-label">ПОСЛЕДНО ОБНОВЯВАНЕ</div><div class="metric-value">@(Feed?.UpdatedAtUtc?.ToString("HH:mm 'UTC'") ?? "—")</div><div class="metric-foot"><span>@(Feed?.IsStale == true ? "Запазен отговор · остарял" : "Автоматично обновяване")</span><span>на 5 минути</span></div></article>
+    <article class="metric-card"><div class="metric-label">SENTIMENT ЗА ЗЛАТО</div><div class="metric-value"><i class="dot @SentimentTone"></i> @(Feed?.SentimentLabel ?? "Неизвестен")</div><div class="metric-foot"><span>Оценка @(Feed?.SentimentScore.ToString("+0.00;-0.00;0.00") ?? "—")</span><span>увереност @(Feed?.SentimentConfidence.ToString("P0") ?? "—")</span></div></article>
+</section>
+
+<section class="sentiment-panel" aria-label="Новинарски sentiment за златото">
+    <div class="sentiment-heading"><div><div class="panel-kicker">SENTIMENT ANALYSIS 2.0</div><h2>Пазарна посока от заглавията</h2></div><span>Евристичен речник · времево претегляне · 6 ч. полуживот</span></div>
+    <div class="sentiment-meter" aria-label="Скала от низходящ към възходящ sentiment"><span class="sentiment-marker" style="left: @SentimentPosition%"></span></div>
+    <div class="sentiment-meter-labels"><span>Низходящо</span><span>Неутрално</span><span>Възходящо</span></div>
+    <div class="sentiment-counts"><span><b class="bullish-text">@Feed?.BullishCount</b> възходящи</span><span><b class="bearish-text">@Feed?.BearishCount</b> низходящи</span><span><b>@Feed?.NeutralCount</b> неутрални</span></div>
+    <p>Оценката съчетава посоката на фразите за златото, доходността, долара, лихвите и търсенето. Тя описва заглавията във feed-а; не е обучен NLP модел или прогноза за доходност.</p>
+</section>
+
+<section class="market-status-panel @(Feed is { Available: true, IsStale: false } ? "market-connected" : Feed?.Available == true ? "market-stale" : "market-error")" role="status" aria-live="polite">
+    <div class="market-status-main"><i class="dot @RiskTone"></i><div><strong>@(Feed is { Available: true } ? Feed.RiskSummary : Feed?.Message ?? "Зареждане на новинарския feed…")</strong><span>Оценката е евристична: отчита скорошните заглавия и ключови макро/геополитически думи.</span></div></div>
+    <div class="market-metadata"><span>Източник<strong>@(Feed?.Source ?? NewsFeedService.SourceName)</strong></span><span>Статии<strong>@(Feed?.Articles.Count ?? 0)</strong></span></div>
+</section>
+
+<section class="panel news-page-panel">
+    <div class="panel-header"><div><div class="panel-kicker">ПОСЛЕДНИ ЗАГЛАВИЯ</div><h2>Злато и макроикономика</h2></div><a href="https://www.gdeltproject.org/" target="_blank" rel="noopener noreferrer">За GDELT ↗</a></div>
+    @if (Feed is not { Available: true })
+    {
+        <div class="empty-state"><strong>@(IsRefreshing ? "Зареждане на новини…" : "Няма връзка с новинарския доставчик")</strong><span>@(Feed?.Message ?? "Изчакване на първия отговор от GDELT…")</span></div>
+    }
+    else if (Feed.Articles.Count == 0)
+    {
+        <div class="empty-state"><strong>Няма намерени заглавия</strong><span>Липсата на заглавия не означава липса на пазарен риск.</span></div>
+    }
+    else
+    {
+        <div class="news-article-list">
+            @foreach (var article in Feed.Articles)
+            {
+                <a class="news-page-item" href="@article.Url" target="_blank" rel="noopener noreferrer">
+                    <span class="news-page-meta"><b class="@article.ImpactTone">@article.Impact</b><span>@article.Source</span><time datetime="@article.PublishedAtUtc.ToString("O")">@article.PublishedAtUtc.ToString("yyyy-MM-dd HH:mm 'UTC'")</time></span>
+                    <strong>@article.Title</strong>
+                    <span class="news-sentiment-row">
+                        <b class="sentiment-tag @ArticleSentimentTone(article.SentimentLabel)">@article.SentimentLabel · @article.SentimentScore.ToString("+0.00;-0.00;0.00")</b>
+                        <span>увереност @article.SentimentConfidence.ToString("P0")</span>
+                        @if (article.SentimentThemes?.Count > 0)
+                        {
+                            <span>· @string.Join(" · ", article.SentimentThemes)</span>
+                        }
+                    </span>
+                    <span class="news-open-link">Отвори оригинала ↗</span>
+                </a>
+            }
+        </div>
+    }
+    <div class="analysis-foot"><span>Автоматично обновяване през @NewsFeed.RefreshInterval.TotalMinutes.ToString("0") минути.</span><span>Показани са заглавия с времеви печат за последните 24 часа.</span></div>
+</section>
+
+@code {
+    private readonly CancellationTokenSource _lifetime = new();
+    private NewsFeedSnapshot? Feed { get; set; }
+    private bool IsRefreshing { get; set; }
+
+    private string RiskTone => Feed?.RiskLevel switch
+    {
+        "Висок" => "red",
+        "Умерен" => "amber",
+        "Нисък" => "green",
+        _ => "muted"
+    };
+
+    private string SentimentTone => Feed?.SentimentLabel switch
+    {
+        "Възходящо" => "green",
+        "Низходящо" => "red",
+        "Неутрално" => "amber",
+        _ => "muted"
+    };
+
+    private double SentimentPosition => Math.Clamp(((Feed?.SentimentScore ?? 0) + 1) * 50, 0, 100);
+
+    private static string ArticleSentimentTone(string sentiment) => sentiment switch
+    {
+        "Възходящо" => "bullish",
+        "Низходящо" => "bearish",
+        _ => "neutral"
+    };
+
+    protected override Task OnInitializedAsync()
+    {
+        Feed = NewsFeed.GetCachedSnapshot();
+        IsRefreshing = Feed is not { Available: true, IsStale: false };
+        _ = LoadInitialAsync(_lifetime.Token);
+        _ = PollAsync(_lifetime.Token);
+        return Task.CompletedTask;
+    }
+
+    private async Task LoadInitialAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await NewsFeed.GetLatestAsync(cancellationToken: cancellationToken);
+            await InvokeAsync(() =>
+            {
+                Feed = result;
+                IsRefreshing = false;
+                StateHasChanged();
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (Exception)
+        {
+            await InvokeAsync(() =>
+            {
+                if (Feed is not { Available: true })
+                {
+                    Feed = NewsFeedSnapshot.Unavailable(
+                        NewsFeedService.SourceName,
+                        "Новинарският feed не отговори. Последният запазен отговор ще се покаже при следващо обновяване.");
+                }
+                IsRefreshing = false;
+                StateHasChanged();
+            });
+        }
+    }
+
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        try
+        {
+            Feed = await NewsFeed.GetLatestAsync(forceRefresh: true, cancellationToken: _lifetime.Token);
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
+    private async Task PollAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(NewsFeed.RefreshInterval);
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var result = await NewsFeed.GetLatestAsync(cancellationToken: cancellationToken);
+                await InvokeAsync(() =>
+                {
+                    Feed = result;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}

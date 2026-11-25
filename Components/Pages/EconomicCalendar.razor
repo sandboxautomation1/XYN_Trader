@@ -1,0 +1,199 @@
+@page "/calendar"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject EconomicCalendarService Calendar
+
+<PageTitle>Икономически календар — XYN Trader</PageTitle>
+
+<div class="page-heading">
+    <div><div class="eyebrow"><span></span> XAUUSD / МАКРО ГРАФИК</div><h1>Икономически календар<span>.</span></h1><p>Официално обявени публикации от САЩ, важни за долара и златото.</p></div>
+    <button class="refresh-button" @onclick="RefreshAsync" disabled="@IsRefreshing">@(IsRefreshing ? "Обновяване…" : "Обнови графиците")</button>
+</div>
+
+<section class="metric-grid" aria-label="Състояние на икономическия календар">
+    <article class="metric-card"><div class="metric-label">СЪБИТИЯ В ПЕРИОДА</div><div class="metric-value">@(Snapshot?.Events.Count.ToString("00") ?? "—")</div><div class="metric-foot"><span>Следващи @SelectedDays дни</span><span>САЩ</span></div></article>
+    <article class="metric-card"><div class="metric-label">ВИСОКО ВЪЗДЕЙСТВИЕ</div><div class="metric-value">@(Snapshot?.Events.Count(item => item.Impact == "Високо").ToString("00") ?? "—")</div><div class="metric-foot"><span>Официални публикации</span><span>BLS · BEA · Census · Fed</span></div></article>
+    <article class="metric-card"><div class="metric-label">ИЗТОЧНИЦИ</div><div class="metric-value">@(Snapshot?.Sources.Count(source => source.Available).ToString("0") ?? "—") / @(Snapshot?.Sources.Count.ToString("0") ?? "5")</div><div class="metric-foot"><span>@(Snapshot?.IsStale == true ? "Частично / запазени данни" : "Статус на връзката")</span><span>официални графици</span></div></article>
+    <article class="metric-card"><div class="metric-label">ПОСЛЕДЕН ОПИТ</div><div class="metric-value">@(Snapshot?.UpdatedAtUtc?.ToString("HH:mm 'UTC'") ?? "—")</div><div class="metric-foot"><span>@(Snapshot?.IsStale == true ? "Има остарял източник" : "Обновяване автоматично")</span><span>@Calendar.RefreshInterval.TotalMinutes.ToString("0") мин.</span></div></article>
+</section>
+
+<section class="market-status-panel @(StatusClass)" role="status" aria-live="polite">
+    <div class="market-status-main"><i class="dot @StatusDot"></i><div><strong>@StatusText</strong><span>@(Snapshot?.Message ?? "Графиците се четат от официалните страници на статистическите агенции и Федералния резерв.")</span></div></div>
+    <div class="market-metadata"><span>Хоризонт<strong>@SelectedDays дни</strong></span><span>Часова зона<strong>ET · UTC</strong></span></div>
+</section>
+
+<section class="panel economic-calendar-panel">
+    <div class="panel-header calendar-header">
+        <div><div class="panel-kicker">ОФИЦИАЛНИ ДАТИ И ГРАФИЦИ</div><h2>Предстоящи макроикономически публикации</h2></div>
+        <div class="calendar-range" aria-label="Избор на период">
+            @foreach (var days in DayRanges)
+            {
+                <button class="@(SelectedDays == days ? "selected" : "")" @onclick="() => SelectRangeAsync(days)" aria-pressed="@(SelectedDays == days)">@days дни</button>
+            }
+        </div>
+    </div>
+
+    @if (Snapshot is not { Available: true })
+    {
+        <div class="empty-state calendar-empty"><strong>@(IsRefreshing ? "Зареждане на официалните графици…" : "Календарът временно не е достъпен")</strong><span>@(Snapshot?.Message ?? "Изчакване на първия отговор от BLS, BEA, Census и Федералния резерв.")</span></div>
+    }
+    else if (Snapshot.Events.Count == 0)
+    {
+        <div class="empty-state calendar-empty"><strong>Няма насрочени събития за избрания период</strong><span>Провери по-дълъг период или обнови графиците.</span></div>
+    }
+    else
+    {
+        <div class="calendar-event-list">
+            @foreach (var day in Snapshot.Events.GroupBy(item => item.EventDate).OrderBy(group => group.Key))
+            {
+                <section class="calendar-day">
+                    <div class="calendar-date"><strong>@day.Key.ToDateTime(TimeOnly.MinValue).ToString("dd MMM", BulgarianCulture)</strong><span>@day.Key.ToDateTime(TimeOnly.MinValue).ToString("dddd", BulgarianCulture)</span></div>
+                    <div class="calendar-day-events">
+                        @foreach (var item in day.OrderBy(item => item.ScheduledAtUtc).ThenBy(item => item.Title, StringComparer.OrdinalIgnoreCase))
+                        {
+                            <a class="calendar-event" href="@item.SourceUrl" target="_blank" rel="noopener noreferrer">
+                                <span class="calendar-event-time">@FormatEventTime(item)</span>
+                                <span class="calendar-event-copy"><strong>@item.Title</strong><small>@item.Country · @item.Category · @item.Source</small></span>
+                                <span class="calendar-event-tags"><b class="calendar-impact @(item.Impact == "Високо" ? "high" : "medium")">@item.Impact</b>@if (item.IsTentative) { <b class="calendar-tentative">Предварително</b> }</span>
+                                <span class="calendar-open" aria-hidden="true">↗</span>
+                            </a>
+                        }
+                    </div>
+                </section>
+            }
+        </div>
+    }
+
+    <div class="calendar-source-list">
+        <div class="panel-kicker">СЪСТОЯНИЕ НА ИЗТОЧНИЦИТЕ</div>
+        @if (Snapshot?.Sources.Count > 0)
+        {
+            @foreach (var source in Snapshot.Sources)
+            {
+                <a class="calendar-source" href="@SourceUrl(source.Name)" target="_blank" rel="noopener noreferrer">
+                    <i class="dot @(source.Available ? "green" : "amber")"></i><strong>@source.Name</strong>
+                    <span>@(source.Available ? $"Обновено {source.UpdatedAtUtc?.ToString("HH:mm 'UTC'")}" : source.Message ?? "Използва се последният запазен отговор")</span>
+                    <b>@(source.Available ? "Достъпен" : "Остарял")</b>
+                </a>
+            }
+        }
+        else
+        {
+            <div class="calendar-source"><i class="dot amber"></i><strong>BLS · BEA · Census · Federal Reserve</strong><span>Източниците ще се появят след първото обновяване.</span><b>Изчакване</b></div>
+        }
+    </div>
+    <div class="analysis-foot calendar-foot"><span>Графици: BLS · BEA · U.S. Census Bureau · Federal Reserve. GDELT е за новинарски контекст.</span><span>Часовете са в ET и UTC; FOMC датите са без час.</span></div>
+</section>
+
+@code {
+    private static readonly int[] DayRanges = [7, 14, 30];
+    private static readonly CultureInfo BulgarianCulture = CultureInfo.GetCultureInfo("bg-BG");
+    private static readonly TimeZoneInfo EasternTimeZone = FindEasternTimeZone();
+    private readonly CancellationTokenSource _lifetime = new();
+    private EconomicCalendarSnapshot? Snapshot { get; set; }
+    private bool IsRefreshing { get; set; }
+    private int SelectedDays { get; set; } = 7;
+
+    private string StatusClass => Snapshot is { Available: true, IsStale: false }
+        ? "market-connected"
+        : Snapshot?.Available == true ? "market-stale" : "market-error";
+
+    private string StatusDot => Snapshot is { Available: true, IsStale: false }
+        ? "green"
+        : Snapshot?.Available == true ? "amber" : "red";
+
+    private string StatusText => Snapshot is { Available: true, IsStale: false }
+        ? "Официалните графици са обновени"
+        : Snapshot?.Available == true ? "Част от графиците са остарели" : "Няма наличен официален график";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Snapshot = Calendar.GetCachedSnapshot(SelectedDays);
+        IsRefreshing = Snapshot is not { Available: true, IsStale: false };
+        await LoadAsync(false, _lifetime.Token);
+        _ = PollAsync(_lifetime.Token);
+    }
+
+    private async Task LoadAsync(bool forceRefresh, CancellationToken cancellationToken)
+    {
+        try
+        {
+            Snapshot = await Calendar.GetLatestAsync(SelectedDays, forceRefresh, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        await LoadAsync(true, _lifetime.Token);
+    }
+
+    private async Task SelectRangeAsync(int days)
+    {
+        SelectedDays = days;
+        Snapshot = Calendar.GetCachedSnapshot(days);
+        await LoadAsync(false, _lifetime.Token);
+    }
+
+    private async Task PollAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(Calendar.RefreshInterval);
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                var snapshot = await Calendar.GetLatestAsync(SelectedDays, cancellationToken: cancellationToken);
+                await InvokeAsync(() =>
+                {
+                    Snapshot = snapshot;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private static string FormatEventTime(EconomicCalendarEvent item)
+    {
+        if (item.IsAllDay || item.ScheduledAtUtc is null)
+            return "Часът не е посочен";
+        var easternTime = TimeZoneInfo.ConvertTime(item.ScheduledAtUtc.Value, EasternTimeZone);
+        return $"{easternTime:HH:mm} ET · {item.ScheduledAtUtc.Value:HH:mm} UTC";
+    }
+
+    private static string SourceUrl(string source) => source.StartsWith("BLS", StringComparison.OrdinalIgnoreCase)
+        ? EconomicCalendarService.BlsScheduleUrl
+        : source.StartsWith("BEA", StringComparison.OrdinalIgnoreCase)
+            ? EconomicCalendarService.BeaScheduleUrl
+            : source.StartsWith("US Census", StringComparison.OrdinalIgnoreCase)
+                ? EconomicCalendarService.CensusCalendarUrl
+                : EconomicCalendarService.FomcCalendarUrl;
+
+    private static TimeZoneInfo FindEasternTimeZone()
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+        }
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}

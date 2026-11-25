@@ -1,0 +1,21 @@
+{
+  "model_version": "lgbm-24h-20261116T085341Z-7dfaaa15c625",
+  "horizon": "24h",
+  "calibration_method": "platt_sigmoid",
+  "is_calibrated": true,
+  "calibration_rows": 64,
+  "raw_holdout_brier_score": 0.28765809549844,
+  "holdout_expected_calibration_error": 0.299211370345188,
+  "policy_version": "swing-zones-atr-v2",
+  "policy_sha256": "f8ff65c676959666438138a949288aea6f83bd0091cb533544e9c161cd8e321b",
+  "approved_by": "lgbm-24h-20261116T085341Z-7dfaaa15c625",
+  "promoted_at_utc": "2026-11-23T11:09:46.861477+00:00",
+  "minimum_holdout_auc": 0.5,
+  "holdout_auc": 0.6000000000000001,
+  "maximum_holdout_brier_score": 0.35562499999999997,
+  "holdout_brier_score": 0.3200043795302896,
+  "dataset_sha256": "7dfaaa15c6250a15f91c2801644680dda3fdb4243cfd4c175c44ca6059e3347a",
+  "candidate_artifact": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\models\\candidates\\lightgbm_24h_7dfaaa15c625.joblib",
+  "active_artifact": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\models\\lightgbm_24h.joblib",
+  "archived_previous_artifact": null
+}

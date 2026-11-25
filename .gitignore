@@ -1,0 +1,16 @@
+bin/
+obj/
+node_modules/
+dist/
+data/
+ai-service/.venv/
+ai-service/__pycache__/
+ai-service/data/
+mt5-bridge/.venv/
+mt5-bridge/mt5_bridge/__pycache__/
+mt5-bridge/.runtime/
+ai-service/models/*.joblib
+ai-service/models/candidates/
+*.user
+*.suo
+appsettings.json

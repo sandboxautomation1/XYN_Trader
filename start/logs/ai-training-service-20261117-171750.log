@@ -1,0 +1,75 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261117171750
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe E:\Projects_MT5\XYN_Trader\start\run-ai-training-and-service.ps1
+Process ID: 3408
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-training-service-20261117-171750.log
+Unable to copy 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\venv\\scripts\\nt\\venvlauncher.exe' to 'E:\\Projects_MT5\\XYN_Trader\\ai-service\\.ven
+v\\Scripts\\python.exe'
+Requirement already satisfied: fastapi==0.115.12 in .\.venv\Lib\site-packages (from -r requirements.txt (line 1)) (0.115.12)
+Requirement already satisfied: uvicorn==0.34.0 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (0.34.0)
+Requirement already satisfied: lightgbm==4.6.0 in .\.venv\Lib\site-packages (from -r requirements.txt (line 3)) (4.6.0)
+Requirement already satisfied: numpy==2.2.4 in .\.venv\Lib\site-packages (from -r requirements.txt (line 4)) (2.2.4)
+Requirement already satisfied: pandas==2.2.3 in .\.venv\Lib\site-packages (from -r requirements.txt (line 5)) (2.2.3)
+Requirement already satisfied: scikit-learn==1.6.1 in .\.venv\Lib\site-packages (from -r requirements.txt (line 6)) (1.6.1)
+Requirement already satisfied: joblib==1.4.2 in .\.venv\Lib\site-packages (from -r requirements.txt (line 7)) (1.4.2)
+Requirement already satisfied: starlette<0.47.0,>=0.40.0 in .\.venv\Lib\site-packages (from fastapi==0.115.12->-r requirements.txt (line 1)) (0.46.2)
+Requirement already satisfied: pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4 in .\.venv\Lib\site-packages (from fastapi==0.115.12->-r requirements.txt (line 1)) (2.14.3)
+Requirement already satisfied: typing-extensions>=4.8.0 in .\.venv\Lib\site-packages (from fastapi==0.115.12->-r requirements.txt (line 1)) (4.16.0)
+Requirement already satisfied: click>=7.0 in .\.venv\Lib\site-packages (from uvicorn==0.34.0->uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (8.5.1)
+Requirement already satisfied: h11>=0.8 in .\.venv\Lib\site-packages (from uvicorn==0.34.0->uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (0.16.0)
+Requirement already satisfied: scipy in .\.venv\Lib\site-packages (from lightgbm==4.6.0->-r requirements.txt (line 3)) (1.18.1)
+Requirement already satisfied: python-dateutil>=2.8.2 in .\.venv\Lib\site-packages (from pandas==2.2.3->-r requirements.txt (line 5)) (4.0.0)
+Requirement already satisfied: pytz>=2020.1 in .\.venv\Lib\site-packages (from pandas==2.2.3->-r requirements.txt (line 5)) (2026.6)
+Requirement already satisfied: tzdata>=2022.7 in .\.venv\Lib\site-packages (from pandas==2.2.3->-r requirements.txt (line 5)) (2026.6)
+Requirement already satisfied: threadpoolctl>=3.1.0 in .\.venv\Lib\site-packages (from scikit-learn==1.6.1->-r requirements.txt (line 6)) (3.8.0)
+Requirement already satisfied: colorama>=0.4 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (0.4.6)
+Requirement already satisfied: httptools>=0.6.3 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (0.9.0)
+Requirement already satisfied: python-dotenv>=0.13 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (1.2.4)
+Requirement already satisfied: pyyaml>=5.1 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (6.0.3)
+Requirement already satisfied: watchfiles>=0.13 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (1.3.0)
+Requirement already satisfied: websockets>=10.4 in .\.venv\Lib\site-packages (from uvicorn[standard]==0.34.0->-r requirements.txt (line 2)) (17.4)
+Requirement already satisfied: annotated-types>=0.6.0 in .\.venv\Lib\site-packages (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi==0.115.12->-r requirements.txt (line 1)) (0.8.0)
+Requirement already satisfied: pydantic-core==2.50.4 in .\.venv\Lib\site-packages (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi==0.115.12->-r requirements.txt (line 1)) (2.50.4)
+Requirement already satisfied: typing-inspection>=0.4.4 in .\.venv\Lib\site-packages (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi==0.115.12->-r requirements.txt (line 1)) (0.4.5)
+Requirement already satisfied: anyio<5,>=3.6.2 in .\.venv\Lib\site-packages (from starlette<0.47.0,>=0.40.0->fastapi==0.115.12->-r requirements.txt (line 1)) (4.16.0)
+Requirement already satisfied: idna>=2.8 in .\.venv\Lib\site-packages (from anyio<5,>=3.6.2->starlette<0.47.0,>=0.40.0->fastapi==0.115.12->-r requirements.txt (line 1)) (3.20)
+
+[notice] A new release of pip is available: 26.1.2 -> 26.3
+[notice] To update, run: E:\Projects_MT5\XYN_Trader\ai-service\.venv\Scripts\python.exe -m pip install --upgrade pip
+source: MetaTrader 5 via mt5-bridge
+symbol: XAUUSD
+timeframe: H1
+requests: 75
+candles: 17003
+output: data\xauusd_h1.csv
+policy_version: swing-zones-atr-v2
+policy_sha256: b33123f979e4e873ea655659d9b020c645e0cf438ba34c0484edb4e0578cd0d7
+candle_interval: 1h
+candidate_count: 421
+buy_below_count: 220
+sell_below_count: 201
+neutral_bars: 16582
+candles_sha256: 305d2090bcc82f7592e7c4c5f60700848ec7aa7ceed01fc7a5951b000c2d166f
+policy_source: signal_policy.json
+output: data\signal_candidates.csv
+dataset: data\train_1h.csv
+
+
+**********************
+Windows PowerShell transcript end
+End time: 20261117171908
+**********************

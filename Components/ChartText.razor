@@ -1,0 +1,10 @@
+<text x="@X.ToString(CultureInfo.InvariantCulture)"
+      y="@Y.ToString(CultureInfo.InvariantCulture)"
+      class="@CssClass">@Text</text>
+
+@code {
+    [Parameter] public double X { get; set; }
+    [Parameter] public double Y { get; set; }
+    [Parameter] public string CssClass { get; set; } = "";
+    [Parameter] public string Text { get; set; } = "";
+}
