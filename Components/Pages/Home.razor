@@ -76,7 +76,7 @@
         </button>
     </div>
     <div class="position-disclaimer">
-        Въведи суми във валутата на MT5 сметката. Stop Loss се задава като положителна сума и задейства при същата отрицателна стойност на P/L. При достигане на праг се изпраща пазарна заявка за затваряне; проверката работи през 2 секунди, докато приложението и MT5 bridge са включени. Крайният резултат може да се различава според изпълнението. Празно поле изключва съответния праг.
+        Ценовите SL и TP по-долу се променят директно в MT5. Праговете по сума са отделна функция на приложението: при достигането им се изпраща пазарна заявка за затваряне, докато приложението и MT5 bridge са включени.
         @if (PositionData?.RetrievedAtUtc is { } positionsUpdated)
         {
             <span> · Проверено @positionsUpdated.ToString("HH:mm:ss 'UTC'")</span>
@@ -122,10 +122,42 @@
                         <div><span>TAKE PROFIT</span><strong>@(position.TakeProfit > 0m ? FormatPrice(position.TakeProfit, position.Digits) : "няма")</strong></div>
                     </div>
                     @{
+                        var protectionForm = GetPositionProtectionForm(position);
+                    }
+                    <div class="position-protection-editor" aria-label="Ценови Stop Loss и Take Profit в MT5">
+                        <div class="position-editor-heading">
+                            <strong>Ценови нива в MT5</strong>
+                            <span>Празно поле или 0 премахва съответното ниво.</span>
+                        </div>
+                        <label>
+                            <span>STOP LOSS · цена</span>
+                            <input type="number" min="0" step="@GetPriceStep(position.Digits)"
+                                   @bind="protectionForm.StopLossText" @bind:event="oninput"
+                                   disabled="@(ActionInProgressTicket is not null)"
+                                   aria-label="Ценови Stop Loss за позиция @position.Ticket" />
+                        </label>
+                        <label>
+                            <span>TAKE PROFIT · цена</span>
+                            <input type="number" min="0" step="@GetPriceStep(position.Digits)"
+                                   @bind="protectionForm.TakeProfitText" @bind:event="oninput"
+                                   disabled="@(ActionInProgressTicket is not null)"
+                                   aria-label="Ценови Take Profit за позиция @position.Ticket" />
+                        </label>
+                        <button class="position-action-button save-protection"
+                                @onclick="() => SavePositionProtectionAsync(review)"
+                                disabled="@(ActionInProgressTicket is not null)">
+                            @(ActionInProgressTicket == position.Ticket ? "Промяна…" : "Задай SL / TP")
+                        </button>
+                    </div>
+                    @{
                         var limitForm = GetPositionLimitForm(position.Ticket);
                         var activeLimits = PositionProfitTargets.Get(position.Ticket);
                     }
-                    <div class="position-limit-editor" aria-label="Автоматично затваряне по сума" style="font-size: small">
+                    <div class="position-limit-editor" aria-label="Автоматично затваряне по сума">
+                        <div class="position-editor-heading">
+                            <strong>Автоматично затваряне по P/L</strong>
+                            <span>Суми във валутата на MT5 сметката.</span>
+                        </div>
                         <label>
                             <span>TAKE PROFIT · @LimitCurrency(openPositions.AccountCurrency)</span>
                             <input type="number" min="0" step="any" inputmode="decimal" placeholder="напр. 1000"
@@ -355,11 +387,18 @@
     private string? PositionActionNotice { get; set; }
     private bool PositionActionSucceeded { get; set; }
     private readonly Dictionary<long, PositionLimitForm> PositionLimitForms = [];
+    private readonly Dictionary<long, PositionProtectionForm> PositionProtectionForms = [];
 
     private sealed class PositionLimitForm
     {
         public string TakeProfitText { get; set; } = string.Empty;
         public string StopLossText { get; set; } = string.Empty;
+    }
+
+    private sealed class PositionProtectionForm
+    {
+        public string StopLossText { get; set; } = string.Empty;
+        public string TakeProfitText { get; set; } = string.Empty;
     }
 
     private string NewsRiskTone => NewsData?.RiskLevel switch
@@ -593,6 +632,59 @@
         return form;
     }
 
+    private PositionProtectionForm GetPositionProtectionForm(Mt5OpenPosition position)
+    {
+        if (PositionProtectionForms.TryGetValue(position.Ticket, out var form))
+            return form;
+
+        form = new PositionProtectionForm
+        {
+            StopLossText = FormatPriceInput(position.StopLoss, position.Digits),
+            TakeProfitText = FormatPriceInput(position.TakeProfit, position.Digits)
+        };
+        PositionProtectionForms[position.Ticket] = form;
+        return form;
+    }
+
+    private async Task SavePositionProtectionAsync(OpenPositionReview review)
+    {
+        PositionActionNotice = null;
+        if (PositionData is not { Available: true } currentPositions ||
+            currentPositions.Reviews.All(item => item.Position.Ticket != review.Position.Ticket))
+        {
+            PositionActionSucceeded = false;
+            PositionActionNotice = "Позицията вече не е налична в MT5. Обнови списъка и опитай отново.";
+            return;
+        }
+
+        var form = GetPositionProtectionForm(review.Position);
+        if (!TryParseProtectionPrice(form.StopLossText, out var stopLoss) ||
+            !TryParseProtectionPrice(form.TakeProfitText, out var takeProfit))
+        {
+            PositionActionSucceeded = false;
+            PositionActionNotice = "Въведи валидни положителни цени или остави поле празно, за да премахнеш нивото.";
+            return;
+        }
+
+        var stopText = stopLoss is { } sl ? FormatPrice(sl, review.Position.Digits) : "премахни";
+        var targetText = takeProfit is { } tp ? FormatPrice(tp, review.Position.Digits) : "премахни";
+        var accepted = await JS.InvokeAsync<bool>(
+            "confirm",
+            $"Да променя ли ценовите нива на {review.Position.Symbol}, позиция #{review.Position.Ticket}? SL: {stopText}; TP: {targetText}. Празно поле или 0 премахва съответното ниво.");
+        if (!accepted)
+            return;
+
+        var result = await ExecutePositionActionAsync(
+            review.Position.Ticket,
+            () => PositionReview.ModifyPositionProtectionAsync(
+                review.Position.Ticket,
+                stopLoss,
+                takeProfit,
+                _lifetime.Token));
+        if (result)
+            PositionProtectionForms.Remove(review.Position.Ticket);
+    }
+
     private Task SetPositionProfitLimitsAsync(long ticket)
     {
         PositionActionNotice = null;
@@ -651,8 +743,30 @@
         return true;
     }
 
+    private static bool TryParseProtectionPrice(string value, out decimal? price)
+    {
+        price = null;
+        if (string.IsNullOrWhiteSpace(value))
+            return true;
+
+        if (!decimal.TryParse(value, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var parsed) &&
+            !decimal.TryParse(value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out parsed))
+            return false;
+        if (parsed < 0m)
+            return false;
+
+        price = parsed == 0m ? null : parsed;
+        return true;
+    }
+
     private static string FormatLimitInput(decimal? amount) =>
         amount?.ToString("0.##", CultureInfo.InvariantCulture) ?? string.Empty;
+
+    private static string FormatPriceInput(decimal price, int digits) =>
+        price > 0m ? price.ToString($"F{Math.Clamp(digits, 0, 8)}", CultureInfo.InvariantCulture) : string.Empty;
+
+    private static string GetPriceStep(int digits) =>
+        Math.Pow(10d, -Math.Clamp(digits, 0, 8)).ToString("0.########", CultureInfo.InvariantCulture);
 
     private static string LimitCurrency(string? currency) => currency ?? "валута";
 
@@ -685,22 +799,27 @@
             () => PositionReview.ClosePositionAfterReviewAsync(review.Position.Ticket, _lifetime.Token));
     }
 
-    private async Task ExecutePositionActionAsync(long ticket, Func<Task<PositionActionResult>> action)
+    private async Task<bool> ExecutePositionActionAsync(long ticket, Func<Task<PositionActionResult>> action)
     {
         ActionInProgressTicket = ticket;
         PositionActionNotice = null;
+        var succeeded = false;
         try
         {
             var result = await action();
             PositionActionSucceeded = result.Succeeded;
             PositionActionNotice = result.Message;
             if (result.Succeeded)
+            {
+                succeeded = true;
                 await RefreshPositionsAsync();
+            }
         }
         finally
         {
             ActionInProgressTicket = null;
         }
+        return succeeded;
     }
 
     private static string AdviceClass(PositionAdviceKind kind) => kind switch

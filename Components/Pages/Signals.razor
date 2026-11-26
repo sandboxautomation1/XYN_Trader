@@ -220,7 +220,7 @@
                             <small class="signal-order-form-note">Обемът е изчислен според зададения риск, SL и TP1 са от сигнала. Входът е пазарен; промяната на обема или SL променя риска.</small>
                             <div class="signal-order-form-actions">
                                 <button type="button" class="signal-order-cancel" @onclick="() => CloseSignalOrderForm(signal.SignalId)" disabled="@OpeningSignalIds.Contains(signal.SignalId)">Отказ</button>
-                                <button type="button" class="signal-order-submit" @onclick="() => OpenSignalPositionAsync(signal, orderDraft)" disabled="@(!CanSubmitSignal(signal, orderDraft) || OpeningSignalIds.Contains(signal.SignalId))" title="@GetOrderSubmitDisabledReason(signal, orderDraft)">
+                                <button type="button" class="signal-order-submit" @onclick="() => OpenSignalPositionAsync(signal, orderDraft)" disabled="@OpeningSignalIds.Contains(signal.SignalId)" title="@GetOrderSubmitDisabledReason(signal, orderDraft)">
                                     @(OpeningSignalIds.Contains(signal.SignalId) ? "Изпълнение…" : "Потвърди отваряне")
                                 </button>
                             </div>
@@ -258,7 +258,7 @@
     </div>
 </section>
 
-<div class="notice-strip"><strong>Информация:</strong> BUY LIMIT изчаква спад до зоната за покупка, а SELL LIMIT — покачване до зоната за продажба. Бутонът изпраща пазарна BUY/SELL поръчка само при свежа котировка в зоната; обемът използва зададения риск, стопът е SL, а целта е TP1. Сигналите не изпращат поръчки автоматично.</div>
+<div class="notice-strip"><strong>Информация:</strong> Бутонът изпраща ръчна пазарна BUY/SELL поръчка по посоката на сигнала с неговите SL и TP1, независимо от статуса и входната зона. Нужна е свежа котировка от MT5; брокерът може да откаже поръчката, ако нивата вече не са допустими. Сигналите не изпращат поръчки автоматично.</div>
 
 <details class="signal-disclosure">
     <summary><span>Калкулатор P/L и риск</span><small>Избран lot за P/L · процент риск за изпълнение</small></summary>
@@ -634,19 +634,12 @@
     }
 
     private bool CanConfigureSignal(GeneratedSignalCandidate signal) =>
-        (signal.Status is "CREATED" or "TRIGGERED") &&
-        (signal.Direction is "BUY BELOW" or "SELL BELOW") &&
-        GetExpiry(signal) > DateTimeOffset.UtcNow;
+        signal.Direction is "BUY BELOW" or "SELL BELOW";
 
     private string GetSignalFormDisabledReason(GeneratedSignalCandidate signal) =>
-        signal.Status is not ("CREATED" or "TRIGGERED") || GetExpiry(signal) <= DateTimeOffset.UtcNow
-            ? "Сигналът е приключил или е изтекъл."
-            : signal.Direction is not ("BUY BELOW" or "SELL BELOW")
-                ? "Посоката на сигнала не се поддържа за пазарна поръчка."
-                : "Отваря форма с параметрите на сигнала.";
-
-    private bool CanSubmitSignal(GeneratedSignalCandidate signal, SignalOrderDraft draft) =>
-        string.IsNullOrEmpty(GetOrderSubmitDisabledReason(signal, draft));
+        signal.Direction is not ("BUY BELOW" or "SELL BELOW")
+            ? "Посоката на сигнала не се поддържа за пазарна поръчка."
+            : "Отваря форма с параметрите на сигнала независимо от статуса му.";
 
     private string GetOrderSubmitDisabledReason(GeneratedSignalCandidate signal, SignalOrderDraft draft)
     {
@@ -657,21 +650,12 @@
         if (LiveQuote is not { Available: true, Freshness: MarketFreshness.Fresh, Tick: { } tick } ||
             tick.UpdatedAtUtc < signal.TimestampUtc)
             return "Изчаква се свежа котировка от MT5.";
-        if (!IsExecutablePriceInZone(signal, tick))
-            return "Пазарната цена трябва да е във входната зона на сигнала.";
         if (draft.VolumeLots is not { } volume || volume < 0.01m || volume > 1000m)
             return "Въведи обем между 0.01 и 1000 lot.";
         if (draft.StopLoss is not { } stopLoss || stopLoss <= 0m ||
             draft.TakeProfit is not { } takeProfit || takeProfit <= 0m)
             return "Въведи положителни стойности за Stop Loss и Take Profit.";
-
-        var marketPrice = GetExecutablePrice(signal, tick);
-        var levelsMatchPrice = signal.Direction == "BUY BELOW"
-            ? stopLoss < marketPrice && takeProfit > marketPrice
-            : stopLoss > marketPrice && takeProfit < marketPrice;
-        return levelsMatchPrice
-            ? ""
-            : "Stop Loss и Take Profit трябва да са от правилната страна на текущата цена.";
+        return "";
     }
 
     private static string GetMarketOrderType(GeneratedSignalCandidate signal) =>
@@ -739,9 +723,9 @@
             var quote = await Mt5.GetLatestTickAsync(signal.Symbol, _lifetime.Token);
             LiveQuote = quote;
             if (quote is not { Available: true, Freshness: MarketFreshness.Fresh, Tick: { } tick } ||
-                tick.UpdatedAtUtc < signal.TimestampUtc || !IsExecutablePriceInZone(signal, tick))
+                tick.UpdatedAtUtc < signal.TimestampUtc)
             {
-                SignalOrderNotices[signal.SignalId] = new(false, "Цената вече не е във входната зона или котировката не е свежа. Позиция не е отворена.");
+                SignalOrderNotices[signal.SignalId] = new(false, "Няма свежа котировка от MT5 след създаването на сигнала. Позиция не е отворена.");
                 return;
             }
 

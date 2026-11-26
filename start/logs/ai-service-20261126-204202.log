@@ -1,0 +1,149 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261126204202
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -File E:\Projects_MT5\XYN_Trader\start\start-ai-service.ps1
+Process ID: 17048
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-service-20261126-204202.log
+Checked 7 packages in 1.21s
+INFO:     Started server process [17760]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59036 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'runLearningCycle' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'runLearningCycle' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'runLearningCycle' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+INFO:     127.0.0.1:59036 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py:136: UserWarning: Could not find the number of physical cores for the following reason:
+[WinError 2] The system cannot find the file specified
+Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
+  warnings.warn(
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py", line 257, in _count_physical_cores
+    cpu_info = subprocess.run(
+        "wmic CPU Get NumberOfCores /Format:csv".split(),
+        capture_output=True,
+        text=True,
+    )
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 554, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1554, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+INFO:     127.0.0.1:59173 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63383 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56500 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56501 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56503 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64315 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64314 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64315 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58049 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58049 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61453 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61453 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53733 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53732 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53733 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'isFavorite' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'isFavorite' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'isFavorite' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'note' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'note' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'note' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+INFO:     127.0.0.1:57813 - "PUT /api/v1/user/signals/XYN-H1-20261125T220000Z-SELL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56438 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56438 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51506 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51507 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51506 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51507 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51506 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51507 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54697 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54697 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49287 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49286 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49287 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52185 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64643 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55599 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65124 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65124 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52179 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52179 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK

@@ -419,6 +419,17 @@ public sealed class Mt5MarketDataProvider
             "MT5 промени Stop Loss-а.",
             cancellationToken);
 
+    public Task<PositionActionResult> ModifyPositionProtectionAsync(
+        long ticket,
+        decimal? stopLoss,
+        decimal? takeProfit,
+        CancellationToken cancellationToken = default) =>
+        SendPositionActionAsync(
+            "modify",
+            new { ticket, sl = stopLoss, tp = takeProfit, update_sl = true, update_tp = true },
+            "MT5 обнови ценовите Stop Loss и Take Profit.",
+            cancellationToken);
+
     public Task<PositionActionResult> ClosePositionAsync(
         long ticket,
         CancellationToken cancellationToken = default) =>

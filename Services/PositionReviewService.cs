@@ -112,6 +112,59 @@ public sealed class PositionReviewService(
             cancellationToken);
     }
 
+    public async Task<PositionActionResult> ModifyPositionProtectionAsync(
+        long ticket,
+        decimal? stopLoss,
+        decimal? takeProfit,
+        CancellationToken cancellationToken = default)
+    {
+        var positions = await marketProvider.GetOpenPositionsAsync(cancellationToken);
+        if (!positions.Available)
+            return new PositionActionResult(false, positions.Message ?? "Не успях да обновя позициите от MT5.");
+
+        var position = positions.Positions.FirstOrDefault(item => item.Ticket == ticket);
+        if (position is null)
+            return new PositionActionResult(false, "Позицията вече не е отворена. Обнови таблото.");
+        if (!position.HasSymbolPrecisionMetadata)
+            return new PositionActionResult(false, "MT5 bridge не върна точността и минималното разстояние за символа. Обнови mt5-bridge и рестартирай го.");
+        if (position.Type is not ("BUY" or "SELL"))
+            return new PositionActionResult(false, "Посоката на позицията не е разпозната.");
+        if (stopLoss is <= 0m || takeProfit is <= 0m)
+            return new PositionActionResult(false, "Ценовите нива трябва да са положителни. Използвай празно поле или 0, за да премахнеш ниво.");
+
+        if ((stopLoss is { } sl && decimal.Round(sl, position.Digits, MidpointRounding.AwayFromZero) != sl) ||
+            (takeProfit is { } tp && decimal.Round(tp, position.Digits, MidpointRounding.AwayFromZero) != tp))
+        {
+            return new PositionActionResult(
+                false,
+                $"Цената за {position.Symbol} поддържа до {position.Digits} знака след десетичната точка.");
+        }
+
+        var quote = await marketProvider.GetLatestTickAsync(position.Symbol, cancellationToken);
+        if (!quote.Available || quote.Tick is not { } tick || quote.Freshness != MarketFreshness.Fresh)
+            return new PositionActionResult(false, quote.Message ?? "Няма актуална MT5 котировка; нивата не са променени.");
+
+        var executablePrice = position.Type == "BUY" ? tick.Bid : tick.Ask;
+        if (executablePrice <= 0m)
+            return new PositionActionResult(false, "MT5 не върна bid/ask цена за проверка на нивата.");
+
+        var minimumDistance = position.Point * position.StopsLevelPoints;
+        var levelsAreValid = position.Type == "BUY"
+            ? (stopLoss is null || (stopLoss < executablePrice && executablePrice - stopLoss >= minimumDistance)) &&
+              (takeProfit is null || (takeProfit > executablePrice && takeProfit - executablePrice >= minimumDistance))
+            : (stopLoss is null || (stopLoss > executablePrice && stopLoss - executablePrice >= minimumDistance)) &&
+              (takeProfit is null || (takeProfit < executablePrice && executablePrice - takeProfit >= minimumDistance));
+
+        if (!levelsAreValid)
+        {
+            return new PositionActionResult(
+                false,
+                $"За {position.Type} позиция SL и TP трябва да са от правилната страна на текущата цена и поне {FormatPrice(minimumDistance, position.Digits)} разстояние от нея.");
+        }
+
+        return await marketProvider.ModifyPositionProtectionAsync(ticket, stopLoss, takeProfit, cancellationToken);
+    }
+
     public async Task<PositionActionResult> ClosePositionAfterReviewAsync(
         long ticket,
         CancellationToken cancellationToken = default)
@@ -220,6 +273,9 @@ public sealed class PositionReviewService(
 
     private static PositionAdvice UnavailableAdvice(string reason) =>
         new(PositionAdviceKind.Unavailable, "Няма надеждна препоръка", reason, null);
+
+    private static string FormatPrice(decimal price, int digits) =>
+        price.ToString($"N{Math.Clamp(digits, 0, 8)}");
 
     private static decimal? CalculateAtr(IReadOnlyList<Candle> candles)
     {

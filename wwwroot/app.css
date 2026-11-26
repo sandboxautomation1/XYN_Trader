@@ -886,6 +886,67 @@ p {
     white-space: nowrap;
 }
 
+.position-protection-editor,
+.position-limit-editor {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+    align-items: end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.position-editor-heading {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+}
+
+.position-editor-heading strong {
+    color: #d4d8cc;
+    font-size: 9px;
+}
+
+.position-editor-heading span,
+.position-limit-status {
+    color: #8c9185;
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+.position-protection-editor label,
+.position-limit-editor label {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+    color: #9da58f;
+    font: 8px var(--mono);
+}
+
+.position-protection-editor input,
+.position-limit-editor input {
+    width: 100%;
+    min-width: 0;
+    min-height: 32px;
+    padding: 6px 8px;
+    border: 1px solid #353c2e;
+    border-radius: 4px;
+    outline: 0;
+    background: #10120d;
+    color: #e1e6d8;
+    font: 10px var(--mono);
+}
+
+.position-protection-editor input:focus,
+.position-limit-editor input:focus {
+    border-color: #78895c;
+}
+
+.position-limit-status {
+    grid-column: 1 / -1;
+}
+
 .position-review-body {
     align-items: flex-start;
     gap: 12px;
@@ -968,6 +1029,16 @@ p {
 
     .position-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .position-protection-editor,
+    .position-limit-editor {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .position-protection-editor > button,
+    .position-limit-editor > button {
+        grid-column: 1 / -1;
     }
 
     .position-review-body {
