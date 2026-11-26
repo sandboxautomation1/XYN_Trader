@@ -1,3 +1,3 @@
-cd E:\Projects_MT5\XYN_Trader\ai-service
-.\.venv\Scripts\python.exe -m uvicorn app:app --host 127.0.0.1 --port 8001
+@echo off
+powershell.exe -ExecutionPolicy Bypass -File "%~dp0start-ai-service.ps1"
 pause

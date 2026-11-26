@@ -1,0 +1,217 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261126154204
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -File E:\Projects_MT5\XYN_Trader\start\start-mt5-bridge.ps1
+Process ID: 11196
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\mt5-bridge-20261126-154204.log
+PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+PS>TerminatingError(Get-NetTCPConnection): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: No matching MSFT_NetTCPConnection objects found by CIM query for instances of the ROOT/StandardCimv2/MSFT_NetTCPConnection class on the  CIM server: SELECT * FROM MSFT_NetTCPConnection  WHERE ((LocalPort = 8000)) AND ((State = 2)). Verify query parameters and retry."
+Resolved 83 packages in 0.99ms
+Checked 79 packages in 433ms
+INFO:     Started server process [23456]
+INFO:     Waiting for application startup.
+INFO:mt5_bridge.mt5_handler:MT5 initialized successfully
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+UTC conversion enabled (Server Time -> UTC)
+INFO:     127.0.0.1:51131 - "GET /health HTTP/1.1" 200 OK
+INFO:mt5_bridge.mt5_handler:Server timezone offset estimated: 7200s (using XAUUSD, raw_diff=7198.1s)
+INFO:     127.0.0.1:51131 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51131 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58023 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58023 - "POST /signal-calculator HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58023 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58023 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58023 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58023 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "POST /signal-calculator HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51132 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /account HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /account HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56814 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /account HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /rates/XAUUSD?timeframe=H1&count=300 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /tick/XAUUSD HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /tick/XAUUSD HTTP/1.1" 200 OK

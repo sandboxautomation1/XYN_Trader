@@ -69,6 +69,11 @@ builder.Services.AddHttpClient<Mt5MarketDataProvider>((serviceProvider, client) 
     var baseAddress = configuration["MT5Bridge:BaseAddress"] ?? Mt5MarketDataProvider.DefaultBaseAddress;
     client.BaseAddress = new Uri(baseAddress, UriKind.Absolute);
     client.Timeout = TimeSpan.FromSeconds(10);
+})
+.ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+{
+    // Uvicorn keeps idle HTTP connections for 60 seconds. Expire pooled client connections first.
+    PooledConnectionIdleTimeout = TimeSpan.FromSeconds(15)
 });
 builder.Services.AddHttpClient("TwelveData", client =>
 {
@@ -89,6 +94,10 @@ builder.Services.AddHttpClient("MT5LearningHistory", (serviceProvider, client) =
     var baseAddress = configuration["MT5Bridge:BaseAddress"] ?? Mt5MarketDataProvider.DefaultBaseAddress;
     client.BaseAddress = new Uri(baseAddress, UriKind.Absolute);
     client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+{
+    PooledConnectionIdleTimeout = TimeSpan.FromSeconds(15)
 });
 builder.Services.AddHostedService<SignalLearningCollectorService>();
 builder.Services.AddHostedService<PositionProfitTargetMonitorService>();

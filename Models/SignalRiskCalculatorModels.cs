@@ -4,6 +4,7 @@ namespace XYN_Trader.Models;
 
 public sealed record SignalRiskCalculatorRequest(
     [property: JsonPropertyName("risk_percent")] decimal RiskPercent,
+    [property: JsonPropertyName("pnl_lots")] decimal PnlLots,
     [property: JsonPropertyName("signals")] IReadOnlyList<SignalRiskCalculatorSignal> Signals);
 
 public sealed record SignalRiskCalculatorSignal(
@@ -21,6 +22,7 @@ public sealed record SignalRiskCalculatorResponse(
     [property: JsonPropertyName("account_equity")] decimal AccountEquity,
     [property: JsonPropertyName("account_currency")] string AccountCurrency,
     [property: JsonPropertyName("risk_percent")] decimal RiskPercent,
+    [property: JsonPropertyName("pnl_lots")] decimal PnlLots,
     [property: JsonPropertyName("calculated_at_utc")] DateTimeOffset CalculatedAtUtc,
     [property: JsonPropertyName("results")] IReadOnlyList<SignalRiskCalculatorItem> Results);
 

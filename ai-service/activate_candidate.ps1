@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory = $true)]
     [string] $Candidate,
 
@@ -57,7 +57,22 @@ if ($Replace) {
     $arguments += '--replace'
 }
 
-& $python @arguments
-if ($LASTEXITCODE -ne 0) {
-    throw "Промотирането се провали с код $LASTEXITCODE."
+$previousErrorActionPreference = $ErrorActionPreference
+try {
+    $ErrorActionPreference = "Continue"
+    & $python @arguments 2>&1 | ForEach-Object {
+        if ($_ -is [System.Management.Automation.ErrorRecord]) {
+            Write-Host $_.Exception.Message
+        }
+        else {
+            Write-Host $_
+        }
+    }
+    $activationExitCode = $LASTEXITCODE
+}
+finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+}
+if ($activationExitCode -ne 0) {
+    throw "Промотирането се провали с код $activationExitCode."
 }

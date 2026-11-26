@@ -3,8 +3,32 @@
   "WorkspaceRootPath": "E:\\Projects_MT5\\XYN_Trader\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\layout\\reconnectmodal.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\layout\\reconnectmodal.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\layout\\mainlayout.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\layout\\mainlayout.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\pages\\signals.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\pages\\signals.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\pages\\priceprediction.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\pages\\priceprediction.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\charttext.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -23,14 +47,6 @@
       "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\pages\\priceprediction.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\pages\\priceprediction.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\pages\\news.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\pages\\news.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -41,10 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\components\\pages\\error.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -77,10 +89,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\xyn_trader.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:xyn_trader.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|solutionrelative:wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6DA86C3A-C4B4-C7DE-346F-A5D7C1E045B4}|XYN_Trader.csproj|e:\\projects_mt5\\xyn_trader\\xyn_trader.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
@@ -125,35 +133,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "News.razor",
-              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\News.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\News.razor",
-              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\News.razor",
-              "RelativeToolTip": "Components\\Pages\\News.razor",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-11-15T21:34:07.039Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "_Imports.razor",
-              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\_Imports.razor",
-              "RelativeDocumentMoniker": "Components\\_Imports.razor",
-              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\_Imports.razor",
-              "RelativeToolTip": "Components\\_Imports.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-11-15T21:34:02.937Z"
+              "DocumentIndex": 2,
+              "Title": "ReconnectModal.razor.css",
+              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Layout\\ReconnectModal.razor.css",
+              "RelativeDocumentMoniker": "Components\\Layout\\ReconnectModal.razor.css",
+              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\Layout\\ReconnectModal.razor.css",
+              "RelativeToolTip": "Components\\Layout\\ReconnectModal.razor.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-11-26T09:58:07.041Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "MainLayout.razor.css",
+              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Layout\\MainLayout.razor.css",
+              "RelativeDocumentMoniker": "Components\\Layout\\MainLayout.razor.css",
+              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\Layout\\MainLayout.razor.css",
+              "RelativeToolTip": "Components\\Layout\\MainLayout.razor.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-11-26T09:58:03.542Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "App.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\App.razor",
               "RelativeDocumentMoniker": "Components\\App.razor",
@@ -165,7 +175,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "Error.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\Error.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Error.razor",
@@ -177,19 +187,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 0,
               "Title": "Home.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Home.razor",
               "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\Home.razor",
               "RelativeToolTip": "Components\\Pages\\Home.razor",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAADcAAABFAAAAAAAAAA==",
+              "ViewState": "AgIAAKQAAAAAAAAAAAAewG8AAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-11-15T21:34:11.702Z"
+              "WhenOpened": "2026-11-15T21:34:11.702Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "Microsoft.Common.CurrentVersion.targets",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
               "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
@@ -199,19 +210,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "README.md",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\README.md",
               "RelativeDocumentMoniker": "README.md",
               "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\README.md",
               "RelativeToolTip": "README.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-11-16T00:56:52.656Z"
+              "WhenOpened": "2026-11-16T00:56:52.656Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 10,
               "Title": "appsettings.json",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -223,7 +235,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "Routes.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Routes.razor",
               "RelativeDocumentMoniker": "Components\\Routes.razor",
@@ -236,6 +248,31 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "app.css",
+              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\wwwroot\\app.css",
+              "RelativeDocumentMoniker": "wwwroot\\app.css",
+              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\wwwroot\\app.css",
+              "RelativeToolTip": "wwwroot\\app.css",
+              "ViewState": "AgIAAKMOAAAAAAAAAAApwL4OAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-11-12T17:22:06.133Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "_Imports.razor",
+              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\_Imports.razor",
+              "RelativeDocumentMoniker": "Components\\_Imports.razor",
+              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\_Imports.razor",
+              "RelativeToolTip": "Components\\_Imports.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-15T21:34:02.937Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "ChartText.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\ChartText.razor",
               "RelativeDocumentMoniker": "Components\\ChartText.razor",
@@ -247,20 +284,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "Signals.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\Signals.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Signals.razor",
               "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\Signals.razor",
               "RelativeToolTip": "Components\\Pages\\Signals.razor",
-              "ViewState": "AgIAAI0BAAAAAAAAAAAwwKABAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAMABAAAAAAAAAAAwwOEBAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-11-15T21:34:05.853Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "PricePrediction.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\PricePrediction.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\PricePrediction.razor",
@@ -268,11 +305,24 @@
               "RelativeToolTip": "Components\\Pages\\PricePrediction.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-11-23T09:09:25.283Z"
+              "WhenOpened": "2026-11-23T09:09:25.283Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 11,
+              "Title": "News.razor",
+              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\News.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\News.razor",
+              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\News.razor",
+              "RelativeToolTip": "Components\\Pages\\News.razor",
+              "ViewState": "AgIAAIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-15T21:34:07.039Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
               "Title": "News.razor.css",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\News.razor.css",
               "RelativeDocumentMoniker": "Components\\Pages\\News.razor.css",
@@ -284,7 +334,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "Analysis.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\Analysis.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\Analysis.razor",
@@ -296,7 +346,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "NotFound.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Pages\\NotFound.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\NotFound.razor",
@@ -308,7 +358,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "launchSettings.json",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "Properties\\launchSettings.json",
@@ -320,7 +370,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "signal_policy.json",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\signal_policy.json",
               "RelativeDocumentMoniker": "ai-service\\signal_policy.json",
@@ -332,7 +382,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "MainLayout.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Layout\\MainLayout.razor",
               "RelativeDocumentMoniker": "Components\\Layout\\MainLayout.razor",
@@ -344,7 +394,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "ReconnectModal.razor",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Components\\Layout\\ReconnectModal.razor",
               "RelativeDocumentMoniker": "Components\\Layout\\ReconnectModal.razor",
@@ -356,7 +406,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "XYN_Trader.csproj",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\XYN_Trader.csproj",
               "RelativeDocumentMoniker": "XYN_Trader.csproj",
@@ -368,7 +418,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "XYN_Trader",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\XYN_Trader.csproj",
               "RelativeDocumentMoniker": "XYN_Trader.csproj",
@@ -379,7 +429,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "requirements.txt",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\requirements.txt",
               "RelativeDocumentMoniker": "ai-service\\requirements.txt",
@@ -391,19 +441,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "app.css",
-              "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\wwwroot\\app.css",
-              "RelativeDocumentMoniker": "wwwroot\\app.css",
-              "ToolTip": "E:\\Projects_MT5\\XYN_Trader\\wwwroot\\app.css",
-              "RelativeToolTip": "wwwroot\\app.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHoKAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-11-12T17:22:06.133Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -415,7 +453,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "NewsFeedService.cs",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Services\\NewsFeedService.cs",
               "RelativeDocumentMoniker": "Services\\NewsFeedService.cs",
@@ -427,7 +465,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "appsettings.example.json",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\appsettings.example.json",
               "RelativeDocumentMoniker": "appsettings.example.json",
@@ -439,7 +477,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\appsettings.Development.json",
               "RelativeDocumentMoniker": "appsettings.Development.json",
@@ -451,7 +489,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "DemoMarketDataService.cs",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Services\\DemoMarketDataService.cs",
               "RelativeDocumentMoniker": "Services\\DemoMarketDataService.cs",
@@ -463,7 +501,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "TwelveDataMarketDataProvider.cs",
               "DocumentMoniker": "E:\\Projects_MT5\\XYN_Trader\\Services\\TwelveDataMarketDataProvider.cs",
               "RelativeDocumentMoniker": "Services\\TwelveDataMarketDataProvider.cs",

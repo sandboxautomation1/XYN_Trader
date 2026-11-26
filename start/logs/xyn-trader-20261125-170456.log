@@ -1,0 +1,86 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261125170456
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -File E:\Projects_MT5\XYN_Trader\start\start-xyn-trader.ps1
+Process ID: 20680
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\xyn-trader-20261125-170456.log
+PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+MT5 bridge не е стартиран. Стартиране във фонов режим...
+PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+MT5 bridge и терминалът са свързани.
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 6.7984ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 6.9117ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.5654ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.5808ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 8.11ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 8.1305ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.4846ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.7506ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 6.2804ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 6.5798ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 6.0574ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 6.0833ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 6.9867ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.073ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.7216ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.8262ms - 200
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+PS>TerminatingError(): "The pipeline has been stopped."
+**********************
+Windows PowerShell transcript end
+End time: 20261125173904
+**********************

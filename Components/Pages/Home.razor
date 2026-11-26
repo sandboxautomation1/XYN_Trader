@@ -125,7 +125,7 @@
                         var limitForm = GetPositionLimitForm(position.Ticket);
                         var activeLimits = PositionProfitTargets.Get(position.Ticket);
                     }
-                    <div class="position-limit-editor" aria-label="Автоматично затваряне по сума">
+                    <div class="position-limit-editor" aria-label="Автоматично затваряне по сума" style="font-size: small">
                         <label>
                             <span>TAKE PROFIT · @LimitCurrency(openPositions.AccountCurrency)</span>
                             <input type="number" min="0" step="any" inputmode="decimal" placeholder="напр. 1000"

@@ -1,0 +1,24 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261126113032
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -File E:\Projects_MT5\XYN_Trader\start\start-mt5-bridge.ps1
+Process ID: 25908
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\mt5-bridge-20261126-113032.log
+MT5 bridge вече работи на 127.0.0.1:8000; MT5 е свързан.
+**********************
+Windows PowerShell transcript end
+End time: 20261126113036
+**********************

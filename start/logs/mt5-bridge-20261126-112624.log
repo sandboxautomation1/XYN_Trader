@@ -1,0 +1,35 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261126112624
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -File E:\Projects_MT5\XYN_Trader\start\start-mt5-bridge.ps1
+Process ID: 15796
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\mt5-bridge-20261126-112624.log
+Resolved 83 packages in 0.77ms
+Checked 79 packages in 308ms
+INFO:     Started server process [23028]
+INFO:     Waiting for application startup.
+INFO:mt5_bridge.mt5_handler:MT5 initialized successfully
+INFO:     Application startup complete.
+ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+INFO:     Waiting for application shutdown.
+INFO:mt5_bridge.mt5_handler:MT5 connection shutdown
+INFO:     Application shutdown complete.
+UTC conversion enabled (Server Time -> UTC)
+PS>TerminatingError(start-mt5-bridge.ps1): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: MT5 bridge приключи с код 1."
+**********************
+Windows PowerShell transcript end
+End time: 20261126112632
+**********************

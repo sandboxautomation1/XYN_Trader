@@ -2,24 +2,28 @@
 
 ASP.NET Core 10 and Blazor Server source project for the XAUUSD analytics MVP.
 
-## Run the C# web app
+## Run the app on Windows
 
-The app reads live ticks and candles from the local MetaTrader 5 terminal through `mt5-bridge`. Start the bridge first from its folder:
+Copy the project folder to the target machine. Install the .NET 10 SDK and `uv`, and keep MetaTrader 5 installed, open, and signed in. The first service startup needs internet access to install Python dependencies.
 
-```powershell
-Set-Location mt5-bridge
-uv run mt5-bridge server --host 127.0.0.1 --port 8000
-```
+Start each component in its own terminal, in this order:
 
-`127.0.0.1` is sufficient when the bridge and web app run on the same computer. Configure `MT5Bridge:BaseAddress` and `MT5Bridge:Symbol` in `appsettings.json` if your setup differs.
+1. `start/start_mt5_bridge.bat` starts the MT5 bridge.
+2. `start/start_ai_service.bat` starts the AI service.
+3. `start/start_project.bat` starts the web app only.
+
+Each BAT resolves its script path relative to its own location, so the project can live in a different folder or drive. The Python service scripts recreate their virtual environments if they are missing or were copied from another computer. Logs are saved under `start/logs`. The web app creates `appsettings.json` from the example when needed.
+
+`127.0.0.1` is sufficient when the bridge, AI service, and web app run on the same computer. Configure `MT5Bridge:BaseAddress`, `MT5Bridge:Symbol`, and `AIService:BaseAddress` in `appsettings.json` if your setup differs.
 
 The economic calendar identifies its BLS requests with the `XYN-Trader/0.1` User-Agent. BLS may block automated requests without owner contact information, so set `EconomicCalendar:BlsContact` in the local, git-ignored `appsettings.json` to a public contact such as `mailto:you@example.com` (or set `EconomicCalendar__BlsContact` as an environment variable). The contact is appended to the BLS User-Agent and is not sent to the other calendar providers.
+
+If starting the web app manually after the two services are already running:
 
 ```powershell
 if (-not (Test-Path appsettings.json)) {
     Copy-Item appsettings.example.json appsettings.json
 }
-# Defaults target mt5-bridge on port 8000 and the AI service on port 8001.
 dotnet run --project XYN_Trader.csproj
 ```
 
@@ -33,14 +37,7 @@ The H1 signal generator receives up to 300 MT5 candles; the dashboard and techni
 
 The separate `ai-service` uses FastAPI and LightGBM for outcome-probability inference. The live generator first builds entry, stop, and target levels from closed H1 candles and the versioned signal policy. A loaded model is then applied to each candidate only when its policy version and checksum match; it estimates the chance of TP1 before the stop within the model horizon. The model scores candidates but does not invent trade levels or a direction. If no rules-based setup exists, the result is `NEUTRAL` even when a model is active.
 
-To start candidate generation without downloading or training a model, start the Python service in a second terminal:
-
-```powershell
-Set-Location ai-service
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m uvicorn app:app --host 127.0.0.1 --port 8001
-```
+To start candidate generation without downloading or training a model, run `start/start_ai_service.bat` in a second terminal. The launcher prepares the AI Python environment and starts the service on port 8001.
 
 Port 8000 is reserved for `mt5-bridge`; the AI service runs on 8001. The C# app calls `POST /api/v1/candidates/generate` at `AIService:BaseAddress` (default `http://127.0.0.1:8001/`). `GET /api/signals` and the dashboard use that generator. It receives H1 candles from the bridge and requires at least 100 closed bars, a fresh MT5 tick (15-minute limit), and a latest closed H1 candle no older than four hours. The Python endpoint repeats the closed-candle age check and returns HTTP 503 for insufficient, future-dated, or stale input. If a service or the MT5 terminal is disconnected, the UI reports that condition instead of falling back to demo scenarios.
 

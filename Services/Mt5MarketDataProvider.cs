@@ -310,10 +310,12 @@ public sealed class Mt5MarketDataProvider
     public async Task<SignalRiskCalculationResult> CalculateSignalRiskAsync(
         IReadOnlyList<GeneratedSignalCandidate> signals,
         decimal riskPercent,
+        decimal pnlLots,
         CancellationToken cancellationToken = default)
     {
         var request = new SignalRiskCalculatorRequest(
             riskPercent,
+            pnlLots,
             signals.Select(signal => new SignalRiskCalculatorSignal(
                 signal.SignalId,
                 signal.Symbol,
@@ -335,9 +337,11 @@ public sealed class Mt5MarketDataProvider
 
             var calculation = await response.Content.ReadFromJsonAsync<SignalRiskCalculatorResponse>(
                 cancellationToken: cancellationToken);
-            return calculation is null
-                ? SignalRiskCalculationResult.Unavailable("MT5 bridge върна празен отговор за калкулатора.")
-                : SignalRiskCalculationResult.From(calculation);
+            if (calculation is null)
+                return SignalRiskCalculationResult.Unavailable("MT5 bridge върна празен отговор за калкулатора.");
+            if (calculation.PnlLots != pnlLots)
+                return SignalRiskCalculationResult.Unavailable("MT5 Bridge е с остаряла версия на калкулатора. Рестартирай MT5 Bridge, за да приложи избрания lot.");
+            return SignalRiskCalculationResult.From(calculation);
         }
         catch (HttpRequestException)
         {

@@ -8,7 +8,7 @@
 <PageTitle>Сигнали — XYN Trader</PageTitle>
 
 <div class="page-heading">
-    <div><div class="eyebrow"><span></span> XAUUSD / АНАЛИТИЧЕН ДНЕВНИК</div><h1>Сценарии<span>.</span></h1><p>Сценарии с хоризонт 24 часа от потвърдени swing зони и затворени H1 свещи от MetaTrader 5. Нов сигнал в същата посока се допуска след 24 часа.</p></div>
+    <div><div class="eyebrow"><span></span> XAUUSD / СИГНАЛИ ОТ MT5</div><h1>Сценарии<span>.</span></h1><p>Сценарии с хоризонт 24 часа от потвърдени swing зони и затворени H1 свещи от MetaTrader 5. Нов сигнал в същата посока се допуска след 24 часа.</p></div>
     <div class="signal-actions">
         <span class="demo-total"><i class="dot @(Generation?.Available == true && Generation.IsStale == false ? "green" : "amber")"></i> @(IsRefreshing ? "генериране…" : Generation?.Available == true ? $"{FilteredSignals.Count()} сценария{(Generation.IsStale ? " · кеш" : "")}" : "генераторът е недостъпен")</span>
         <button class="refresh-button" @onclick="RefreshAsync" disabled="@IsRefreshing">@(IsRefreshing ? "Обновяване…" : "Обнови")</button>
@@ -22,41 +22,18 @@
     }
 </section>
 
-<section class="live-quote-strip" aria-live="polite">
+<section class="live-quote-strip signals-mt5-status" aria-live="polite">
     @if (LiveQuote is { Tick: { } tick } quote)
     {
-        <strong><i class="dot @(quote.Freshness == MarketFreshness.Fresh ? "green" : "amber")"></i> LIVE XAUUSD · @tick.Price.ToString("N2")</strong>
+        <strong><i class="dot @(quote.Freshness == MarketFreshness.Fresh ? "green" : "amber")"></i> @(quote.Freshness == MarketFreshness.Fresh ? "MT5 СВЪРЗАН" : "MT5 · СТАРА КОТИРОВКА") · XAUUSD @tick.Price.ToString("N2")</strong>
         <span>BID @tick.Bid.ToString("N2") · ASK @tick.Ask.ToString("N2")</span>
         <small>@QuoteStatusText · @FormatLocalTime(tick.UpdatedAtUtc, "HH:mm:ss")</small>
     }
     else
     {
-        <strong><i class="dot amber"></i> LIVE котировката не е налична</strong>
+        <strong><i class="dot amber"></i> MT5 НЯМА ВРЪЗКА</strong>
         <small>@(LiveQuote?.Message ?? "Изчакване на котировка от MT5…")</small>
     }
-</section>
-
-<section class="panel risk-calculator-panel">
-    <div class="panel-header risk-calculator-header">
-        <div><div class="panel-kicker">РИСК И ПОТЕНЦИАЛЕН P/L · MT5</div><h2>Калкулатор към сигналите</h2></div>
-        <span class="timeframe-chip">@(IsCalculatingRisk ? "ИЗЧИСЛЯВАНЕ…" : RiskCalculation?.Available == true ? "СВЪРЗАН С MT5" : "MT5 НЕДОСТЪПЕН")</span>
-    </div>
-    <div class="risk-calculator-controls">
-        <div class="risk-account-balance">
-            <span>БАЛАНС ПО СМЕТКАТА</span>
-            <strong>@(RiskCalculation?.Calculation is { } calculation ? $"{calculation.AccountBalance.ToString("N2")} {calculation.AccountCurrency}" : "—")</strong>
-            <small>@(RiskCalculation?.Calculation is { } account ? $"Equity {account.AccountEquity.ToString("N2")} {account.AccountCurrency}" : RiskCalculation?.Message ?? "Зареждане от MT5…")</small>
-        </div>
-        <label class="risk-percent-field">
-            <span>Риск на сигнал (% от баланса)</span>
-            <input type="number" min="0.01" max="100" step="0.1" @bind="RiskPercentInput" @bind:event="onchange" @bind:after="RefreshRiskCalculationsAsync" aria-label="Риск на сигнал в проценти" />
-        </label>
-        <button class="refresh-button risk-recalculate-button" @onclick="RefreshRiskCalculationsAsync" disabled="@IsCalculatingRisk">@(IsCalculatingRisk ? "Изчисляване…" : "Преизчисли")</button>
-    </div>
-    <div class="risk-calculator-foot">
-        <span>@(RiskCalculation?.Calculation is { } summary ? $"Риск за сигнал: {(summary.AccountBalance * summary.RiskPercent / 100m).ToString("N2")} {summary.AccountCurrency} · изчислено {FormatLocalTime(summary.CalculatedAtUtc, "HH:mm:ss")}" : RiskCalculation?.Message ?? "Използва се балансът от MT5.")</span>
-        <span>Обемът се закръгля надолу според MT5. Сумите не включват комисиона, суап и приплъзване.</span>
-    </div>
 </section>
 
 @if (LiveEntryAlerts.Count > 0)
@@ -74,6 +51,247 @@
     </section>
 }
 
+@if (Generation?.IsStale == true)
+{
+    <div class="notice-strip stale-signal-notice"><strong>Няма свежи пазарни данни.</strong> Показани са запазените сценарии от @FormatLocalTime(Generation.GeneratedAtUtc, "yyyy-MM-dd HH:mm"); статусите им отразяват последните налични MT5 свещи.</div>
+}
+
+<section class="panel signals-panel">
+        <div class="panel-header signals-header">
+        <div><div class="panel-kicker">ПРАВИЛОВ ГЕНЕРАТОР · H1 / 24H</div><h2>Сценарии<small>(@FilteredSignals.Count())</small></h2></div>
+        <div class="filters">
+            <label class="search-input"><span aria-hidden="true">⌕</span><input @bind="Search" placeholder="Търси ID" aria-label="Търси сигнал" /></label>
+            <select @bind="Status" aria-label="Филтър по статус"><option value="">Всички статуси</option><option value="CREATED">Чака вход</option><option value="TRIGGERED">Активен</option><option value="CLOSED_TP">Цел достигната</option><option value="CLOSED_SL">Стоп</option><option value="EXPIRED">Изтекъл</option></select>
+            <select @bind="Direction" aria-label="Филтър по посока"><option value="">Всички посоки</option><option value="BUY BELOW">BUY LIMIT</option><option value="SELL BELOW">SELL LIMIT</option></select>
+            <select @bind="MinimumModelProbability" aria-label="Минимална AI вероятност"><option value="">Всички AI оценки</option><option value="40">AI ≥ 40%</option><option value="50">AI ≥ 50%</option><option value="60">AI ≥ 60%</option></select>
+            <select @bind="Date" aria-label="Филтър по дата"><option value="">Всички дати</option><option value="today">Днес</option><option value="yesterday">Вчера</option><option value="older">По-стари</option></select>
+        </div>
+    </div>
+
+    @if (IsRefreshing && Generation is null)
+    {
+        <div class="empty-state"><strong>Изчисляване на сценарии…</strong><span>Използват се реални затворени H1 свещи от MetaTrader 5.</span></div>
+    }
+    else if (FilteredSignals.Any())
+    {
+        <div class="signal-card-grid">
+            @foreach (var signal in FilteredSignals)
+            {
+                var journalDraft = GetJournalDraft(signal.SignalId);
+                var riskResult = GetRiskResult(signal.SignalId);
+                var probability = signal.ModelProbabilityPositiveOutcome is { } modelProbability
+                    ? Math.Clamp(modelProbability * 100d, 0d, 100d)
+                    : (double?)null;
+
+                <article class="signal-card">
+                    <div class="signal-card-header">
+                        <div class="signal-card-identity">
+                            <span class="table-direction @(signal.Direction == "BUY BELOW" ? "positive" : "negative")">@GetEntryOrderType(signal)</span>
+                            <strong>@signal.SignalId</strong>
+                        </div>
+                        <span class="status @(IsLiveEntryReached(signal) ? "live_entry" : signal.Status.ToLowerInvariant())">
+                            @(IsLiveEntryReached(signal) ? "ВХОД ДОСТИГНАТ" : GetStatusLabel(signal.Status))
+                        </span>
+                    </div>
+
+                    <div class="signal-card-meta">
+                        <span>@signal.Symbol · @signal.Timeframe · хоризонт @signal.HorizonHours ч.</span>
+                        <time>@FormatLocalTime(signal.TimestampUtc, "dd.MM.yyyy · HH:mm")</time>
+                    </div>
+
+                    <div class="signal-entry">
+                        <div class="signal-entry-price">
+                            <small>ЦЕНА НА ВХОД</small>
+                            <strong>@GetEntryPrice(signal).ToString("N2")</strong>
+                        </div>
+                        <div class="signal-entry-zone">
+                            <small>ВХОДНА ЗОНА</small>
+                            <strong>@signal.EntryLow.ToString("N2") – @signal.EntryHigh.ToString("N2")</strong>
+                            <span>Валиден до @FormatLocalTime(GetExpiry(signal), "dd.MM HH:mm")</span>
+                        </div>
+                    </div>
+
+                    <div class="signal-levels">
+                        <div class="signal-level stop-level"><small>СТОП</small><strong>@signal.StopLoss.ToString("N2")</strong></div>
+                        <div class="signal-level target-level"><small>TP1</small><strong>@signal.Tp1.ToString("N2")</strong></div>
+                        <div class="signal-level target-level"><small>TP2</small><strong>@signal.Tp2.ToString("N2")</strong></div>
+                        <div class="signal-level target-level"><small>TP3</small><strong>@signal.Tp3.ToString("N2")</strong></div>
+                    </div>
+
+                    <div class="signal-card-metrics">
+                        <div class="signal-metric">
+                            <small>РИСК / ДОХОД</small>
+                            <strong>1 : @signal.Tp1RiskReward.ToString("0.0")</strong>
+                            <span>TP2 1 : @signal.Tp2RiskReward.ToString("0.0") · TP3 1 : @signal.Tp3RiskReward.ToString("0.0")</span>
+                        </div>
+                        <div class="signal-metric signal-ai-metric">
+                            <small>AI · TP1 ПРЕДИ SL</small>
+                            @if (probability is { } probabilityPercent)
+                            {
+                                <strong>@probabilityPercent.ToString("0")%</strong>
+                                <div class="signal-probability-bar" role="img" aria-label="Лента за AI вероятност">
+                                    <span style="@GetProbabilityBarStyle(probabilityPercent)"></span>
+                                </div>
+                                <span>@(signal.ModelIsCalibrated == true ? "Калибрирана" : "Без калибрация") · @signal.ModelOutcomeHorizonHours ч.</span>
+                            }
+                            else
+                            {
+                                <strong>—</strong>
+                                <span>@(Generation?.ModelStatus == "policy_mismatch" ? "Policy не съвпада" : "Няма оценка")</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="signal-pnl-summary">
+                        @if (RiskCalculation?.Calculation is { } pnlAccount)
+                        {
+                            <div class="signal-pnl-heading">
+                                <strong>P/L ЗА ТОЗИ СИГНАЛ</strong>
+                                <small>вход @GetEntryPrice(signal).ToString("N2") · сметка @pnlAccount.AccountBalance.ToString("N2") @pnlAccount.AccountCurrency · @pnlAccount.PnlLots.ToString("0.##") lot</small>
+                            </div>
+                        }
+                        @if (riskResult is not null && RiskCalculation?.Calculation is { } calculatedAccount)
+                        {
+                            <span><small>ЗАГУБА · SL</small><strong class="stop">@FormatSignedMoney(riskResult.StopLossPnl, calculatedAccount.AccountCurrency)</strong><small>@FormatSignedPercent(riskResult.StopLossPnl, calculatedAccount.AccountBalance) от баланса</small></span>
+                            <span><small>ПЕЧАЛБА · TP1</small><strong class="target">@FormatSignedMoney(riskResult.Tp1Pnl, calculatedAccount.AccountCurrency)</strong><small>@FormatSignedPercent(riskResult.Tp1Pnl, calculatedAccount.AccountBalance) от баланса</small></span>
+                            <span><small>ПЕЧАЛБА · TP2</small><strong class="target">@FormatSignedMoney(riskResult.Tp2Pnl, calculatedAccount.AccountCurrency)</strong><small>@FormatSignedPercent(riskResult.Tp2Pnl, calculatedAccount.AccountBalance) от баланса</small></span>
+                            <span><small>ПЕЧАЛБА · TP3</small><strong class="target">@FormatSignedMoney(riskResult.Tp3Pnl, calculatedAccount.AccountCurrency)</strong><small>@FormatSignedPercent(riskResult.Tp3Pnl, calculatedAccount.AccountBalance) от баланса</small></span>
+                            @if (riskResult.Status is not ("calculated" or "below_minimum"))
+                            {
+                                <small class="signal-pnl-warning">@riskResult.Message</small>
+                            }
+                            else if (riskResult.Status == "below_minimum")
+                            {
+                                <small class="signal-pnl-warning">P/L за @calculatedAccount.PnlLots.ToString("0.##") lot · @riskResult.Message</small>
+                            }
+                            else
+                            {
+                                <small>P/L за @calculatedAccount.PnlLots.ToString("0.##") lot · размер за поръчка @riskResult.VolumeLots.ToString("0.##") lot · лимит риск @riskResult.TargetRiskAmount.ToString("N2") @calculatedAccount.AccountCurrency</small>
+                            }
+                        }
+                        else
+                        {
+                            <span class="signal-pnl-unavailable">@(riskResult?.Message ?? (IsCalculatingRisk ? "Изчисляване от MT5…" : RiskCalculation?.Message ?? "Няма изчисление от MT5."))</span>
+                        }
+                    </div>
+
+                    <details class="signal-extra-details">
+                        <summary>Технически данни <span>ADX @signal.Adx14.ToString("0.0") · @signal.ZoneTouchCount докосвания на зоната</span></summary>
+                        <div>Policy @signal.PolicyVersion · @signal.Timeframe · @signal.HorizonHours часа · генериран @FormatLocalTime(signal.TimestampUtc, "HH:mm:ss")</div>
+                    </details>
+
+                    <div class="signal-card-actions">
+                        <button class="journal-favorite @(journalDraft.IsFavorite ? "active" : "")"
+                                title="@(journalDraft.IsFavorite ? "Премахни от любими" : "Добави в любими")"
+                                aria-label="@(journalDraft.IsFavorite ? "Премахни от любими" : "Добави в любими")"
+                                @onclick="() => ToggleFavoriteAsync(signal.SignalId)"
+                                disabled="@(UserProfile?.Available != true || JournalSavingSignalId == signal.SignalId)">
+                            @(journalDraft.IsFavorite ? "★ Любим" : "☆ Любим")
+                        </button>
+                        <button class="signal-order-button"
+                                title="@GetSignalFormDisabledReason(signal)"
+                                @onclick="() => ToggleSignalOrderForm(signal)"
+                                disabled="@(!CanConfigureSignal(signal) || OpeningSignalIds.Contains(signal.SignalId) || OpenedSignalTickets.ContainsKey(signal.SignalId))">
+                            @GetOpenButtonLabel(signal)
+                        </button>
+                    </div>
+
+                    @if (SignalOrderDrafts.TryGetValue(signal.SignalId, out var orderDraft))
+                    {
+                        <div class="signal-order-form">
+                            <div class="signal-order-form-heading">
+                                <strong>Параметри на позицията</strong>
+                                <span>@signal.Symbol · @GetMarketOrderType(signal)</span>
+                            </div>
+                            <div class="signal-order-fields">
+                                <label>
+                                    <span>Обем (lot)</span>
+                                    <input type="number" min="0.01" max="1000" step="0.01" @bind="orderDraft.VolumeLots" disabled="@OpeningSignalIds.Contains(signal.SignalId)" />
+                                </label>
+                                <label>
+                                    <span>Stop Loss</span>
+                                    <input type="number" min="0" step="any" @bind="orderDraft.StopLoss" disabled="@OpeningSignalIds.Contains(signal.SignalId)" />
+                                </label>
+                                <label>
+                                    <span>Take Profit (TP1)</span>
+                                    <input type="number" min="0" step="any" @bind="orderDraft.TakeProfit" disabled="@OpeningSignalIds.Contains(signal.SignalId)" />
+                                </label>
+                            </div>
+                            <small class="signal-order-form-note">Обемът е изчислен според зададения риск, SL и TP1 са от сигнала. Входът е пазарен; промяната на обема или SL променя риска.</small>
+                            <div class="signal-order-form-actions">
+                                <button type="button" class="signal-order-cancel" @onclick="() => CloseSignalOrderForm(signal.SignalId)" disabled="@OpeningSignalIds.Contains(signal.SignalId)">Отказ</button>
+                                <button type="button" class="signal-order-submit" @onclick="() => OpenSignalPositionAsync(signal, orderDraft)" disabled="@(!CanSubmitSignal(signal, orderDraft) || OpeningSignalIds.Contains(signal.SignalId))" title="@GetOrderSubmitDisabledReason(signal, orderDraft)">
+                                    @(OpeningSignalIds.Contains(signal.SignalId) ? "Изпълнение…" : "Потвърди отваряне")
+                                </button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (SignalOrderNotices.TryGetValue(signal.SignalId, out var orderNotice))
+                    {
+                        <small class="signal-order-notice @(orderNotice.Succeeded ? "success" : "error")">@orderNotice.Message</small>
+                    }
+                    else
+                    {
+                        <small class="signal-order-hint">Пазарна поръчка · първоначален обем според риска · SL / TP1</small>
+                    }
+
+                    <details class="signal-journal-details">
+                        <summary>Лична бележка @(journalDraft.Note.Length > 0 ? "· има запис" : "")</summary>
+                        <textarea @bind="journalDraft.Note" maxlength="4000" rows="2" placeholder="Добави бележка към този сценарий" aria-label="Лична бележка за @signal.SignalId" disabled="@(UserProfile?.Available != true || JournalSavingSignalId == signal.SignalId)"></textarea>
+                        <button class="journal-save" @onclick="() => SaveJournalAsync(signal.SignalId)" disabled="@(JournalSavingSignalId == signal.SignalId)">@(JournalSavingSignalId == signal.SignalId ? "Запис…" : "Запази бележката")</button>
+                    </details>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <strong>@EmptyTitle</strong>
+            <span>@EmptyMessage</span>
+        </div>
+    }
+    <div class="table-foot">
+        <span>@(Generation?.IsStale == true ? $"Последно успешно генериране: {FormatLocalTime(Generation.GeneratedAtUtc, "yyyy-MM-dd HH:mm")}" : Generation?.Available == true ? $"Затворени свещи към {FormatLocalTime(Generation.AsOfUtc, "yyyy-MM-dd HH:mm")} · policy {Generation.PolicyVersion}" : "Сценариите изискват наличен Python генератор.")</span>
+        <span>@(Generation?.IsStale == true ? "Кеширани сценарии · пазарният статус може да е остарял" : Generation?.ModelStatus == "loaded" ? $"AI оценка за TP1 преди SL · {Generation.ModelOutcomeHorizonHours}h" : Generation?.ModelStatus == "policy_mismatch" ? "Активният модел не съвпада с версията на правилата" : "Правилов сценарий · няма съвместим активен AI модел")</span>
+    </div>
+</section>
+
+<div class="notice-strip"><strong>Информация:</strong> BUY LIMIT изчаква спад до зоната за покупка, а SELL LIMIT — покачване до зоната за продажба. Бутонът изпраща пазарна BUY/SELL поръчка само при свежа котировка в зоната; обемът използва зададения риск, стопът е SL, а целта е TP1. Сигналите не изпращат поръчки автоматично.</div>
+
+<details class="signal-disclosure">
+    <summary><span>Калкулатор P/L и риск</span><small>Избран lot за P/L · процент риск за изпълнение</small></summary>
+<section class="panel risk-calculator-panel">
+    <div class="panel-header risk-calculator-header">
+        <div><div class="panel-kicker">P/L ПО ЦЕНА И LOT · MT5</div><h2>Калкулатор към сигналите</h2></div>
+        <span class="timeframe-chip">@(IsCalculatingRisk ? "ИЗЧИСЛЯВАНЕ…" : RiskCalculation?.Available == true ? "СВЪРЗАН С MT5" : "MT5 НЕДОСТЪПЕН")</span>
+    </div>
+    <div class="risk-calculator-controls">
+        <div class="risk-account-balance">
+            <span>БАЛАНС ПО СМЕТКАТА</span>
+            <strong>@(RiskCalculation?.Calculation is { } calculation ? $"{calculation.AccountBalance.ToString("N2")} {calculation.AccountCurrency}" : "—")</strong>
+            <small>@(RiskCalculation?.Calculation is { } account ? $"Equity {account.AccountEquity.ToString("N2")} {account.AccountCurrency}" : RiskCalculation?.Message ?? "Зареждане от MT5…")</small>
+        </div>
+        <label class="risk-percent-field">
+            <span>Риск за обем на поръчка (% от баланса)</span>
+            <input type="number" min="0.01" max="100" step="0.1" @bind="RiskPercentInput" @bind:event="onchange" @bind:after="RefreshRiskCalculationsAsync" aria-label="Риск за обем на поръчка в проценти" />
+        </label>
+        <label class="risk-percent-field">
+            <span>Lot за P/L на всеки сигнал</span>
+            <input type="number" min="0.01" max="1000" step="0.01" @bind="PnlLotsInput" @bind:event="onchange" @bind:after="RefreshRiskCalculationsAsync" aria-label="Размер на lot за P/L изчисление" />
+        </label>
+        <button class="refresh-button risk-recalculate-button" @onclick="RefreshRiskCalculationsAsync" disabled="@IsCalculatingRisk">@(IsCalculatingRisk ? "Изчисляване…" : "Преизчисли")</button>
+    </div>
+    <div class="risk-calculator-foot">
+        <span>@(RiskCalculation?.Calculation is { } summary ? $"P/L е за {summary.PnlLots.ToString("0.##")} lot · риск за поръчка: {(summary.AccountBalance * summary.RiskPercent / 100m).ToString("N2")} {summary.AccountCurrency} · изчислено {FormatLocalTime(summary.CalculatedAtUtc, "HH:mm:ss")}" : RiskCalculation?.Message ?? "Използват се балансът и спецификациите на инструмента от MT5.")</span>
+        <span>P/L се смята според инструмента и валутата на сметката в MT5; размерът на поръчката следва отделно зададения риск. Сумите не включват спред, комисиона, суап и приплъзване.</span>
+    </div>
+</section>
+</details>
+
+<details class="signal-disclosure">
+    <summary><span>Личен профил и дневник</span><small>@SavedJournalEntries.Count(entry => entry.IsFavorite) любими · @SavedJournalEntries.Count(entry => !string.IsNullOrWhiteSpace(entry.Note)) бележки</small></summary>
 <section class="panel user-profile-panel">
     <div class="panel-header user-profile-header">
         <div><div class="panel-kicker">ЛИЧНИ ДАННИ · ОТДЕЛНА SQLITE БАЗА</div><h2>@(UserProfile?.Profile?.DisplayName ?? "Моят дневник")</h2></div>
@@ -92,7 +310,6 @@
         }
     </div>
 </section>
-
 @if (SavedJournalEntries.Count > 0)
 {
     <section class="panel saved-journal-panel">
@@ -117,12 +334,10 @@
         </div>
     </section>
 }
+</details>
 
-@if (Generation?.IsStale == true)
-{
-    <div class="notice-strip stale-signal-notice"><strong>Няма свежи пазарни данни.</strong> Показани са запазените сценарии от @FormatLocalTime(Generation.GeneratedAtUtc, "yyyy-MM-dd HH:mm"); статусите им отразяват последните налични MT5 свещи.</div>
-}
-
+<details class="signal-disclosure">
+    <summary><span>Обучение на AI модела</span><small>Състояние на данните, моделите и кандидати за одобрение</small></summary>
 <section class="panel learning-panel">
     <div class="panel-header learning-header">
         <div><div class="panel-kicker">САМО-ОБУЧЕНИЕ · РЕАЛНИ MT5 H1 ДАННИ</div><h2>Обучителен цикъл</h2></div>
@@ -205,113 +420,7 @@
         }
     }
 </section>
-
-<section class="panel signals-panel">
-        <div class="panel-header signals-header">
-        <div><div class="panel-kicker">ПРАВИЛОВ ГЕНЕРАТОР · H1 / 24H</div><h2>Сценарии<small>(@FilteredSignals.Count())</small></h2></div>
-        <div class="filters">
-            <label class="search-input"><span aria-hidden="true">⌕</span><input @bind="Search" placeholder="Търси ID" aria-label="Търси сигнал" /></label>
-            <select @bind="Status" aria-label="Филтър по статус"><option value="">Всички статуси</option><option>CREATED</option><option>TRIGGERED</option><option>CLOSED_TP</option><option>CLOSED_SL</option><option>EXPIRED</option></select>
-            <select @bind="Direction" aria-label="Филтър по посока"><option value="">Всички посоки</option><option value="BUY BELOW">BUY LIMIT</option><option value="SELL BELOW">SELL LIMIT</option></select>
-            <select @bind="MinimumModelProbability" aria-label="Минимална AI вероятност"><option value="">Всички AI оценки</option><option value="40">AI ≥ 40%</option><option value="50">AI ≥ 50%</option><option value="60">AI ≥ 60%</option></select>
-            <select @bind="Date" aria-label="Филтър по дата"><option value="">Всички дати</option><option value="today">Днес</option><option value="yesterday">Вчера</option><option value="older">По-стари</option></select>
-        </div>
-    </div>
-
-    @if (IsRefreshing && Generation is null)
-    {
-        <div class="empty-state"><strong>Изчисляване на сценарии…</strong><span>Използват се реални затворени свещи от MetaTrader 5.</span></div>
-    }
-    else if (FilteredSignals.Any())
-    {
-        <div class="table-scroll">
-            <table class="signals-table">
-                <thead><tr><th>ИД / МЕСТНО ВРЕМЕ</th><th>ПОСОКА</th><th>СТАТУС</th><th>РАМКА</th><th>ENTRY ЗОНА</th><th>SL / TP1–TP3</th><th>R:R TP1–TP3</th><th>ADX / ТЕСТОВЕ</th><th>AI P(TP1 ПРЕДИ SL)</th><th>P/L ПРИ SL / TP</th><th>МОЯ БЕЛЕЖКА</th><th>ИЗПЪЛНЕНИЕ</th></tr></thead>
-                <tbody>
-                    @foreach (var signal in FilteredSignals)
-                    {
-                        var journalDraft = GetJournalDraft(signal.SignalId);
-                        var riskResult = GetRiskResult(signal.SignalId);
-                        <tr>
-                            <td><strong>@signal.SignalId</strong><small>@FormatLocalTime(signal.TimestampUtc, "dd.MM.yyyy · HH:mm")</small></td>
-                            <td><span class="table-direction @(signal.Direction == "BUY BELOW" ? "positive" : "negative")">@(signal.Direction == "BUY BELOW" ? "↘" : "↗") @GetEntryOrderType(signal)</span></td>
-                            <td><span class="status @(IsLiveEntryReached(signal) ? "live_entry" : signal.Status.ToLowerInvariant())">@(IsLiveEntryReached(signal) ? "ВХОД ДОСТИГНАТ" : signal.Status)</span></td>
-                            <td><strong>@signal.Timeframe</strong><small>Хоризонт @signal.HorizonHours h</small></td>
-                            <td><strong>@GetEntryOrderType(signal) @GetEntryPrice(signal).ToString("N2")</strong><small>Зона @signal.EntryLow.ToString("N2") – @signal.EntryHigh.ToString("N2")</small><small>Валиден до @FormatLocalTime(GetExpiry(signal), "dd.MM HH:mm")</small></td>
-                            <td><small class="stop">SL @signal.StopLoss.ToString("N2")</small><small class="target">TP1 @signal.Tp1.ToString("N2") · TP2 @signal.Tp2.ToString("N2")</small><small class="target">TP3 @signal.Tp3.ToString("N2")</small></td>
-                            <td><strong>1 : @signal.Tp1RiskReward.ToString("0.0")</strong><small>TP2 1 : @signal.Tp2RiskReward.ToString("0.0") · TP3 1 : @signal.Tp3RiskReward.ToString("0.0")</small></td>
-                            <td><strong>@signal.Adx14.ToString("0.0")</strong><small>@signal.ZoneTouchCount докосвания</small></td>
-                            <td>
-                                @if (signal.ModelProbabilityPositiveOutcome is { } modelProbability)
-                                {
-                                    <strong>@modelProbability.ToString("P0")</strong>
-                                    <small>@(signal.ModelIsCalibrated == true ? "калибрирана" : "без калибрация") · @signal.ModelOutcomeHorizonHours h</small>
-                                }
-                                else
-                                {
-                                    <span>—</span>
-                                    <small>@(Generation?.ModelStatus == "policy_mismatch" ? "несъвместима policy" : "няма оценка")</small>
-                                }
-                            </td>
-                            <td class="signal-outcome-cell">
-                                @if (riskResult is null)
-                                {
-                                    <span>—</span>
-                                    <small>@(RiskCalculation?.Message ?? "Изчакване на MT5…")</small>
-                                }
-                                else if (riskResult.Status != "calculated")
-                                {
-                                    <span>—</span>
-                                    <small>@(riskResult.Message ?? "Няма изчисление")</small>
-                                }
-                                else
-                                {
-                                    <strong class="stop">SL @FormatSignedMoney(riskResult.StopLossPnl, RiskCalculation!.Calculation!.AccountCurrency)</strong>
-                                    <small class="target">TP1 @FormatSignedMoney(riskResult.Tp1Pnl, RiskCalculation.Calculation.AccountCurrency) · TP2 @FormatSignedMoney(riskResult.Tp2Pnl, RiskCalculation.Calculation.AccountCurrency)</small>
-                                    <small class="target">TP3 @FormatSignedMoney(riskResult.Tp3Pnl, RiskCalculation.Calculation.AccountCurrency)</small>
-                                    <small>@riskResult.VolumeLots.ToString("0.##") lot · лимит @riskResult.TargetRiskAmount.ToString("N2") @RiskCalculation.Calculation.AccountCurrency</small>
-                                }
-                            </td>
-                            <td class="user-journal-cell">
-                                <div class="user-journal-actions">
-                                    <button class="journal-favorite @(journalDraft.IsFavorite ? "active" : "")" title="@(journalDraft.IsFavorite ? "Премахни от любими" : "Добави в любими")" aria-label="@(journalDraft.IsFavorite ? "Премахни от любими" : "Добави в любими")" @onclick="() => ToggleFavoriteAsync(signal.SignalId)" disabled="@(UserProfile?.Available != true || JournalSavingSignalId == signal.SignalId)">@(journalDraft.IsFavorite ? "★" : "☆")</button>
-                                    <button class="journal-save" @onclick="() => SaveJournalAsync(signal.SignalId)" disabled="@(JournalSavingSignalId == signal.SignalId)">@(JournalSavingSignalId == signal.SignalId ? "Запис…" : "Запази")</button>
-                                </div>
-                                <textarea @bind="journalDraft.Note" maxlength="4000" rows="2" placeholder="Лична бележка" aria-label="Лична бележка за @signal.SignalId" disabled="@(UserProfile?.Available != true || JournalSavingSignalId == signal.SignalId)"></textarea>
-                            </td>
-                            <td class="signal-order-cell">
-                                <button class="signal-order-button" title="@GetOpenSignalDisabledReason(signal)" @onclick="() => OpenSignalPositionAsync(signal)" disabled="@(!CanOpenSignal(signal) || OpeningSignalIds.Contains(signal.SignalId) || OpenedSignalTickets.ContainsKey(signal.SignalId))">
-                                    @GetOpenButtonLabel(signal)
-                                </button>
-                                @if (SignalOrderNotices.TryGetValue(signal.SignalId, out var orderNotice))
-                                {
-                                    <small class="signal-order-notice @(orderNotice.Succeeded ? "success" : "error")">@orderNotice.Message</small>
-                                }
-                                else
-                                {
-                                    <small>Пазарна · обемът следва риска · SL / TP1</small>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-            <strong>@EmptyTitle</strong>
-            <span>@EmptyMessage</span>
-        </div>
-    }
-    <div class="table-foot">
-        <span>@(Generation?.IsStale == true ? $"Последно успешно генериране: {FormatLocalTime(Generation.GeneratedAtUtc, "yyyy-MM-dd HH:mm")}" : Generation?.Available == true ? $"Затворени свещи към {FormatLocalTime(Generation.AsOfUtc, "yyyy-MM-dd HH:mm")} · policy {Generation.PolicyVersion}" : "Сценариите изискват наличен Python генератор.")</span>
-        <span>@(Generation?.IsStale == true ? "Кеширани сценарии · пазарният статус може да е остарял" : Generation?.ModelStatus == "loaded" ? $"AI оценка за TP1 преди SL · {Generation.ModelOutcomeHorizonHours}h" : Generation?.ModelStatus == "policy_mismatch" ? "Активният модел не съвпада с версията на правилата" : "Правилов сценарий · няма съвместим активен AI модел")</span>
-    </div>
-</section>
-
-<div class="notice-strip"><strong>Информация:</strong> BUY LIMIT изчаква спад до зоната за покупка, а SELL LIMIT — покачване до зоната за продажба. Бутонът изпраща пазарна BUY/SELL поръчка само при свежа котировка в зоната; обемът използва зададения риск, стопът е SL, а целта е TP1. Сигналите не изпращат поръчки автоматично.</div>
+</details>
 
 @code {
     private static readonly (string Label, string Status, string Description, string Tone)[] StatusSummary =
@@ -328,6 +437,7 @@
     private string Date { get; set; } = "";
     private string Search { get; set; } = "";
     private string RiskPercentInput { get; set; } = "1";
+    private string PnlLotsInput { get; set; } = "0.01";
     private bool IsRefreshing { get; set; }
     private bool IsCalculatingRisk { get; set; }
     private SignalRiskCalculationResult? RiskCalculation { get; set; }
@@ -341,6 +451,7 @@
     private HashSet<string> OpeningSignalIds { get; } = new(StringComparer.Ordinal);
     private Dictionary<string, long> OpenedSignalTickets { get; } = new(StringComparer.Ordinal);
     private Dictionary<string, SignalOrderNotice> SignalOrderNotices { get; } = new(StringComparer.Ordinal);
+    private Dictionary<string, SignalOrderDraft> SignalOrderDrafts { get; } = new(StringComparer.Ordinal);
     private string ActivationApprover { get; set; } = "";
     private bool IsActivatingCandidate { get; set; }
     private string? CandidateActivationNotice { get; set; }
@@ -353,6 +464,7 @@
             : "Проверка на входните зони през 5 секунди";
     private readonly CancellationTokenSource _lifetime = new();
     private readonly HashSet<string> _alertedSignalIds = new(StringComparer.Ordinal);
+    private DateTimeOffset _nextGenerationRetryUtc = DateTimeOffset.MinValue;
     private Dictionary<string, LiveEntryAlert> LiveEntryAlerts { get; } = new(StringComparer.Ordinal);
 
     private IEnumerable<KeyValuePair<string, LearningHorizonStatus>> LearningHorizons =>
@@ -399,7 +511,7 @@
     private string EmptyTitle => Generation?.Available == false
         ? "Сценариите не са налични"
         : Generation?.Candidates.Count == 0
-            ? "NEUTRAL · няма валиден setup"
+            ? "НЕУТРАЛНО · няма валиден сценарий"
             : "Няма съвпадащи сценарии";
 
     private string EmptyMessage => Generation?.Available == false
@@ -408,11 +520,31 @@
             ? Generation.Message
             : "Променете филтрите или обновете пазарните данни.";
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        await RefreshAsync();
-        await RefreshLiveQuoteAsync(_lifetime.Token);
+        IsRefreshing = true;
+        _ = InitializePageAsync(_lifetime.Token);
         _ = PollLatestTickAsync(_lifetime.Token);
+        return Task.CompletedTask;
+    }
+
+    private async Task InitializePageAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await RefreshLiveQuoteAsync(cancellationToken);
+            await InvokeAsync(StateHasChanged);
+            await InvokeAsync(async () =>
+            {
+                var refreshTask = RefreshAsync();
+                StateHasChanged();
+                await refreshTask;
+                StateHasChanged();
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
     }
 
     private int CountStatus(string status) => status == "OPEN"
@@ -463,12 +595,20 @@
             return;
         }
 
+        if (!decimal.TryParse(PnlLotsInput, NumberStyles.Number, CultureInfo.InvariantCulture, out var pnlLots) ||
+            pnlLots < 0.01m || pnlLots > 1000m)
+        {
+            RiskCalculation = SignalRiskCalculationResult.Unavailable("Въведи lot за P/L между 0.01 и 1000.");
+            return;
+        }
+
         IsCalculatingRisk = true;
         try
         {
             RiskCalculation = await Mt5.CalculateSignalRiskAsync(
                 Generation?.Candidates ?? [],
                 riskPercent,
+                pnlLots,
                 _lifetime.Token);
         }
         finally
@@ -484,83 +624,131 @@
         ? "—"
         : $"{(value > 0m ? "+" : value < 0m ? "−" : "")}{Math.Abs(value).ToString("N2")} {currency}";
 
-    private bool CanOpenSignal(GeneratedSignalCandidate signal)
+    private static string FormatSignedPercent(decimal? amount, decimal balance)
     {
-        var statusAllowsOrder = signal.Status is "CREATED" or "TRIGGERED";
-        var directionIsSupported = signal.Direction is "BUY BELOW" or "SELL BELOW";
-        var risk = GetRiskResult(signal.SignalId);
-        return Generation is { Available: true, IsStale: false } && statusAllowsOrder && directionIsSupported &&
-            GetExpiry(signal) > DateTimeOffset.UtcNow &&
-            LiveQuote is { Available: true, Freshness: MarketFreshness.Fresh, Tick: { } tick } &&
-            tick.UpdatedAtUtc >= signal.TimestampUtc && IsExecutablePriceInZone(signal, tick) &&
-            risk?.Status == "calculated" && risk.VolumeLots > 0m && !IsCalculatingRisk;
+        if (amount is not { } value || balance <= 0m)
+            return "—";
+
+        var percent = value / balance * 100m;
+        return $"{(percent > 0m ? "+" : percent < 0m ? "−" : "")}{Math.Abs(percent).ToString("N2")}%";
     }
 
-    private string GetOpenSignalDisabledReason(GeneratedSignalCandidate signal)
+    private bool CanConfigureSignal(GeneratedSignalCandidate signal) =>
+        (signal.Status is "CREATED" or "TRIGGERED") &&
+        (signal.Direction is "BUY BELOW" or "SELL BELOW") &&
+        GetExpiry(signal) > DateTimeOffset.UtcNow;
+
+    private string GetSignalFormDisabledReason(GeneratedSignalCandidate signal) =>
+        signal.Status is not ("CREATED" or "TRIGGERED") || GetExpiry(signal) <= DateTimeOffset.UtcNow
+            ? "Сигналът е приключил или е изтекъл."
+            : signal.Direction is not ("BUY BELOW" or "SELL BELOW")
+                ? "Посоката на сигнала не се поддържа за пазарна поръчка."
+                : "Отваря форма с параметрите на сигнала.";
+
+    private bool CanSubmitSignal(GeneratedSignalCandidate signal, SignalOrderDraft draft) =>
+        string.IsNullOrEmpty(GetOrderSubmitDisabledReason(signal, draft));
+
+    private string GetOrderSubmitDisabledReason(GeneratedSignalCandidate signal, SignalOrderDraft draft)
     {
         if (Generation is not { Available: true, IsStale: false })
             return "Изпълнение е достъпно само за свежи сигнали.";
-        if (signal.Status is not ("CREATED" or "TRIGGERED") || GetExpiry(signal) <= DateTimeOffset.UtcNow)
-            return "Сигналът е приключил или е изтекъл.";
+        if (!CanConfigureSignal(signal))
+            return GetSignalFormDisabledReason(signal);
         if (LiveQuote is not { Available: true, Freshness: MarketFreshness.Fresh, Tick: { } tick } ||
             tick.UpdatedAtUtc < signal.TimestampUtc)
             return "Изчаква се свежа котировка от MT5.";
         if (!IsExecutablePriceInZone(signal, tick))
-            return "Поръчката е достъпна, когато текущата цена достигне входната зона.";
-        var risk = GetRiskResult(signal.SignalId);
-        if (risk?.Status != "calculated" || risk.VolumeLots <= 0m || IsCalculatingRisk)
-            return risk?.Message ?? "Изчакай изчисляването на обема според риска.";
-        return "Отваря пазарна позиция според сигнала, с SL и TP1.";
+            return "Пазарната цена трябва да е във входната зона на сигнала.";
+        if (draft.VolumeLots is not { } volume || volume < 0.01m || volume > 1000m)
+            return "Въведи обем между 0.01 и 1000 lot.";
+        if (draft.StopLoss is not { } stopLoss || stopLoss <= 0m ||
+            draft.TakeProfit is not { } takeProfit || takeProfit <= 0m)
+            return "Въведи положителни стойности за Stop Loss и Take Profit.";
+
+        var marketPrice = GetExecutablePrice(signal, tick);
+        var levelsMatchPrice = signal.Direction == "BUY BELOW"
+            ? stopLoss < marketPrice && takeProfit > marketPrice
+            : stopLoss > marketPrice && takeProfit < marketPrice;
+        return levelsMatchPrice
+            ? ""
+            : "Stop Loss и Take Profit трябва да са от правилната страна на текущата цена.";
     }
 
     private static string GetMarketOrderType(GeneratedSignalCandidate signal) =>
         signal.Direction == "BUY BELOW" ? "BUY" : "SELL";
+
+    private static string GetStatusLabel(string status) => status switch
+    {
+        "CREATED" => "ЧАКА ВХОД",
+        "TRIGGERED" => "АКТИВЕН",
+        "CLOSED_TP" => "ЦЕЛ ДОСТИГНАТА",
+        "CLOSED_SL" => "СТОП",
+        "EXPIRED" => "ИЗТЕКЪЛ",
+        _ => status
+    };
+
+    private static string GetProbabilityBarStyle(double probability) =>
+        $"width:{Math.Clamp(probability, 0d, 100d).ToString("0", CultureInfo.InvariantCulture)}%";
 
     private string GetOpenButtonLabel(GeneratedSignalCandidate signal) =>
         OpeningSignalIds.Contains(signal.SignalId)
             ? "Изпълнение…"
             : OpenedSignalTickets.TryGetValue(signal.SignalId, out var ticket)
                 ? $"Отворена №{ticket}"
-                : $"Отвори {GetMarketOrderType(signal)}";
+                : SignalOrderDrafts.ContainsKey(signal.SignalId)
+                    ? "Скрий настройките"
+                    : "Отвори позиция";
 
-    private async Task OpenSignalPositionAsync(GeneratedSignalCandidate signal)
+    private void ToggleSignalOrderForm(GeneratedSignalCandidate signal)
     {
-        if (!CanOpenSignal(signal) || !OpeningSignalIds.Add(signal.SignalId))
+        if (!CanConfigureSignal(signal))
+            return;
+
+        if (SignalOrderDrafts.Remove(signal.SignalId))
+            return;
+
+        var risk = GetRiskResult(signal.SignalId);
+        SignalOrderDrafts[signal.SignalId] = new SignalOrderDraft
+        {
+            VolumeLots = risk is { Status: "calculated", VolumeLots: >= 0.01m }
+                ? risk.VolumeLots
+                : null,
+            StopLoss = signal.StopLoss,
+            TakeProfit = signal.Tp1
+        };
+        SignalOrderNotices.Remove(signal.SignalId);
+    }
+
+    private void CloseSignalOrderForm(string signalId) => SignalOrderDrafts.Remove(signalId);
+
+    private async Task OpenSignalPositionAsync(GeneratedSignalCandidate signal, SignalOrderDraft draft)
+    {
+        if (!CanConfigureSignal(signal) || !OpeningSignalIds.Add(signal.SignalId))
             return;
 
         SignalOrderNotices.Remove(signal.SignalId);
         try
         {
             var currentSignal = Generation?.Candidates.FirstOrDefault(candidate => candidate.SignalId == signal.SignalId);
-            if (currentSignal is null || currentSignal != signal || !CanOpenSignal(currentSignal))
+            if (currentSignal is null || currentSignal != signal)
             {
-                SignalOrderNotices[signal.SignalId] = new(false, "Сигналът или пазарните данни са се променили. Обнови таблото.");
-                return;
-            }
-
-            if (!decimal.TryParse(RiskPercentInput, NumberStyles.Number, CultureInfo.InvariantCulture, out var riskPercent) ||
-                riskPercent <= 0m || riskPercent > 100m)
-            {
-                SignalOrderNotices[signal.SignalId] = new(false, "Въведи риск между 0.01% и 100% от баланса.");
+                SignalOrderNotices[signal.SignalId] = new(false, "Сигналът се е променил. Обнови таблото и провери стойностите.");
                 return;
             }
 
             var quote = await Mt5.GetLatestTickAsync(signal.Symbol, _lifetime.Token);
+            LiveQuote = quote;
             if (quote is not { Available: true, Freshness: MarketFreshness.Fresh, Tick: { } tick } ||
                 tick.UpdatedAtUtc < signal.TimestampUtc || !IsExecutablePriceInZone(signal, tick))
             {
-                LiveQuote = quote;
-                SignalOrderNotices[signal.SignalId] = new(false, "Цената вече не е в зоната или котировката не е свежа. Позиция не е отворена.");
+                SignalOrderNotices[signal.SignalId] = new(false, "Цената вече не е във входната зона или котировката не е свежа. Позиция не е отворена.");
                 return;
             }
 
-            var marketPrice = GetExecutablePrice(signal, tick);
-            var levelsMatchPrice = signal.Direction == "BUY BELOW"
-                ? signal.StopLoss < marketPrice && signal.Tp1 > marketPrice
-                : signal.StopLoss > marketPrice && signal.Tp1 < marketPrice;
-            if (!levelsMatchPrice)
+            var submitBlockReason = GetOrderSubmitDisabledReason(signal, draft);
+            if (!string.IsNullOrEmpty(submitBlockReason))
             {
-                SignalOrderNotices[signal.SignalId] = new(false, "SL или TP1 вече не съответстват на текущата цена. Позиция не е отворена.");
+                SignalOrderNotices[signal.SignalId] = new(false, submitBlockReason);
                 return;
             }
 
@@ -579,29 +767,24 @@
             {
                 OpenedSignalTickets[signal.SignalId] = existingPosition.Ticket;
                 SignalOrderNotices[signal.SignalId] = new(true, $"Позицията вече е отворена. Билет № {existingPosition.Ticket}.");
-                return;
-            }
-
-            var executionSignal = signal with { EntryPrice = marketPrice };
-            var riskCalculation = await Mt5.CalculateSignalRiskAsync([executionSignal], riskPercent, _lifetime.Token);
-            var risk = riskCalculation.Calculation?.Results.FirstOrDefault(result => result.SignalId == signal.SignalId);
-            if (!riskCalculation.Available || risk?.Status != "calculated" || risk.VolumeLots <= 0m)
-            {
-                SignalOrderNotices[signal.SignalId] = new(false, risk?.Message ?? riskCalculation.Message);
+                SignalOrderDrafts.Remove(signal.SignalId);
                 return;
             }
 
             var order = await Mt5.OpenMarketPositionAsync(
                 signal.Symbol,
                 GetMarketOrderType(signal),
-                risk.VolumeLots,
-                signal.StopLoss,
-                signal.Tp1,
+                draft.VolumeLots!.Value,
+                draft.StopLoss!.Value,
+                draft.TakeProfit!.Value,
                 signal.SignalId,
                 _lifetime.Token);
             SignalOrderNotices[signal.SignalId] = new(order.Succeeded, order.Message);
             if (order.Succeeded && order.Ticket is { } ticket)
+            {
                 OpenedSignalTickets[signal.SignalId] = ticket;
+                SignalOrderDrafts.Remove(signal.SignalId);
+            }
         }
         finally
         {
@@ -624,10 +807,20 @@
             while (await timer.WaitForNextTickAsync(cancellationToken))
             {
                 var result = await SignalService.GetCurrentQuoteAsync(cancellationToken);
-                await InvokeAsync(() =>
+                await InvokeAsync(async () =>
                 {
                     LiveQuote = result;
                     ObserveLiveEntryZones();
+
+                    var shouldRetryGeneration = result is { Available: true, Freshness: MarketFreshness.Fresh } &&
+                        (Generation is null || !Generation.Available || Generation.IsStale) &&
+                        DateTimeOffset.UtcNow >= _nextGenerationRetryUtc;
+                    if (shouldRetryGeneration && !IsRefreshing)
+                    {
+                        _nextGenerationRetryUtc = DateTimeOffset.UtcNow.AddSeconds(30);
+                        await RefreshAsync();
+                    }
+
                     StateHasChanged();
                 });
             }
@@ -840,6 +1033,13 @@
     {
         public bool IsFavorite { get; set; }
         public string Note { get; set; } = "";
+    }
+
+    private sealed class SignalOrderDraft
+    {
+        public decimal? VolumeLots { get; set; }
+        public decimal? StopLoss { get; set; }
+        public decimal? TakeProfit { get; set; }
     }
 
     private sealed record SignalOrderNotice(bool Succeeded, string Message);

@@ -1,3 +1,3 @@
-cd E:\Projects_MT5\XYN_Trader
-dotnet run --project XYN_Trader.csproj
+@echo off
+powershell.exe -ExecutionPolicy Bypass -File "%~dp0start-xyn-trader.ps1"
 pause

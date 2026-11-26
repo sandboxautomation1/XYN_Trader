@@ -527,6 +527,57 @@ class MT5Handler:
             "server": str(account_info.server)
         }
 
+    def get_symbol_volume_constraints(self, symbol: str) -> Optional[Dict[str, float]]:
+        """Return MT5 volume limits for a symbol after selecting it in Market Watch."""
+        if not self.connected:
+            if not self.initialize():
+                return None
+        if mt5 is None:
+            return None
+        if not mt5.symbol_select(symbol, True):
+            logger.error("Failed to select %s for risk calculation: %s", symbol, mt5.last_error())
+            return None
+
+        info = mt5.symbol_info(symbol)
+        if info is None:
+            logger.error("Failed to get symbol info for %s: %s", symbol, mt5.last_error())
+            return None
+
+        return {
+            "volume_min": float(info.volume_min),
+            "volume_max": float(info.volume_max),
+            "volume_step": float(info.volume_step),
+        }
+
+    def calculate_order_profit(
+        self,
+        symbol: str,
+        side: str,
+        volume: float,
+        price_open: float,
+        price_close: float,
+    ) -> Optional[float]:
+        """Estimate a trade's P/L in account currency using MetaTrader's contract rules."""
+        if not self.connected:
+            if not self.initialize():
+                return None
+        if mt5 is None:
+            return None
+
+        normalized_side = side.strip().upper()
+        if normalized_side not in {"BUY", "SELL"}:
+            return None
+        if not mt5.symbol_select(symbol, True):
+            logger.error("Failed to select %s for P/L calculation: %s", symbol, mt5.last_error())
+            return None
+
+        order_type = mt5.ORDER_TYPE_BUY if normalized_side == "BUY" else mt5.ORDER_TYPE_SELL
+        profit = mt5.order_calc_profit(order_type, symbol, volume, price_open, price_close)
+        if profit is None:
+            logger.error("Failed to calculate %s P/L for %s: %s", normalized_side, symbol, mt5.last_error())
+            return None
+        return float(profit)
+
     def get_positions(
         self,
         symbols: Optional[List[str]] = None,

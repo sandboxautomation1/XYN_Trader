@@ -1,0 +1,1612 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261126154221
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -File E:\Projects_MT5\XYN_Trader\start\start-xyn-trader.ps1
+Process ID: 14428
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\xyn-trader-20261126-154221.log
+Стартира се XYN Trader. MT5 bridge и AI service се стартират от отделните BAT файлове.
+Using launch settings from E:\Projects_MT5\XYN_Trader\Properties\launchSettings.json...
+Building...
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 103.4413ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 115.0523ms - 200
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5086
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: E:\Projects_MT5\XYN_Trader
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 10.5522ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 10.6783ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.0749ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.2859ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.018ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.1877ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request POST http://127.0.0.1:8001/api/v1/learning/ingest
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request POST http://127.0.0.1:8001/api/v1/learning/ingest
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 78.9107ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 79.0055ms - 200
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.5739ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.7128ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8001/api/v1/user/profile
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8001/api/v1/user/profile
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.865ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.0652ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.477ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.7404ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.5673ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.6979ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8001/api/v1/user/profile
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8001/api/v1/user/profile
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3433ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5888ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 7.4066ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 7.523ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.1554ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.2776ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 5.8296ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 5.9712ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 378.8437ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 378.9015ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 432.5501ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 432.669ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request POST http://127.0.0.1:8000/signal-calculator
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request POST http://127.0.0.1:8000/signal-calculator
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 9.3081ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 9.4204ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.882ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0117ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.7201ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8652ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8001/api/v1/learning/status
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8001/api/v1/user/profile
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8001/api/v1/user/profile
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.1123ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.2209ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 8.1189ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 8.1883ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 5.0579ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 5.3289ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 5.446ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 5.5288ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 369.2892ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 369.3603ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 370.2549ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 370.3851ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request POST http://127.0.0.1:8000/signal-calculator
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request POST http://127.0.0.1:8000/signal-calculator
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 6.7869ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 6.9052ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.3045ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.4819ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.3769ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.5767ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5643ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8195ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3004ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3909ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3257ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5114ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.5925ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8027ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.9343ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.1458ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1858ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.4973ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3315ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.4671ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.9262ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.0949ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1841ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2968ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2796ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5021ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8065ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.913ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0403ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3206ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.884ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0237ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6335ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7126ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8796ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0282ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1243ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.4037ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.8811ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.0675ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4896ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6819ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5602ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7618ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.4124ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.5383ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2708ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.369ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.3487ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.4277ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8678ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.9379ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.9866ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.1166ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7394ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9073ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4448ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5777ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1849ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.4318ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2666ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6123ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2116ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3852ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5046ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6879ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8912ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.979ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0729ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1512ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2153ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2973ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4551ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7417ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4159ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5876ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6998ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8669ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.9779ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.0798ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.7529ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8658ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.7209ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8522ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7816ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9065ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.6868ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8385ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1223ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2501ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3411ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.4636ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.609ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7206ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.1784ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.2335ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0925ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1976ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2058ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3004ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8434ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0003ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.1959ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.255ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4362ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.545ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4633ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6168ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5125ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6083ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7436ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9179ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2785ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3975ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1766ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3452ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.7454ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8161ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.1727ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.3238ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0703ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2282ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6416ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7306ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0129ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0859ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.4972ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.5589ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0772ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1545ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.9049ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.0752ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1942ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3143ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.29ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3765ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5382ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7316ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4511ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6143ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.9718ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.052ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.5604ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.6839ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7873ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9043ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.5611ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.6858ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.3424ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.6252ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.7503ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8327ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.3722ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.6661ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1235ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.239ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6943ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9807ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.9034ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0556ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7392ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8612ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5259ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6124ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.1537ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.2159ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0582ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1907ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2127ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3021ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5288ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5928ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.2684ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.4652ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.9351ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0337ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5332ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6105ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4691ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5555ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8181ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.8974ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7059ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8066ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2494ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3526ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5147ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6065ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.9635ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1262ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6176ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9483ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.4546ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.5477ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4374ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.4994ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1434ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2752ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.8664ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9945ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.9221ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.9809ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3698ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.4913ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2015ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2931ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7246ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8083ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1463ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2655ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6028ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7377ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7054ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8817ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0796ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1716ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.968ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.2025ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8222ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0217ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.9508ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1562ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.284ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.3815ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1147ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.2781ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.787ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.9823ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.0559ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.166ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.616ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8741ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8753ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.9564ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.2305ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.3682ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3673ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.5009ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.2038ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3501ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6998ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9198ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8776ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.9339ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.0452ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.0915ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.194ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3332ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.3181ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.381ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.3024ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7425ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.851ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.2647ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6924ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8195ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.4825ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.8432ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.366ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.4701ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0009ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1222ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.1915ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.3329ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.8802ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.9515ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.6437ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.7232ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0846ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1988ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.4094ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.4598ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.2597ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.3169ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.6456ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.7075ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.327ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.4158ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.243ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.2957ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.9055ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.0081ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.4987ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.5835ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.3153ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.3842ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.5273ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.5886ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.9894ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 5.0606ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.4228ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.5847ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.9111ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 5.0031ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 6.6585ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 6.7152ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.1486ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.1987ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 6.97ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.0277ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.81ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.8729ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.3447ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.3879ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 271.6125ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 271.6835ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5409ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.3035ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.4478ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.1379ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.1754ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.1021ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.2694ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.0281ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.1871ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.0604ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.2646ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.3671ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[100]
+      Start processing HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[100]
+      Sending HTTP request POST http://127.0.0.1:8001/api/v1/candidates/generate
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.2327ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.3509ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 7.7328ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 7.7752ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.ClientHandler[101]
+      Received HTTP response headers after 246.5481ms - 200
+info: System.Net.Http.HttpClient.CandidateGeneratorClient.LogicalHandler[101]
+      End processing HTTP request after 246.6582ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.5743ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.618ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 3.3805ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 3.4542ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/positions
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/account
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.6863ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.763ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.7194ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.7658ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.8846ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.9113ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/health
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.5517ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.6063ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/rates/XAUUSD?*
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 4.3824ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 4.4611ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 5.3149ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 5.3995ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 1.4507ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 1.5484ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[100]
+      Start processing HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[100]
+      Sending HTTP request GET http://127.0.0.1:8000/tick/XAUUSD
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.ClientHandler[101]
+      Received HTTP response headers after 2.0386ms - 200
+info: System.Net.Http.HttpClient.Mt5MarketDataProvider.LogicalHandler[101]
+      End processing HTTP request after 2.1ms - 200

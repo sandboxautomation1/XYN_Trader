@@ -1,0 +1,327 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261126112529
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -File E:\Projects_MT5\XYN_Trader\start\start-ai-service.ps1
+Process ID: 25460
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-service-20261126-112529.log
+Checked 7 packages in 1.18s
+INFO:     Started server process [26492]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61629 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'runLearningCycle' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'runLearningCycle' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'runLearningCycle' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+INFO:     127.0.0.1:61629 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'symbol' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'interval' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'candles' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+INFO:     127.0.0.1:63879 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61518 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py:136: UserWarning: Could not find the number of physical cores for the following reason:
+[WinError 2] The system cannot find the file specified
+Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
+  warnings.warn(
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py", line 257, in _count_physical_cores
+    cpu_info = subprocess.run(
+        "wmic CPU Get NumberOfCores /Format:csv".split(),
+        capture_output=True,
+        text=True,
+    )
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 554, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1554, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+INFO:     127.0.0.1:63190 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61520 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53896 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53896 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58894 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57807 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51282 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64398 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64397 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64398 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53537 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53536 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53539 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57408 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57407 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57408 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55353 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55353 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54699 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54698 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54699 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'alias' attribute with value 'approvedBy' was provided to the `Field()` function, which has no effect in the context it was used. 'alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'validation_alias' attribute with value 'approvedBy' was provided to the `Field()` function, which has no effect in the context it was used. 'validation_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\pydantic\_internal\_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'serialization_alias' attribute with value 'approvedBy' was provided to the `Field()` function, which has no effect in the context it was used. 'serialization_alias' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+INFO:     127.0.0.1:65299 - "POST /api/v1/learning/activate-best HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65299 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51423 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51422 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51423 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53717 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53716 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53719 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49268 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49268 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62677 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64174 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63656 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63655 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63658 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56359 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58869 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61899 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61897 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58869 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64190 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64189 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64190 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64190 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64190 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50850 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50850 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50850 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50850 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64098 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64099 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64101 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62398 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62398 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64197 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64198 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64197 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64426 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55162 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60428 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60427 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60430 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52142 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52142 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61852 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61851 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61852 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56759 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56758 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56760 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57850 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57851 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59169 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59170 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59172 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59170 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59172 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62144 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61600 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61599 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61605 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54529 - "GET /api/v1/backtesting/run?horizon=24h HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57677 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57676 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57679 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49933 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49933 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54259 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54259 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62614 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62615 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62617 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53898 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53897 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53898 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64742 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64742 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60501 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60501 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49671 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49671 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64036 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64036 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53759 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50577 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58807 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58806 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58811 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59277 - "GET /api/v1/backtesting/run?horizon=24h HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56970 - "GET /api/v1/backtesting/run?horizon=1h HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65457 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59408 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57373 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57372 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57375 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56328 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56329 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56328 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63509 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56328 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63509 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54847 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54847 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53862 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53861 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53864 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62266 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62265 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62266 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63081 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63081 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53141 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53142 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53141 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57893 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57893 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55263 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55262 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55266 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54332 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54332 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54333 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53334 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53334 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58878 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58878 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62442 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62441 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62446 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60186 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60185 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60188 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56995 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56996 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56998 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59977 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59977 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49682 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49689 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60339 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64837 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64838 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60339 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57808 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57807 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57808 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52737 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52737 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50354 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50354 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63099 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63099 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62758 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62759 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62758 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60572 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60572 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65265 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65266 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65267 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56743 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56746 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56161 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56161 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63443 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63443 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56197 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63443 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56197 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49794 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49794 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55346 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55345 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55346 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58803 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58802 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58803 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63488 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63491 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60356 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50408 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61228 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61228 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61215 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61217 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61214 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51130 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51130 - "POST /api/v1/learning/ingest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58022 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58021 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58022 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58021 - "GET /api/v1/user/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58022 - "GET /api/v1/learning/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58021 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51047 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51050 - "POST /api/v1/candidates/generate HTTP/1.1" 200 OK

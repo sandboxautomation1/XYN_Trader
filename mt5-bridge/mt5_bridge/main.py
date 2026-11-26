@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from fastapi import FastAPI, HTTPException, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 import uvicorn
 import asyncio
@@ -10,6 +10,8 @@ import os
 import sys
 import json
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation, ROUND_DOWN
+import math
 import pandas as pd
 from importlib.metadata import version, PackageNotFoundError
 
@@ -122,6 +124,41 @@ class Deal(BaseModel):
     comment: str
     magic: int
     symbol: str
+
+class SignalRiskInput(BaseModel):
+    signal_id: str
+    symbol: str
+    direction: str
+    entry: float
+    stop_loss: float
+    tp1: float
+    tp2: float
+    tp3: float
+
+class SignalRiskRequest(BaseModel):
+    risk_percent: float = Field(ge=0.01, le=100)
+    pnl_lots: float = Field(default=0.01, ge=0.01, le=1000)
+    signals: List[SignalRiskInput] = Field(max_length=200)
+
+class SignalRiskResult(BaseModel):
+    signal_id: str
+    status: str
+    message: Optional[str] = None
+    volume_lots: float = 0
+    target_risk_amount: float = 0
+    stop_loss_pnl: Optional[float] = None
+    tp1_pnl: Optional[float] = None
+    tp2_pnl: Optional[float] = None
+    tp3_pnl: Optional[float] = None
+
+class SignalRiskResponse(BaseModel):
+    account_balance: float
+    account_equity: float
+    account_currency: str
+    risk_percent: float
+    pnl_lots: float
+    calculated_at_utc: datetime
+    results: List[SignalRiskResult]
 
 async def monitor_connection():
     """Periodically check MT5 connection and reconnect if needed."""
@@ -276,6 +313,176 @@ def get_account():
     if account is None:
         raise HTTPException(status_code=500, detail="Failed to get account info")
     return account
+
+@app.post("/signal-calculator", response_model=SignalRiskResponse)
+def calculate_signal_risk(request: SignalRiskRequest):
+    account = mt5_handler.get_account_info()
+    if account is None:
+        raise HTTPException(status_code=503, detail="MT5 account data is unavailable.")
+
+    try:
+        balance = Decimal(str(account["balance"]))
+        equity = Decimal(str(account["equity"]))
+        risk_percent = Decimal(str(request.risk_percent))
+        if (not balance.is_finite() or balance <= 0 or
+                not equity.is_finite() or not risk_percent.is_finite() or
+                risk_percent < Decimal("0.01") or risk_percent > Decimal("100")):
+            raise InvalidOperation
+        target_risk = balance * risk_percent / Decimal("100")
+    except (KeyError, InvalidOperation, ValueError):
+        raise HTTPException(status_code=503, detail="MT5 returned invalid account values.")
+
+    results = []
+    for signal in request.signals:
+        normalized_direction = signal.direction.strip().upper()
+        if normalized_direction in {"BUY", "BUY BELOW"}:
+            side = "BUY"
+        elif normalized_direction in {"SELL", "SELL BELOW"}:
+            side = "SELL"
+        else:
+            side = ""
+
+        prices = (signal.entry, signal.stop_loss, signal.tp1, signal.tp2, signal.tp3)
+        if not side or not signal.symbol.strip() or not all(math.isfinite(price) and price > 0 for price in prices):
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="invalid",
+                message="Символът, посоката или ценовите нива на сигнала са невалидни.",
+                target_risk_amount=float(target_risk),
+            ))
+            continue
+
+        correct_levels = (
+            signal.stop_loss < signal.entry < signal.tp1 <= signal.tp2 <= signal.tp3
+            if side == "BUY"
+            else signal.stop_loss > signal.entry > signal.tp1 >= signal.tp2 >= signal.tp3
+        )
+        if not correct_levels:
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="invalid",
+                message="Stop Loss и целите не съответстват на посоката на сигнала.",
+                target_risk_amount=float(target_risk),
+            ))
+            continue
+
+        symbol = signal.symbol.strip()
+        pnl_values = [
+            mt5_handler.calculate_order_profit(symbol, side, request.pnl_lots, signal.entry, price)
+            for price in (signal.stop_loss, signal.tp1, signal.tp2, signal.tp3)
+        ]
+        pnl_fields = {
+            field: value if value is not None and math.isfinite(value) else None
+            for field, value in zip(
+                ("stop_loss_pnl", "tp1_pnl", "tp2_pnl", "tp3_pnl"),
+                pnl_values,
+            )
+        }
+        pnl_available = all(value is not None for value in pnl_fields.values())
+
+        volume_constraints = mt5_handler.get_symbol_volume_constraints(symbol)
+        if volume_constraints is None:
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="unavailable",
+                message=f"MT5 не върна търговските параметри за {symbol}.",
+                target_risk_amount=float(target_risk),
+                **pnl_fields,
+            ))
+            continue
+
+        try:
+            volume_min = Decimal(str(volume_constraints["volume_min"]))
+            volume_max = Decimal(str(volume_constraints["volume_max"]))
+            volume_step = Decimal(str(volume_constraints["volume_step"]))
+            if not all(value.is_finite() and value > 0 for value in (volume_min, volume_max, volume_step)):
+                raise InvalidOperation
+        except (KeyError, InvalidOperation, ValueError):
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="unavailable",
+                message=f"MT5 върна невалидна минимална стъпка за обем за {symbol}.",
+                target_risk_amount=float(target_risk),
+                **pnl_fields,
+            ))
+            continue
+
+        one_lot_stop_pnl = mt5_handler.calculate_order_profit(
+            symbol, side, 1.0, signal.entry, signal.stop_loss
+        )
+        if one_lot_stop_pnl is None or not math.isfinite(one_lot_stop_pnl):
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="unavailable",
+                message=f"MT5 не успя да изчисли загубата при Stop Loss за {symbol}.",
+                target_risk_amount=float(target_risk),
+                **pnl_fields,
+            ))
+            continue
+        if one_lot_stop_pnl >= 0:
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="invalid",
+                message="Stop Loss не води до загуба при зададената посока.",
+                target_risk_amount=float(target_risk),
+                **pnl_fields,
+            ))
+            continue
+
+        try:
+            raw_volume = target_risk / abs(Decimal(str(one_lot_stop_pnl)))
+            volume = (raw_volume / volume_step).to_integral_value(rounding=ROUND_DOWN) * volume_step
+            max_step_volume = (volume_max / volume_step).to_integral_value(rounding=ROUND_DOWN) * volume_step
+            volume = min(volume, max_step_volume)
+        except (InvalidOperation, ZeroDivisionError):
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="unavailable",
+                message="Обемът не може да бъде изчислен от MT5 параметрите.",
+                target_risk_amount=float(target_risk),
+                **pnl_fields,
+            ))
+            continue
+
+        if not pnl_available:
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="unavailable",
+                message=f"MT5 не върна пълните P/L изчисления за {symbol} при {request.pnl_lots} lot.",
+                volume_lots=float(volume),
+                target_risk_amount=float(target_risk),
+                **pnl_fields,
+            ))
+            continue
+
+        if volume < volume_min:
+            results.append(SignalRiskResult(
+                signal_id=signal.signal_id,
+                status="below_minimum",
+                message=f"Обемът за изпълнение според риска е под минималния за {symbol} ({volume_min} lot). Показаните P/L суми са изчислени за {request.pnl_lots} lot.",
+                volume_lots=float(volume),
+                target_risk_amount=float(target_risk),
+                **pnl_fields,
+            ))
+            continue
+
+        results.append(SignalRiskResult(
+            signal_id=signal.signal_id,
+            status="calculated",
+            volume_lots=float(volume),
+            target_risk_amount=float(target_risk),
+            **pnl_fields,
+        ))
+
+    return SignalRiskResponse(
+        account_balance=float(balance),
+        account_equity=float(equity),
+        account_currency=str(account["currency"]),
+        risk_percent=float(risk_percent),
+        pnl_lots=float(request.pnl_lots),
+        calculated_at_utc=datetime.now(timezone.utc),
+        results=results,
+    )
 
 @app.get("/positions", response_model=List[Position])
 def get_positions(
@@ -515,7 +722,7 @@ def main():
             print("UTC conversion disabled (Raw Server Time)")
 
         # Run Server
-        uvicorn.run(app, host=args.host, port=args.port)
+        uvicorn.run(app, host=args.host, port=args.port, timeout_keep_alive=60)
 
     elif args.command == "client":
         client = BridgeClient(base_url=args.url)
