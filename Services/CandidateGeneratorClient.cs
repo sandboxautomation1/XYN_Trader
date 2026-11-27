@@ -95,11 +95,12 @@ public sealed class CandidateGeneratorClient(HttpClient httpClient)
     public async Task<LearningIngestResult> IngestClosedCandlesAsync(
         IReadOnlyList<Candle> candles,
         bool runLearningCycle = true,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string interval = "1h")
     {
         var request = new LearningIngestRequest(
             "XAUUSD",
-            "1h",
+            interval,
             candles.Select(candle => new CandidateGeneratorCandle(
                 candle.TimeUtc,
                 candle.Open,

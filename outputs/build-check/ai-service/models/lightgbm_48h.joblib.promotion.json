@@ -1,0 +1,21 @@
+{
+  "model_version": "lgbm-48h-20261123T212706Z-9ed428a553c7",
+  "horizon": "48h",
+  "calibration_method": "isotonic",
+  "is_calibrated": true,
+  "calibration_rows": 1112,
+  "raw_holdout_brier_score": 0.18935088788039214,
+  "holdout_expected_calibration_error": 0.05734957933118276,
+  "policy_version": "swing-zones-atr-v2",
+  "policy_sha256": "9e2c5b6ab2c76e7f1ee023ff33769b53e5ac7a27ef6764c59a10971d911ac256",
+  "approved_by": "\u044f\u0430",
+  "promoted_at_utc": "2026-11-26T09:48:58.627293+00:00",
+  "minimum_holdout_auc": 0.5,
+  "holdout_auc": 0.5437611408199643,
+  "maximum_holdout_brier_score": 0.18698710284674214,
+  "holdout_brier_score": 0.18487968641278502,
+  "dataset_sha256": "9ed428a553c7300967f707b34a6ae06d5e106adb32171f51ba94be8f467e2d79",
+  "candidate_artifact": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\models\\candidates\\lightgbm_48h_9ed428a553c7.joblib",
+  "active_artifact": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\models\\lightgbm_48h.joblib",
+  "archived_previous_artifact": "E:\\Projects_MT5\\XYN_Trader\\ai-service\\models\\archive\\lightgbm_48h-20261126T094858623356Z.joblib"
+}

@@ -122,7 +122,9 @@ public sealed class Mt5MarketDataProvider
                 Regime: "Not calculated",
                 NewsRisk: "Not available",
                 ModelVersion: "No AI model configured",
-                Candles: candles);
+                Candles: candles,
+                Bid: tick.Bid > 0m ? tick.Bid : null,
+                Ask: tick.Ask > 0m ? tick.Ask : null);
 
             return new MarketDataResult(
                 MarketConnectionStatus.Connected,
@@ -532,7 +534,10 @@ public sealed class Mt5MarketDataProvider
                 high.Value,
                 low.Value,
                 close.Value,
-                DateTimeOffset.FromUnixTimeSeconds(timestamp.Value)));
+                DateTimeOffset.FromUnixTimeSeconds(timestamp.Value),
+                TickVolume: ReadInt64(value, "tick_volume") ?? 0L,
+                Spread: (int)Math.Clamp(ReadInt64(value, "spread") ?? 0L, 0L, int.MaxValue),
+                RealVolume: ReadInt64(value, "real_volume") ?? 0L));
         }
 
         return candles.OrderBy(candle => candle.TimeUtc).ToArray();

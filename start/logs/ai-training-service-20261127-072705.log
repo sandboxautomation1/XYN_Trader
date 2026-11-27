@@ -1,0 +1,106 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261127072705
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe E:\Projects_MT5\XYN_Trader\start\run-ai-training-and-service.ps1
+Process ID: 12512
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-training-service-20261127-072705.log
+Checked 7 packages in 4ms
+source: MetaTrader 5 via mt5-bridge
+symbol: XAUUSD
+timeframe: H1
+requests: 75
+candles: 17003
+output: data\xauusd_h1.csv
+source: MetaTrader 5 via mt5-bridge
+symbol: XAUUSD
+timeframe: M5
+requests: 75
+candles: 97468
+output: data\xauusd_m5.csv
+policy_version: swing-zones-atr-v2
+policy_sha256: b976ecf695cf86a4250ea456f1add9ead747dc281d5cd504859d4659f6be784b
+candle_interval: 1h
+candidate_count: 2708
+buy_below_count: 1327
+sell_below_count: 1381
+neutral_bars: 14295
+candles_sha256: 305d2090bcc82f7592e7c4c5f60700848ec7aa7ceed01fc7a5951b000c2d166f
+policy_source: signal_policy.json
+output: data\signal_candidates.csv
+horizon: 1h
+candle_interval: 1h
+outcome_candle_interval: 5min
+candidate_rows: 2708
+labeled_rows: 285
+positive_rows: 13
+skipped_no_features: 0
+skipped_unmatured: 1453
+skipped_untriggered: 970
+dataset: data\train_1h.csv
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py:136: UserWarning: Could not find the number of physical cores for the following reason:
+[WinError 2] The system cannot find the file specified
+Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
+  warnings.warn(
+  File "E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py", line 257, in _count_physical_cores
+    cpu_info = subprocess.run(
+        "wmic CPU Get NumberOfCores /Format:csv".split(),
+        capture_output=True,
+        text=True,
+    )
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 554, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1554, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+E:\Projects_MT5\XYN_Trader\ai-service\.venv\Lib\site-packages\sklearn\linear_model\_logistic.py:451: OptimizeWarning: Unknown solver options: iprint
+  opt_res = optimize.minimize(
+model_version: lgbm-1h-20261127T052829Z-ac38ecc6111a
+training_rows: 228
+calibration_rows: 180
+holdout_rows: 57
+holdout_auc: 0.6415094339622641
+calibration_method: platt_sigmoid
+is_calibrated: True
+raw_holdout_brier_score: 0.07034215608319691
+holdout_brier_score: 0.06598937415502337
+raw_holdout_expected_calibration_error: 0.06849003064854585
+holdout_expected_calibration_error: 0.02843986067057306
+baseline_brier_score: 0.06619344413665744
+beats_prevalence_baseline_brier: True
+artifact: models\candidates\lightgbm_1h_candidate.joblib
+report: models\candidates\lightgbm_1h_candidate.joblib.report.json
+**********************
+Windows PowerShell transcript end
+End time: 20261127072829
+**********************

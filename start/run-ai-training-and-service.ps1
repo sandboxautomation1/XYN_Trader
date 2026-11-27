@@ -63,18 +63,14 @@ try {
 
     Invoke-NativeCommand { & $python download_candles.py --interval 1h --start 2024-01-01 --end 2026-11-13 --output data\xauusd_h1.csv 2>&1 }
     if ($script:LastNativeExitCode -ne 0) { throw "Изтеглянето на свещите е неуспешно." }
+    Invoke-NativeCommand { & $python download_candles.py --interval 5min --start 2024-01-01 --end 2026-11-13 --output data\xauusd_m5.csv 2>&1 }
+    if ($script:LastNativeExitCode -ne 0) { throw "Изтеглянето на петминутните свещи е неуспешно." }
     Invoke-NativeCommand { & $python generate_candidates.py --candles data\xauusd_h1.csv --output data\signal_candidates.csv --policy signal_policy.json --interval 1h 2>&1 }
     if ($script:LastNativeExitCode -ne 0) { throw "Генерирането на кандидати е неуспешно." }
-    Invoke-NativeCommand { & $python prepare_dataset.py --candles data\xauusd_h1.csv --candidates data\signal_candidates.csv --output data\train_1h.csv --horizon 1h --interval 1h 2>&1 }
+    Invoke-NativeCommand { & $python prepare_dataset.py --candles data\xauusd_h1.csv --candidates data\signal_candidates.csv --output data\train_1h.csv --horizon 1h --interval 1h --outcome-candles data\xauusd_m5.csv --outcome-interval 5min 2>&1 }
     if ($script:LastNativeExitCode -ne 0) { throw "Подготовката на набора за обучение е неуспешна." }
     Invoke-NativeCommand { & $python train.py --input data\train_1h.csv --output models\candidates\lightgbm_1h_candidate.joblib --horizon 1h 2>&1 }
     if ($script:LastNativeExitCode -ne 0) { throw "Обучението на модела е неуспешно." }
-
-    $env:XYN_MODEL_DIR = "models"
-    Invoke-NativeCommand { & $python -m uvicorn app:app --host 127.0.0.1 --port 8001 2>&1 }
-    if ($script:LastNativeExitCode -ne 0) {
-        throw "AI услугата приключи с код $script:LastNativeExitCode."
-    }
 }
 catch {
     Write-Error $_

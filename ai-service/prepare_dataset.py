@@ -198,6 +198,8 @@ def prepare_dataset(
     output_path: Path,
     horizon: str,
     interval: str,
+    outcome_candles_path: Path | None = None,
+    outcome_interval: str | None = None,
 ) -> dict[str, object]:
     if horizon not in HORIZON_HOURS:
         raise ValueError(f"Unsupported horizon: {horizon}")
@@ -205,6 +207,19 @@ def prepare_dataset(
         raise ValueError(f"Unsupported candle interval: {interval}")
     candles = _add_features(_read_candles(candles_path))
     candles["bar_close_utc"] = candles["timestamp_utc"] + CANDLE_INTERVALS[interval]
+    if (outcome_candles_path is None) != (outcome_interval is None):
+        raise ValueError("--outcome-candles and --outcome-interval must be provided together.")
+    resolved_outcome_interval = outcome_interval or interval
+    if resolved_outcome_interval not in CANDLE_INTERVALS:
+        raise ValueError(f"Unsupported outcome candle interval: {resolved_outcome_interval}")
+    outcome_candles = candles if outcome_candles_path is None else _read_candles(outcome_candles_path)
+    if outcome_candles is not candles:
+        if outcome_candles.empty:
+            raise ValueError("Outcome candle history must contain at least one OHLC row.")
+        outcome_candles = outcome_candles.copy()
+        outcome_candles["bar_close_utc"] = (
+            outcome_candles["timestamp_utc"] + CANDLE_INTERVALS[resolved_outcome_interval]
+        )
     candidates = pd.read_csv(candidates_path)
     missing = sorted(CANDIDATE_COLUMNS - set(candidates.columns))
     if missing:
@@ -243,6 +258,9 @@ def prepare_dataset(
         direction = _direction_code(candidate["direction"])
         _validate_candidate(candidate, direction)
         timestamp = candidate["timestamp_utc"]
+        if timestamp < outcome_candles["timestamp_utc"].iloc[0]:
+            skipped_unmatured += 1
+            continue
         candle_index = int(
             np.searchsorted(candle_close_times, timestamp.to_datetime64(), side="right") - 1
         )
@@ -256,9 +274,9 @@ def prepare_dataset(
             continue
 
         horizon_end = timestamp + horizon_delta
-        future = candles.loc[
-            (candles["timestamp_utc"] >= timestamp)
-            & (candles["bar_close_utc"] <= horizon_end)
+        future = outcome_candles.loc[
+            (outcome_candles["timestamp_utc"] >= timestamp)
+            & (outcome_candles["bar_close_utc"] <= horizon_end)
         ]
         labeled = _label_candidate(candidate, future, direction, horizon_end)
         if labeled is None:
@@ -277,6 +295,7 @@ def prepare_dataset(
             "outcome_matured": True,
             "policy_version": str(candidate["policy_version"]),
             "policy_sha256": str(candidate["policy_sha256"]),
+            "outcome_candle_interval": resolved_outcome_interval,
             **feature_values,
             f"target_{horizon}": target_value,
         }
@@ -290,6 +309,7 @@ def prepare_dataset(
         "outcome_matured",
         "policy_version",
         "policy_sha256",
+        "outcome_candle_interval",
         *FEATURE_COLUMNS,
         f"target_{horizon}",
     ]
@@ -299,6 +319,7 @@ def prepare_dataset(
     return {
         "horizon": horizon,
         "candle_interval": interval,
+        "outcome_candle_interval": resolved_outcome_interval,
         "candidate_rows": len(candidates),
         "labeled_rows": len(output),
         "positive_rows": int(output[f"target_{horizon}"].sum()) if not output.empty else 0,
@@ -318,9 +339,25 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True, help="Prepared dataset CSV.")
     parser.add_argument("--horizon", choices=tuple(HORIZON_HOURS), required=True)
     parser.add_argument("--interval", choices=tuple(CANDLE_INTERVALS), default="1h")
+    parser.add_argument(
+        "--outcome-candles",
+        type=Path,
+        help="Optional finer OHLC history used only to resolve entry, stop, and target order.",
+    )
+    parser.add_argument(
+        "--outcome-interval",
+        choices=tuple(CANDLE_INTERVALS),
+        help="Candle interval for --outcome-candles (for example, 5min for a 1h horizon).",
+    )
     args = parser.parse_args()
     for key, value in prepare_dataset(
-        args.candles, args.candidates, args.output, args.horizon, args.interval
+        args.candles,
+        args.candidates,
+        args.output,
+        args.horizon,
+        args.interval,
+        args.outcome_candles,
+        args.outcome_interval,
     ).items():
         print(f"{key}: {value}")
 

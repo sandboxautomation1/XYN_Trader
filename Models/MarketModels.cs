@@ -5,7 +5,10 @@ public sealed record Candle(
     decimal High,
     decimal Low,
     decimal Close,
-    DateTimeOffset TimeUtc);
+    DateTimeOffset TimeUtc,
+    long TickVolume = 0,
+    int Spread = 0,
+    long RealVolume = 0);
 
 public sealed record MarketTick(
     decimal Price,
@@ -22,7 +25,9 @@ public sealed record MarketSnapshot(
     string Regime,
     string NewsRisk,
     string ModelVersion,
-    IReadOnlyList<Candle> Candles);
+    IReadOnlyList<Candle> Candles,
+    decimal? Bid = null,
+    decimal? Ask = null);
 
 public sealed record SignalRecord(
     string Id,
@@ -62,6 +67,24 @@ public sealed record AnalysisSnapshot(
     int TechnicalScore,
     IReadOnlyList<IndicatorReading> Indicators,
     IReadOnlyList<PriceZone> Zones);
+
+public sealed record ScenarioAssessmentResult(
+    string Id,
+    string Name,
+    string Timeframe,
+    string Status,
+    string Signal,
+    string Reason,
+    decimal? Price,
+    DateTimeOffset? UpdatedAtUtc,
+    decimal? Entry = null,
+    decimal? StopLoss = null,
+    decimal? TakeProfit = null);
+
+public sealed record ScenarioAssessmentReport(
+    DateTimeOffset GeneratedAtUtc,
+    string Symbol,
+    IReadOnlyList<ScenarioAssessmentResult> Scenarios);
 
 public sealed record PriceForecast(
     string Horizon,

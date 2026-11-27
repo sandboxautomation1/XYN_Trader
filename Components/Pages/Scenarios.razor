@@ -1,0 +1,271 @@
+@page "/scenarios"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject ScenarioAssessmentService AssessmentService
+
+<PageTitle>Сценарии — XYN Trader</PageTitle>
+
+<div class="page-heading scenarios-heading">
+    <div>
+        <div class="eyebrow"><span></span> XAUUSD · MT5 / H1 + M5</div>
+        <h1>Сценарии<span>.</span></h1>
+        <p>Пазарна оценка на описаните сценарии по затворени свещи от MetaTrader 5.</p>
+    </div>
+    <button class="refresh-button" @onclick="RefreshNowAsync" disabled="@IsRefreshing">
+        @(IsRefreshing ? "Оценяване…" : "Обнови оценката")
+    </button>
+</div>
+
+<section class="market-status-panel @FeedStatusClass" role="status" aria-live="polite">
+    <div class="market-status-main">
+        <i class="dot @FeedStatusDot"></i>
+        <div>
+            <strong>@FeedStatusLabel</strong>
+            <span>@FeedStatusDescription</span>
+        </div>
+    </div>
+    <div class="market-metadata">
+        <span>Основен инструмент<strong>@(Report?.Symbol ?? "XAUUSD")</strong></span>
+        <span>Външно потвърждение<strong>DXY · US10Y</strong></span>
+        <span>Последна оценка<strong>@(Report is null ? "—" : FormatUtc(Report.GeneratedAtUtc))</strong></span>
+    </div>
+</section>
+
+<section class="metric-grid scenario-metrics" aria-label="Обобщение на сценариите">
+    <article class="metric-card">
+        <div class="metric-label">ОПИСАНИ СЦЕНАРИИ</div>
+        <div class="metric-value">@ScenarioCount.ToString("00")</div>
+        <div class="metric-foot"><span>H1 и M5</span><span>MT5</span></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">ПОТВЪРДЕН СИГНАЛ</div>
+        <div class="metric-value positive">@ConfirmedCount.ToString("00")</div>
+        <div class="metric-foot"><span>BUY или SELL</span><span>по условия</span></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">ИЗЧАКВАНЕ</div>
+        <div class="metric-value">@WaitingCount.ToString("00")</div>
+        <div class="metric-foot"><span>Няма пълен setup</span><span>WAIT</span></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">НЯМА ДАННИ</div>
+        <div class="metric-value @((NoDataCount > 0) ? "warning" : "positive")">@NoDataCount.ToString("00")</div>
+        <div class="metric-foot"><span>Необходима е връзка</span><span>MT5 bridge</span></div>
+    </article>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(LoadError))
+{
+    <div class="scenario-error" role="alert">
+        <strong>Неуспешна пазарна оценка</strong>
+        <span>@LoadError</span>
+    </div>
+}
+
+<section class="panel scenarios-panel">
+    <div class="panel-header scenarios-panel-header">
+        <div>
+            <div class="panel-kicker">РЕАЛНОВРЕМЕННА ОЦЕНКА · ЗАТВОРЕНИ СВЕЩИ</div>
+            <h2>Състояние на всеки сценарий <small>(@Assessments.Count)</small></h2>
+        </div>
+        <span class="timeframe-chip">ОБНОВЯВАНЕ · 1 МИН.</span>
+    </div>
+
+    @if (Assessments.Count == 0)
+    {
+        <div class="empty-state scenario-empty">
+            <strong>@(IsRefreshing ? "Зареждане на пазарните данни…" : "Сценариите още не са оценени")</strong>
+            <span>@(LoadError ?? "Изчакай отговора от MT5 bridge или натисни „Обнови оценката“. ")</span>
+        </div>
+    }
+    else
+    {
+        <div class="scenario-card-grid">
+            @foreach (var scenario in Assessments)
+            {
+                <article class="scenario-card @StatusTone(scenario)">
+                    <div class="scenario-card-header">
+                        <span class="scenario-timeframe">@scenario.Timeframe</span>
+                        <span class="scenario-status @StatusTone(scenario)">@scenario.Status</span>
+                    </div>
+                    <h3>@scenario.Name</h3>
+                    <div class="scenario-signal-line">
+                        <span class="scenario-signal @SignalTone(scenario.Signal)">@scenario.Signal</span>
+                        <span class="scenario-price">Цена <strong>@FormatPrice(scenario.Price)</strong></span>
+                    </div>
+                    <div class="scenario-levels" aria-label="Търговски нива">
+                        <div><span>ВХОД</span><strong>@FormatPrice(scenario.Entry)</strong></div>
+                        <div><span>STOP LOSS</span><strong>@FormatPrice(scenario.StopLoss)</strong></div>
+                        <div><span>TAKE PROFIT · 2R</span><strong>@FormatPrice(scenario.TakeProfit)</strong></div>
+                    </div>
+                    @if (!scenario.Entry.HasValue)
+                    {
+                        <small class="scenario-no-levels">Нивата се изчисляват при потвърден BUY или SELL.</small>
+                    }
+                    <p class="scenario-reason">@scenario.Reason</p>
+                    <div class="scenario-card-footer">
+                        <span>Котировка: @FormatUtc(scenario.UpdatedAtUtc)</span>
+                        <span>Условия: MT5</span>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+    <div class="analysis-foot scenarios-foot">
+        <span>Entry е Ask при BUY и Bid при SELL; SL е отвъд близкия swing с минимум 1.5 ATR, TP е 2R.</span>
+        <span>Сигналите са аналитични; не изпращат брокерски поръчки.</span>
+    </div>
+</section>
+
+@code {
+    private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(1);
+    private readonly CancellationTokenSource _lifetime = new();
+    private readonly SemaphoreSlim _refreshGate = new(1, 1);
+
+    private ScenarioAssessmentReport? Report { get; set; }
+    private bool IsRefreshing { get; set; }
+    private string? LoadError { get; set; }
+
+    private IReadOnlyList<ScenarioAssessmentResult> Assessments =>
+        Report?.Scenarios ?? Array.Empty<ScenarioAssessmentResult>();
+
+    private int ScenarioCount => Assessments.Count;
+    private int ConfirmedCount => Assessments.Count(item =>
+        string.Equals(item.Status, "Потвърден сигнал", StringComparison.OrdinalIgnoreCase));
+    private int NoDataCount => Assessments.Count(item =>
+        item.Status.StartsWith("Няма", StringComparison.OrdinalIgnoreCase));
+    private int WaitingCount => Math.Max(0, ScenarioCount - ConfirmedCount - NoDataCount);
+    private bool HasMarketData => Assessments.Any(item => item.Price.HasValue);
+
+    private string FeedStatusClass => !HasMarketData
+        ? "market-error"
+        : NoDataCount > 0 ? "market-stale" : "market-connected";
+
+    private string FeedStatusDot => !HasMarketData
+        ? "red"
+        : NoDataCount > 0 ? "amber" : "green";
+
+    private string FeedStatusLabel => !HasMarketData
+        ? "MT5 · няма актуални пазарни данни"
+        : NoDataCount > 0 ? "MT5 · част от сценариите чакат данни" : "MT5 · оценката е актуална";
+
+    private string FeedStatusDescription
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(LoadError))
+                return LoadError;
+            if (HasMarketData)
+                return $"Условията се преоценяват автоматично на всяка минута. {NoDataCount} сценария очакват липсващи пазарни данни.";
+            return Assessments.FirstOrDefault()?.Reason ??
+                (IsRefreshing ? "Заявка към MT5 bridge…" : "Свържи MetaTrader 5 чрез mt5-bridge, за да се изчислят статусите.");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAsync(_lifetime.Token);
+        _ = PollAsync(_lifetime.Token);
+    }
+
+    private Task RefreshNowAsync() => RefreshAsync(_lifetime.Token);
+
+    private async Task RefreshAsync(CancellationToken cancellationToken = default)
+    {
+        bool entered;
+        try
+        {
+            entered = await _refreshGate.WaitAsync(0, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        if (!entered)
+            return;
+
+        await InvokeAsync(() =>
+        {
+            IsRefreshing = true;
+            StateHasChanged();
+        });
+
+        try
+        {
+            var result = await AssessmentService.AssessAsync(cancellationToken);
+            await InvokeAsync(() =>
+            {
+                Report = result;
+                LoadError = null;
+                StateHasChanged();
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (Exception exception)
+        {
+            await InvokeAsync(() =>
+            {
+                LoadError = $"{exception.Message} Запази последната успешна оценка и провери XYN Trader и MT5 bridge.";
+                StateHasChanged();
+            });
+        }
+        finally
+        {
+            _refreshGate.Release();
+            if (!_lifetime.IsCancellationRequested)
+            {
+                await InvokeAsync(() =>
+                {
+                    IsRefreshing = false;
+                    StateHasChanged();
+                });
+            }
+        }
+    }
+
+    private async Task PollAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(RefreshInterval);
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+                await RefreshAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private static string StatusTone(ScenarioAssessmentResult scenario) =>
+        scenario.Status.Contains("Потвърден", StringComparison.OrdinalIgnoreCase)
+            ? "confirmed"
+            : scenario.Status.StartsWith("Няма", StringComparison.OrdinalIgnoreCase)
+                ? "unavailable"
+                : "waiting";
+
+    private static string SignalTone(string signal) => signal.ToUpperInvariant() switch
+    {
+        "BUY" => "buy",
+        "SELL" => "sell",
+        _ => "wait"
+    };
+
+    private static string FormatPrice(decimal? price) => price?.ToString("#,##0.#####", CultureInfo.GetCultureInfo("bg-BG")) ?? "—";
+
+    private static string FormatUtc(DateTimeOffset? value) =>
+        value?.ToUniversalTime().ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "няма данни";
+
+    private static string FormatUtc(DateTimeOffset value) =>
+        value.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture);
+
+    public ValueTask DisposeAsync()
+    {
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}

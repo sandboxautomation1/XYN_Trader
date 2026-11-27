@@ -233,7 +233,7 @@ class LearningIngestRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", alias_generator=to_camel, populate_by_name=True)
 
     symbol: Literal["XAUUSD"] = "XAUUSD"
-    interval: Literal["1h"] = "1h"
+    interval: Literal["1h", "5min"] = "1h"
     candles: list[CandidateCandle] = Field(min_length=1, max_length=1000)
     run_learning_cycle: bool = True
 
@@ -615,7 +615,8 @@ def ingest_learning_candles(
 
     try:
         result = ingest_candles(
-            [candle.model_dump() for candle in request.candles]
+            [candle.model_dump() for candle in request.candles],
+            interval=request.interval,
         )
     except (OSError, ValueError, TypeError) as error:
         raise HTTPException(status_code=422, detail=f"Learning candle intake failed: {error}") from error

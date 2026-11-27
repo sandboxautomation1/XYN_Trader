@@ -24,6 +24,9 @@ CANDIDATE_DIRECTORY = Path(
     os.environ.get("XYN_LEARNING_MODEL_DIR", str(ROOT / "models" / "candidates"))
 )
 MAXIMUM_CANDLES = max(1000, int(os.environ.get("XYN_LEARNING_MAX_CANDLES", "5000")))
+MAXIMUM_OUTCOME_CANDLES = max(
+    1000, int(os.environ.get("XYN_LEARNING_MAX_OUTCOME_CANDLES", "100000"))
+)
 HORIZONS = ("1h", "24h", "48h")
 MINIMUM_LABELS = 30
 _cycle_lock = threading.Lock()
@@ -41,6 +44,19 @@ def _connect() -> sqlite3.Connection:
     connection.execute(
         """
         CREATE TABLE IF NOT EXISTS candles (
+            symbol TEXT NOT NULL,
+            timestamp_utc TEXT NOT NULL,
+            open REAL NOT NULL,
+            high REAL NOT NULL,
+            low REAL NOT NULL,
+            close REAL NOT NULL,
+            PRIMARY KEY (symbol, timestamp_utc)
+        )
+        """
+    )
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS outcome_candles (
             symbol TEXT NOT NULL,
             timestamp_utc TEXT NOT NULL,
             open REAL NOT NULL,
@@ -123,8 +139,13 @@ def _save_state(connection: sqlite3.Connection, state: dict[str, Any]) -> None:
     connection.commit()
 
 
-def ingest_candles(candles: list[dict[str, Any]]) -> dict[str, Any]:
-    """Upsert only completed H1 bars, retaining a bounded rolling history."""
+def ingest_candles(candles: list[dict[str, Any]], interval: str = "1h") -> dict[str, Any]:
+    """Upsert completed H1 feature bars or M5 outcome bars."""
+    if interval not in {"1h", "5min"}:
+        raise ValueError("Learning intake supports only 1h and 5min candles.")
+    table = "candles" if interval == "1h" else "outcome_candles"
+    retention = MAXIMUM_CANDLES if interval == "1h" else MAXIMUM_OUTCOME_CANDLES
+    duration = pd.Timedelta(hours=1) if interval == "1h" else pd.Timedelta(minutes=5)
     now = pd.Timestamp.now(tz="UTC")
     rows: list[tuple[str, str, float, float, float, float]] = []
     skipped_open = 0
@@ -133,7 +154,7 @@ def ingest_candles(candles: list[dict[str, Any]]) -> dict[str, Any]:
         if timestamp.tzinfo is None:
             raise ValueError("Candle timestamp must include a timezone.")
         timestamp = timestamp.tz_convert("UTC")
-        if timestamp + pd.Timedelta(hours=1) > now:
+        if timestamp + duration > now:
             skipped_open += 1
             continue
         rows.append(
@@ -151,22 +172,22 @@ def ingest_candles(candles: list[dict[str, Any]]) -> dict[str, Any]:
     try:
         before = connection.total_changes
         connection.executemany(
-            """
-            INSERT INTO candles(symbol, timestamp_utc, open, high, low, close)
+            f"""
+            INSERT INTO {table}(symbol, timestamp_utc, open, high, low, close)
             VALUES(?, ?, ?, ?, ?, ?)
             ON CONFLICT(symbol, timestamp_utc) DO UPDATE SET
                 open=excluded.open, high=excluded.high, low=excluded.low, close=excluded.close
-            WHERE candles.open != excluded.open OR candles.high != excluded.high
-               OR candles.low != excluded.low OR candles.close != excluded.close
+            WHERE {table}.open != excluded.open OR {table}.high != excluded.high
+               OR {table}.low != excluded.low OR {table}.close != excluded.close
             """,
             rows,
         )
         changed = connection.total_changes - before
         connection.execute(
-            "DELETE FROM candles WHERE symbol = 'XAUUSD' AND timestamp_utc < "
-            "(SELECT timestamp_utc FROM candles WHERE symbol = 'XAUUSD' "
+            f"DELETE FROM {table} WHERE symbol = 'XAUUSD' AND timestamp_utc < "
+            f"(SELECT timestamp_utc FROM {table} WHERE symbol = 'XAUUSD' "
             "ORDER BY timestamp_utc DESC LIMIT 1 OFFSET ?)",
-            (MAXIMUM_CANDLES - 1,),
+            (retention - 1,),
         )
         state = _load_state(connection)
         state["last_ingest_utc"] = _utc_now()
@@ -176,13 +197,17 @@ def ingest_candles(candles: list[dict[str, Any]]) -> dict[str, Any]:
         state["status"] = "collecting" if changed else state.get("status", "collecting")
         _save_state(connection, state)
         total = connection.execute(
-            "SELECT COUNT(*) AS count FROM candles WHERE symbol = 'XAUUSD'"
+            f"SELECT COUNT(*) AS count FROM {table} WHERE symbol = 'XAUUSD'"
+        ).fetchone()["count"]
+        outcome_total = connection.execute(
+            "SELECT COUNT(*) AS count FROM outcome_candles WHERE symbol = 'XAUUSD'"
         ).fetchone()["count"]
         return {
             "accepted_candles": len(rows),
             "changed_candles": changed,
             "skipped_open_candles": skipped_open,
             "stored_candles": total,
+            "stored_outcome_candles": outcome_total,
             "training_scheduled": changed > 0,
         }
     finally:
@@ -197,7 +222,11 @@ def get_status() -> dict[str, Any]:
         state["stored_candles"] = connection.execute(
             "SELECT COUNT(*) AS count FROM candles WHERE symbol = 'XAUUSD'"
         ).fetchone()["count"]
+        state["stored_outcome_candles"] = connection.execute(
+            "SELECT COUNT(*) AS count FROM outcome_candles WHERE symbol = 'XAUUSD'"
+        ).fetchone()["count"]
         state["maximum_stored_candles"] = MAXIMUM_CANDLES
+        state["maximum_stored_outcome_candles"] = MAXIMUM_OUTCOME_CANDLES
         state["active_models"] = _active_model_horizons()
         return _attach_candidate_review(state)
     finally:
@@ -491,6 +520,18 @@ def run_cycle() -> dict[str, Any]:
             )
             candles_frame.to_csv(candle_path, index=False)
 
+            outcome_count = connection.execute(
+                "SELECT COUNT(*) AS count FROM outcome_candles WHERE symbol = 'XAUUSD'"
+            ).fetchone()["count"]
+            if outcome_count < 100:
+                horizon_state = state["horizons"].get("1h", _empty_horizon())
+                horizon_state["training_state"] = "collecting_outcome_candles"
+                horizon_state["message"] = (
+                    "За правилно етикетиране на резултатите в рамките на 1 час са нужни поне "
+                    "100 затворени M5 свещи."
+                )
+                state["horizons"]["1h"] = horizon_state
+
             try:
                 generation = generate_candidates(
                     candle_path,
@@ -508,8 +549,28 @@ def run_cycle() -> dict[str, Any]:
                 horizon_state = state["horizons"].get(horizon, _empty_horizon())
                 dataset_path = data_directory / "datasets" / f"{horizon}.csv"
                 try:
+                    outcome_path: Path | None = None
+                    outcome_interval: str | None = None
+                    if horizon == "1h":
+                        if outcome_count < 100:
+                            state["horizons"][horizon] = horizon_state
+                            continue
+                        outcome_frame = pd.read_sql_query(
+                            "SELECT timestamp_utc, open, high, low, close FROM outcome_candles "
+                            "WHERE symbol = 'XAUUSD' ORDER BY timestamp_utc",
+                            connection,
+                        )
+                        outcome_path = data_directory / "outcome_candles.csv"
+                        outcome_frame.to_csv(outcome_path, index=False)
+                        outcome_interval = "5min"
                     prepared = prepare_dataset(
-                        candle_path, candidates_path, dataset_path, horizon, "1h"
+                        candle_path,
+                        candidates_path,
+                        dataset_path,
+                        horizon,
+                        "1h",
+                        outcome_path,
+                        outcome_interval,
                     )
                     horizon_state.update(
                         candidate_rows=prepared["candidate_rows"],

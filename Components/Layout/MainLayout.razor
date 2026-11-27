@@ -14,6 +14,7 @@
         <nav class="main-nav" aria-label="Основна навигация">
             <NavLink href="/" Match="NavLinkMatch.All" class="nav-item"><span class="nav-icon">⌂</span> Табло</NavLink>
             <NavLink href="/signals" class="nav-item"><span class="nav-icon">◎</span> Сигнали</NavLink>
+            <NavLink href="/scenarios" class="nav-item"><span class="nav-icon">◇</span> Сценарии</NavLink>
             <NavLink href="/analysis" class="nav-item"><span class="nav-icon">◫</span> Пазарен анализ</NavLink>
             <NavLink href="/price-prediction" class="nav-item"><span class="nav-icon">⌁</span> Прогнози и нива</NavLink>
             <NavLink href="/news" class="nav-item"><span class="nav-icon">▤</span> Новини</NavLink>
@@ -48,6 +49,7 @@
     private string CurrentPage => new Uri(Navigation.Uri).AbsolutePath switch
     {
         "/signals" => "Сигнали",
+        "/scenarios" => "Сценарии",
         "/analysis" => "Пазарен анализ",
         "/price-prediction" => "Прогнози и нива",
         "/news" => "Новини",

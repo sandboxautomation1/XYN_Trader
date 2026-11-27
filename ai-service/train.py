@@ -126,6 +126,16 @@ def train(input_path: Path, output_path: Path, horizon: str) -> dict[str, object
         if frame["policy_sha256"].isna().any() or frame["policy_sha256"].nunique() != 1:
             raise ValueError("A model must be trained on exactly one signal policy checksum.")
         policy_sha256 = str(frame["policy_sha256"].iloc[0])
+    outcome_candle_interval = None
+    if "outcome_candle_interval" in frame:
+        if frame["outcome_candle_interval"].isna().any() or frame["outcome_candle_interval"].nunique() != 1:
+            raise ValueError("A model must be trained on exactly one outcome candle interval.")
+        outcome_candle_interval = str(frame["outcome_candle_interval"].iloc[0])
+        if horizon == "1h" and outcome_candle_interval != "5min":
+            raise ValueError(
+                "A 1h model must use M5 outcome candles; prepare the dataset with "
+                "--outcome-candles and --outcome-interval 5min."
+            )
 
     frame["timestamp_utc"] = pd.to_datetime(frame["timestamp_utc"], utc=True, errors="raise")
     if "label_end_utc" in frame:
@@ -206,6 +216,7 @@ def train(input_path: Path, output_path: Path, horizon: str) -> dict[str, object
         "horizon": horizon,
         "policy_version": policy_version,
         "policy_sha256": policy_sha256,
+        "outcome_candle_interval": outcome_candle_interval,
         "model_version": f"lgbm-{horizon}-{trained_at}-{digest}",
         "trained_at_utc": datetime.now(timezone.utc).isoformat(),
         "training_rows": len(training),
@@ -234,6 +245,7 @@ def train(input_path: Path, output_path: Path, horizon: str) -> dict[str, object
         "horizon": horizon,
         "policy_version": policy_version,
         "policy_sha256": policy_sha256,
+        "outcome_candle_interval": outcome_candle_interval,
         "dataset_sha256": dataset_digest,
         "dataset_rows": len(ordered),
         "training_rows_after_purge": len(training),

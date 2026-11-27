@@ -587,6 +587,10 @@ p {
     margin-bottom: 13px;
 }
 
+.signal-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .metric-card {
     min-width: 0;
     height: 111px;

@@ -35,43 +35,71 @@ public sealed class SignalLearningCollectorService(
             var generator = scope.ServiceProvider.GetRequiredService<CandidateGeneratorClient>();
             var learningStatus = await generator.GetLearningStatusAsync(cancellationToken);
             if (learningStatus.Available && learningStatus.Status?.StoredCandles == 0 &&
-                await TryHistoricalBackfillAsync(generator, cancellationToken))
+                await TryHistoricalBackfillAsync(generator, "H1", cancellationToken))
+            {
+                return;
+            }
+            if (learningStatus.Available && learningStatus.Status?.StoredOutcomeCandles == 0 &&
+                await TryHistoricalBackfillAsync(generator, "M5", cancellationToken))
             {
                 return;
             }
 
-            var market = await marketProvider.GetSnapshotAsync("H1", cancellationToken);
-            if (market.Snapshot is null)
+            var hourlyMarket = await marketProvider.GetSnapshotAsync("H1", cancellationToken);
+            var fiveMinuteMarket = await marketProvider.GetSnapshotAsync("M5", cancellationToken);
+            if (hourlyMarket.Snapshot is null && fiveMinuteMarket.Snapshot is null)
             {
-                logger.LogWarning("AI learning collector skipped this cycle: {Message}", market.Message);
+                logger.LogWarning(
+                    "AI learning collector skipped this cycle: H1: {HourlyMessage}; M5: {FiveMinuteMessage}",
+                    hourlyMarket.Message,
+                    fiveMinuteMarket.Message);
                 return;
             }
 
             var now = DateTimeOffset.UtcNow;
-            var candles = market.Snapshot.Candles
+            var hourlyCandles = hourlyMarket.Snapshot?.Candles
                 .Where(candle => candle.TimeUtc.AddHours(1) <= now)
                 .OrderBy(candle => candle.TimeUtc)
                 .TakeLast(1000)
                 .ToArray();
-            if (candles.Length == 0)
+            var fiveMinuteCandles = fiveMinuteMarket.Snapshot?.Candles
+                .Where(candle => candle.TimeUtc.AddMinutes(5) <= now)
+                .OrderBy(candle => candle.TimeUtc)
+                .TakeLast(1000)
+                .ToArray();
+
+            if (hourlyCandles is { Length: > 0 })
             {
-                logger.LogWarning("AI learning collector received no closed H1 candles from MT5.");
+                var hourlyResult = await generator.IngestClosedCandlesAsync(
+                    hourlyCandles,
+                    runLearningCycle: fiveMinuteCandles is not { Length: > 0 },
+                    cancellationToken: cancellationToken,
+                    interval: "1h");
+                if (!hourlyResult.Available)
+                    logger.LogWarning("AI learning H1 candle intake failed: {Message}", hourlyResult.Message);
+            }
+
+            if (fiveMinuteCandles is not { Length: > 0 })
+            {
+                logger.LogWarning("AI learning collector received no closed M5 candles from MT5.");
                 return;
             }
 
-            var result = await generator.IngestClosedCandlesAsync(
-                candles,
-                cancellationToken: cancellationToken);
-            if (!result.Available)
+            var fiveMinuteResult = await generator.IngestClosedCandlesAsync(
+                fiveMinuteCandles,
+                runLearningCycle: true,
+                cancellationToken: cancellationToken,
+                interval: "5min");
+            if (!fiveMinuteResult.Available)
             {
-                logger.LogWarning("AI learning candle intake failed: {Message}", result.Message);
+                logger.LogWarning("AI learning M5 candle intake failed: {Message}", fiveMinuteResult.Message);
                 return;
             }
 
-            if (result.Intake is { ChangedCandles: > 0 } intake)
+            if (fiveMinuteResult.Intake is { ChangedCandles: > 0 } intake)
             {
                 logger.LogInformation(
-                    "AI learning stored {ChangedCandles} changed H1 candles; {StoredCandles} total are retained.",
+                    "AI learning stored {ChangedCandles} changed M5 candles; {StoredCandles} are retained for M5 outcomes.",
                     intake.ChangedCandles,
                     intake.StoredCandles);
             }
@@ -88,8 +116,16 @@ public sealed class SignalLearningCollectorService(
 
     private async Task<bool> TryHistoricalBackfillAsync(
         CandidateGeneratorClient generator,
+        string timeframe,
         CancellationToken cancellationToken)
     {
+        var interval = timeframe switch
+        {
+            "H1" => "1h",
+            "M5" => "5min",
+            _ => throw new ArgumentOutOfRangeException(nameof(timeframe), timeframe, "Unsupported learning timeframe.")
+        };
+        var candleDuration = timeframe == "H1" ? TimeSpan.FromHours(1) : TimeSpan.FromMinutes(5);
         var backfillDays = int.TryParse(configuration["AILearning:BackfillDays"], out var configuredDays)
             ? Math.Clamp(configuredDays, 30, 3650)
             : 365;
@@ -108,7 +144,7 @@ public sealed class SignalLearningCollectorService(
                 var chunkEnd = cursor.AddDays(14) < now ? cursor.AddDays(14) : now;
                 var start = Uri.EscapeDataString(cursor.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
                 var end = Uri.EscapeDataString(chunkEnd.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
-                var uri = $"rates_range/{Uri.EscapeDataString(symbol)}?timeframe=H1&start={start}&end={end}";
+                var uri = $"rates_range/{Uri.EscapeDataString(symbol)}?timeframe={timeframe}&start={start}&end={end}";
                 using var response = await historyClient.GetAsync(uri, cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -136,7 +172,7 @@ public sealed class SignalLearningCollectorService(
                     }
 
                     var time = DateTimeOffset.FromUnixTimeSeconds(rate.Time);
-                    if (time.AddHours(1) <= now)
+                    if (time + candleDuration <= now)
                         candles[time] = new Candle(rate.Open, rate.High, rate.Low, rate.Close, time);
                 }
 
@@ -157,7 +193,8 @@ public sealed class SignalLearningCollectorService(
         if (ordered.Length < 100)
         {
             logger.LogInformation(
-                "MT5 returned {CandleCount} historical H1 candles; continuing with the current bridge window.",
+                "MT5 returned {CandleCount} historical {Timeframe} candles; continuing with the current bridge window.",
+                timeframe,
                 ordered.Length);
             return false;
         }
@@ -169,7 +206,8 @@ public sealed class SignalLearningCollectorService(
             var result = await generator.IngestClosedCandlesAsync(
                 batch,
                 runLearningCycle: isLastBatch,
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken,
+                interval: interval);
             if (!result.Available)
             {
                 logger.LogWarning("MT5 backfill candles could not be stored: {Message}", result.Message);
@@ -178,8 +216,9 @@ public sealed class SignalLearningCollectorService(
         }
 
         logger.LogInformation(
-            "MT5 historical backfill seeded the learning database with {CandleCount} closed H1 candles from the last {BackfillDays} days.",
+            "MT5 historical backfill seeded the learning database with {CandleCount} closed {Timeframe} candles from the last {BackfillDays} days.",
             ordered.Length,
+            timeframe,
             backfillDays);
         return true;
     }

@@ -147,6 +147,8 @@ public sealed record LearningStatusSnapshot(
     [property: JsonPropertyName("approval_required")] bool ApprovalRequired,
     [property: JsonPropertyName("candidate_count")] int? CandidateCount,
     [property: JsonPropertyName("horizons")] IReadOnlyDictionary<string, LearningHorizonStatus> Horizons,
+    [property: JsonPropertyName("stored_outcome_candles")] int StoredOutcomeCandles = 0,
+    [property: JsonPropertyName("maximum_stored_outcome_candles")] int MaximumStoredOutcomeCandles = 0,
     [property: JsonPropertyName("recommended_candidate")] LearningCandidateRecommendation? RecommendedCandidate = null);
 
 public sealed record LearningStatusResult(

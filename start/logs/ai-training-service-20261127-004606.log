@@ -1,0 +1,46 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261127004606
+Username: DESKTOP-ADBRT2P\KamboJah
+RunAs User: DESKTOP-ADBRT2P\KamboJah
+Configuration Name: 
+Machine: DESKTOP-ADBRT2P (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe E:\Projects_MT5\XYN_Trader\start\run-ai-training-and-service.ps1
+Process ID: 6804
+PSVersion: 5.1.26100.9818
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9818
+BuildVersion: 10.0.26100.9818
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Projects_MT5\XYN_Trader\start\logs\ai-training-service-20261127-004606.log
+Checked 7 packages in 1.09s
+Traceback (most recent call last):
+  File "E:\Projects_MT5\XYN_Trader\ai-service\download_candles.py", line 172, in <module>
+    main()
+    ~~~~^^
+  File "E:\Projects_MT5\XYN_Trader\ai-service\download_candles.py", line 157, in main
+    result = download_history(
+        args.bridge_url,
+    ...<6 lines>...
+        args.pause_seconds,
+    )
+  File "E:\Projects_MT5\XYN_Trader\ai-service\download_candles.py", line 97, in download_history
+    rates = _request_chunk(
+        bridge_url,
+    ...<3 lines>...
+        chunk_end,
+    )
+  File "E:\Projects_MT5\XYN_Trader\ai-service\download_candles.py", line 61, in _request_chunk
+    raise RuntimeError(
+        f"Could not reach MT5 bridge at {bridge_url} for {start} through {end}."
+    ) from None
+RuntimeError: Could not reach MT5 bridge at http://127.0.0.1:8000 for 2024-01-01 through 2024-01-14.
+PS>TerminatingError(run-ai-training-and-service.ps1): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: Изтеглянето на свещите е неуспешно."
+**********************
+Windows PowerShell transcript end
+End time: 20261127004650
+**********************

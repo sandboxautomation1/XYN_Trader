@@ -1,0 +1,18 @@
+{
+  "policy_version": "swing-zones-atr-v3",
+  "candidate_horizon_hours": 24,
+  "swing_lookback_bars": 240,
+  "pivot_left_bars": 2,
+  "pivot_right_bars": 2,
+  "zone_merge_tolerance_atr": 0.35,
+  "zone_half_width_atr": 0.15,
+  "stop_buffer_atr": 0.35,
+  "minimum_entry_gap_atr": 0.25,
+  "maximum_entry_gap_atr": 2.0,
+  "minimum_adx": 20.0,
+  "minimum_tp1_risk_reward": 2.0,
+  "minimum_tp2_risk_reward": 2.5,
+  "minimum_tp3_risk_reward": 3.0,
+  "side_cooldown_hours": 24,
+  "minimum_zone_touches": 2
+}

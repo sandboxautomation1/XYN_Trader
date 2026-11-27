@@ -5,6 +5,7 @@
 @inject Mt5MarketDataProvider MarketProvider
 @inject TechnicalAnalysisService TechnicalAnalysis
 @inject LiveSignalService SignalService
+@inject ScenarioAssessmentService ScenarioAssessment
 @inject NewsFeedService NewsFeed
 @inject EconomicCalendarService EconomicCalendar
 @inject PositionReviewService PositionReview
@@ -44,6 +45,24 @@
         <span>Котировка UTC <strong>@(liveMarket?.UpdatedAtUtc.ToString("yyyy-MM-dd HH:mm:ss 'UTC'") ?? "недостъпна")</strong></span>
         <span>Свежест <strong>@FreshnessLabel</strong></span>
     </div>
+</section>
+
+<section class="metric-grid signal-summary-grid" aria-label="Обобщение на сигналите и потвърдените сценарии">
+    <article class="metric-card">
+        <div class="metric-label">АКТИВНИ СИГНАЛИ</div>
+        <div class="metric-value positive">@ActiveSignalCountText</div>
+        <div class="metric-foot"><span>Статус „Активен“</span><span>@SignalDataLabel</span></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">СИГНАЛИ, ЧАКАЩИ ВХОД</div>
+        <div class="metric-value">@WaitingEntryCountText</div>
+        <div class="metric-foot"><span>Статус „Чака вход“</span><span>@SignalDataLabel</span></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">ПОТВЪРДЕНИ СЦЕНАРИИ</div>
+        <div class="metric-value positive">@ConfirmedScenarioCountText</div>
+        <div class="metric-foot"><span>@ScenarioCountFoot</span><span>MT5</span></div>
+    </article>
 </section>
 
 <section class="metric-grid" aria-label="Пазарни показатели">
@@ -377,7 +396,10 @@
     }
     private string SelectedTimeframe { get; set; } = "H1";
     private MarketDataResult? LiveMarket { get; set; }
+    private MarketTick? LatestTick { get; set; }
     private CandidateGenerationResult? CandidateGeneration { get; set; }
+    private ScenarioAssessmentReport? ScenarioReport { get; set; }
+    private string? ScenarioAssessmentError { get; set; }
     private NewsFeedSnapshot? NewsData { get; set; }
     private EconomicCalendarSnapshot? CalendarData { get; set; }
     private PositionReviewsResult? PositionData { get; set; }
@@ -388,6 +410,40 @@
     private bool PositionActionSucceeded { get; set; }
     private readonly Dictionary<long, PositionLimitForm> PositionLimitForms = [];
     private readonly Dictionary<long, PositionProtectionForm> PositionProtectionForms = [];
+    private readonly SemaphoreSlim ScenarioAssessmentRefreshGate = new(1, 1);
+
+    private int? ActiveSignalCount => CandidateGeneration is { Available: true } generation
+        ? generation.Candidates.Count(signal => signal.Status == "TRIGGERED")
+        : null;
+
+    private int? WaitingEntryCount => CandidateGeneration is { Available: true } generation
+        ? generation.Candidates.Count(signal => signal.Status == "CREATED" && !IsLiveEntryReached(signal))
+        : null;
+
+    private int? ConfirmedScenarioCount => ScenarioReport is not null
+        ? ScenarioReport!.Scenarios.Count(scenario =>
+            string.Equals(scenario.Status, "Потвърден сигнал", StringComparison.OrdinalIgnoreCase))
+        : null;
+
+    private bool HasScenarioMarketData => ScenarioReport?.Scenarios.Any(scenario => scenario.Price.HasValue) == true;
+
+    private string ActiveSignalCountText => ActiveSignalCount?.ToString("00") ?? "—";
+    private string WaitingEntryCountText => WaitingEntryCount?.ToString("00") ?? "—";
+    private string ConfirmedScenarioCountText => ConfirmedScenarioCount?.ToString("00") ?? "—";
+
+    private string SignalDataLabel => CandidateGeneration switch
+    {
+        { Available: true, IsStale: true } => "кеш",
+        { Available: true } => "актуални",
+        { Available: false } => "недостъпни",
+        _ => "зареждане…"
+    };
+
+    private string ScenarioCountFoot => ScenarioReport is not null
+        ? !HasScenarioMarketData
+            ? "няма данни от MT5"
+            : $"{(ScenarioAssessmentError is null ? "оценка" : "последна оценка")} · {ScenarioReport.GeneratedAtUtc.ToString("HH:mm 'UTC'")}"
+        : ScenarioAssessmentError ?? "зареждане…";
 
     private sealed class PositionLimitForm
     {
@@ -463,6 +519,7 @@
         _ = PollNewsAsync(_lifetime.Token);
         _ = PollCalendarAsync(_lifetime.Token);
         _ = PollPositionsAsync(_lifetime.Token);
+        _ = PollScenarioAssessmentsAsync(_lifetime.Token);
     }
 
     private async Task RefreshNewsAsync(CancellationToken cancellationToken = default)
@@ -510,6 +567,61 @@
         }
     }
 
+    private async Task PollScenarioAssessmentsAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+                await RefreshScenarioAssessmentAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private async Task RefreshScenarioAssessmentAsync(CancellationToken cancellationToken)
+    {
+        bool entered;
+        try
+        {
+            entered = await ScenarioAssessmentRefreshGate.WaitAsync(0, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        if (!entered)
+            return;
+
+        try
+        {
+            var report = await ScenarioAssessment.AssessAsync(cancellationToken);
+            await InvokeAsync(() =>
+            {
+                ScenarioReport = report;
+                ScenarioAssessmentError = null;
+                StateHasChanged();
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (Exception)
+        {
+            await InvokeAsync(() =>
+            {
+                ScenarioAssessmentError = "оценката е недостъпна";
+                StateHasChanged();
+            });
+        }
+        finally
+        {
+            ScenarioAssessmentRefreshGate.Release();
+        }
+    }
+
     private async Task RefreshCalendarAsync(CancellationToken cancellationToken = default)
     {
         CalendarData = await EconomicCalendar.GetLatestAsync(days: 2, cancellationToken: cancellationToken);
@@ -537,6 +649,7 @@
 
     private void ApplyLiveTick(MarketTick tick)
     {
+        LatestTick = tick;
         if (LiveMarket?.Snapshot is not { } snapshot)
             return;
         if (tick.UpdatedAtUtc < snapshot.UpdatedAtUtc)
@@ -591,14 +704,40 @@
         IsRefreshing = true;
         try
         {
-            LiveMarket = await MarketProvider.GetSnapshotAsync(GetProviderInterval(SelectedTimeframe));
+            var marketResult = await MarketProvider.GetSnapshotAsync(GetProviderInterval(SelectedTimeframe));
+            LiveMarket = marketResult;
+            LatestTick = marketResult.Snapshot is { } snapshot
+                ? new MarketTick(snapshot.Price, snapshot.Bid ?? snapshot.Price, snapshot.Ask ?? snapshot.Price, snapshot.UpdatedAtUtc)
+                : null;
             if (SelectedTimeframe == "H1")
-                CandidateGeneration = await SignalService.GenerateFromSnapshotAsync(LiveMarket);
+                CandidateGeneration = await SignalService.GenerateFromSnapshotAsync(marketResult);
+            _ = RefreshScenarioAssessmentAsync(_lifetime.Token);
         }
         finally
         {
             IsRefreshing = false;
         }
+    }
+
+    private bool IsLiveEntryReached(GeneratedSignalCandidate signal)
+    {
+        var tick = LatestTick;
+        if (CandidateGeneration?.IsStale == true || signal.Status != "CREATED" ||
+            signal.TimestampUtc.AddHours(signal.HorizonHours) <= DateTimeOffset.UtcNow ||
+            tick is null || Mt5MarketDataProvider.GetFreshness(tick.UpdatedAtUtc, DateTimeOffset.UtcNow) != MarketFreshness.Fresh ||
+            tick.UpdatedAtUtc < signal.TimestampUtc)
+        {
+            return false;
+        }
+
+        var triggerPrice = (signal.EntryOrderType ?? (signal.Direction == "BUY BELOW" ? "BUY LIMIT" : "SELL LIMIT")) switch
+        {
+            "BUY LIMIT" when tick.Ask > 0m => tick.Ask,
+            "SELL LIMIT" when tick.Bid > 0m => tick.Bid,
+            _ => tick.Price
+        };
+
+        return triggerPrice >= signal.EntryLow && triggerPrice <= signal.EntryHigh;
     }
 
     private async Task RefreshPositionsAsync()

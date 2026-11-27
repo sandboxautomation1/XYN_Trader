@@ -1,8 +1,11 @@
 using XYN_Trader.Components;
 using XYN_Trader.Models;
 using XYN_Trader.Services;
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -15,6 +18,7 @@ builder.Services
 builder.Services.AddSingleton<DemoMarketDataService>();
 builder.Services.AddSingleton<TechnicalAnalysisService>();
 builder.Services.AddSingleton<TechnicalSignalService>();
+builder.Services.AddSingleton<ScenarioAssessmentService>();
 builder.Services.AddScoped<PositionReviewService>();
 builder.Services.AddSingleton<PositionProfitTargetStore>();
 builder.Services.AddSingleton<PricePredictionService>();
@@ -215,6 +219,58 @@ app.MapGet("/api/technical-signal", async (
         DataWarning = market.Message
     };
     return Results.Ok(ApiEnvelope<TechnicalSignalSnapshot>.Create(signal, context.TraceIdentifier));
+});
+app.MapGet("/api/scenarios/status.xml", async (
+    HttpContext context,
+    ScenarioAssessmentService service,
+    CancellationToken cancellationToken) =>
+{
+    var report = await service.AssessAsync(cancellationToken);
+    context.Response.Headers.CacheControl = "no-store, no-cache, max-age=0";
+    var document = new XDocument(
+        new XElement("report",
+            new XAttribute("generatedAtUtc", report.GeneratedAtUtc.ToString("O", CultureInfo.InvariantCulture)),
+            new XAttribute("symbol", report.Symbol),
+            new XElement("scenarios", report.Scenarios.Select(scenario =>
+                new XElement("scenario",
+                    new XAttribute("id", scenario.Id),
+                    new XElement("name", scenario.Name),
+                    new XElement("timeframe", scenario.Timeframe),
+                    new XElement("status", scenario.Status),
+                    new XElement("signal", scenario.Signal),
+                    new XElement("reason", scenario.Reason),
+                    new XElement("price", scenario.Price?.ToString(CultureInfo.InvariantCulture) ?? string.Empty),
+                    new XElement("entry", scenario.Entry?.ToString(CultureInfo.InvariantCulture) ?? string.Empty),
+                    new XElement("stopLoss", scenario.StopLoss?.ToString(CultureInfo.InvariantCulture) ?? string.Empty),
+                    new XElement("takeProfit", scenario.TakeProfit?.ToString(CultureInfo.InvariantCulture) ?? string.Empty),
+                    new XElement("updatedAtUtc", scenario.UpdatedAtUtc?.ToString("O", CultureInfo.InvariantCulture) ?? string.Empty))))));
+    return Results.Text(document.ToString(SaveOptions.DisableFormatting), "application/xml; charset=utf-8");
+});
+app.MapGet("/api/scenarios/status.csv", async (
+    HttpContext context,
+    ScenarioAssessmentService service,
+    CancellationToken cancellationToken) =>
+{
+    var report = await service.AssessAsync(cancellationToken);
+    context.Response.Headers.CacheControl = "no-store, no-cache, max-age=0";
+    static string Csv(string? value) => $"\"{(value ?? string.Empty).Replace("\"", "\"\"")}\"";
+    var lines = new List<string>
+    {
+        "id,name,timeframe,status,signal,reason,price,updatedAtUtc,entry,stopLoss,takeProfit"
+    };
+    lines.AddRange(report.Scenarios.Select(scenario => string.Join(",",
+        Csv(scenario.Id),
+        Csv(scenario.Name),
+        Csv(scenario.Timeframe),
+        Csv(scenario.Status),
+        Csv(scenario.Signal),
+        Csv(scenario.Reason),
+        Csv(scenario.Price?.ToString(CultureInfo.InvariantCulture)),
+        Csv(scenario.UpdatedAtUtc?.ToString("O", CultureInfo.InvariantCulture)),
+        Csv(scenario.Entry?.ToString(CultureInfo.InvariantCulture)),
+        Csv(scenario.StopLoss?.ToString(CultureInfo.InvariantCulture)),
+        Csv(scenario.TakeProfit?.ToString(CultureInfo.InvariantCulture)))));
+    return Results.Text(string.Join(Environment.NewLine, lines), "text/csv; charset=utf-8");
 });
 app.MapGet("/api/price-prediction", async (
     HttpContext context,
